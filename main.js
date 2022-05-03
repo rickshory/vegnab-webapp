@@ -1,5 +1,11 @@
 (function () {
 document.getElementById("search-box").addEventListener("keyup", updateMatchList);
+
+$.get('all_spp.txt', function(data) {
+	var all_spp_array = data.split("\n");
+  console.log(all_spp_array);
+}, 'text');
+
 function updateMatchList() {
 	console.log("updateMatchList");
 	var search_term = $("#search-box").val();
