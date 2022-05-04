@@ -6,6 +6,8 @@ document.getElementById("search-box").addEventListener("keyup", updateMatchList)
 const region_code = "OR";
 
 var nrcs_spp_array = [];
+var local_spp_array = [];
+
 $.get('nrcs_spp.txt', function(data) {
 	let tmp_array = data.split("\n");
 	nrcs_spp_array = tmp_array.map(str => {
@@ -18,13 +20,14 @@ $.get('nrcs_spp.txt', function(data) {
 		return spp_obj;
 	});
   console.log(nrcs_spp_array);
+	makeLocalSppArray();
 }, 'text');
 
-var local_spp_array = [];
-// const? or allow to change on-the-fly?
-local_spp_array = nrcs_spp_array.filter(spp_obj =>
-	spp_obj.distribution.includes(region_code + ","));
-console.log(local_spp_array);
+function makeLocalSppArray() {
+	local_spp_array = nrcs_spp_array.filter(spp_obj =>
+		spp_obj.distribution.includes(region_code + ","));
+	console.log(local_spp_array);
+}
 
 function updateMatchList() {
 	console.log("updateMatchList");
