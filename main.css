@@ -5,6 +5,8 @@ input {
 }
 
 #match-list {
+  list-style-type: none; /* Remove bullets */
+  padding-left: 1.2em;
   width: 46%;
   background-color: #eeeeee;
   border-radius: 0.3em;
