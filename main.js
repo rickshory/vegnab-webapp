@@ -20,27 +20,27 @@ $.get('nrcs_spp.txt', function(data) {
 		};
 		return spp_obj;
 	});
-  console.log(nrcs_spp_array);
+//  console.log(nrcs_spp_array);
 	makeLocalSppArray();
 }, 'text');
 
 function makeLocalSppArray() {
 	local_spp_array = nrcs_spp_array.filter(spp_obj =>
 		spp_obj.distribution.includes(region_code + ","));
-	console.log(local_spp_array);
+//	console.log(local_spp_array);
 	nonlocal_spp_array = nrcs_spp_array.filter(spp_obj =>
 		!local_spp_array.includes(spp_obj));
-	console.log(nonlocal_spp_array);
+//	console.log(nonlocal_spp_array);
 }
 
 function updateMatchList() {
 	console.log("updateMatchList");
-	var search_term = $("#search-box").val();
+	var search_term = $("#search-box").val().toLowerCase();
 	var match_list = $('#match-list');
 	if (search_term.length > 1) {
 		match_list.empty(); // clear any previous content
 		var spp_match_array = local_spp_array.filter(spp_obj =>
-			spp_obj.nrcs_code.startsWith(search_term));
+			spp_obj.nrcs_code.toLowerCase().startsWith(search_term));
 		spp_match_array.forEach(spp_obj => {
 			var list_item = $('<li>' + spp_obj.nrcs_code +
 			": " + spp_obj.species_name + '</li>');
