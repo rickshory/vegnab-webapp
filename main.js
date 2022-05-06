@@ -37,6 +37,7 @@ function updateMatchList() {
 	console.log("updateMatchList");
 	var search_term = $("#search-box").val().toLowerCase();
 	var match_list = $('#match-list');
+	// todo: deal with backspace removal of characters
 	if (search_term.length > 1) {
 		match_list.empty(); // clear any previous content
 		// get the strict matches on nrcs_code
@@ -52,6 +53,14 @@ function updateMatchList() {
 					spp_obj.species_name.toLowerCase().includes(search_term));
 				spp_match_array = spp_match_array.concat(local_fulltext_spp_match_array);
 				spp_match_array.sort();
+
+				// for testing, add nrcs_code matches of non-local species
+				// todo: use CSS to color them differently
+				let nonlocal_spp_code_match_array = nonlocal_spp_array.filter(spp_obj =>
+					spp_obj.nrcs_code.toLowerCase().startsWith(search_term));
+				console.log(nonlocal_spp_code_match_array);
+				spp_match_array = spp_match_array.concat(nonlocal_spp_code_match_array);
+				// don't sort here; put the nonlocal after the sorted local species
 			}
 
 		spp_match_array.forEach(spp_obj => {
