@@ -6,16 +6,19 @@ input {
 
 #match-list {
   list-style-type: none; /* Remove bullets */
-  padding-left: 1.2em;
-  width: 46%;
+  list-style-position: inside;
+  margin: 0; /* Remove defaults, more room for text */
+  padding: 0;
+  width: 100%;
   background-color: #eeeeee;
-  border-radius: 0.3em;
 }
 
 #match-list li {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   padding-right: 0.5em;
+  padding-left: 0.5em;
+  border-radius: 0.3em;
 }
 
 #match-list li.local {
