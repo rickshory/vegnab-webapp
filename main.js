@@ -78,33 +78,33 @@ function updateMatchList() {
 	// todo: deal with backspace removal of characters
 	if (search_term.length > 1) {
 		match_list.empty(); // clear any previous content
-		// get the strict matches on nrcs_code
-		var spp_match_array = local_spp_array.filter(spp_obj =>
-			spp_obj.nrcs_code.toLowerCase().startsWith(search_term));
+		// get the strict matches on item_code for local species
+		var spp_match_array = tagged_spp_array.filter(obj =>
+			obj.is_local && obj.item_code.toLowerCase().startsWith(search_term));
 			if (search_term.length > 2) { // at least 3 characters
 				// to include short genera such as "Poa" and "Zea"
-				// add the full-text matches on species_name
-				// no need to duplicate any nrcs_code matches
-				let local_no_code_array = local_spp_array.filter(spp_obj =>
-					!spp_match_array.includes(spp_obj));
-				let local_fulltext_spp_match_array = local_no_code_array.filter(spp_obj =>
-					spp_obj.species_name.toLowerCase().includes(search_term));
+				// add the full-text matches on local species names
+				// no need to duplicate any item_code matches
+				let local_no_code_array = tagged_spp_array.filter(obj =>
+					obj.is_local && !spp_match_array.includes(obj));
+				let local_fulltext_spp_match_array = local_no_code_array.filter(obj =>
+					obj.item_description.toLowerCase().includes(search_term));
 				spp_match_array = spp_match_array.concat(local_fulltext_spp_match_array);
 				spp_match_array.sort();
 
 				// for testing, add nrcs_code matches of non-local species
 				// todo: use CSS to color them differently
-				let nonlocal_spp_code_match_array = nonlocal_spp_array.filter(spp_obj =>
-					spp_obj.nrcs_code.toLowerCase().startsWith(search_term));
+				let nonlocal_spp_code_match_array = tagged_spp_array.filter(obj =>
+					!obj.is_local && obj.item_code.toLowerCase().startsWith(search_term));
 				console.log(nonlocal_spp_code_match_array);
 				spp_match_array = spp_match_array.concat(nonlocal_spp_code_match_array);
 				// don't sort here; put the nonlocal after the sorted local species
 			}
 
 
-		spp_match_array.forEach(spp_obj => {
-			var list_item = $('<li>' + spp_obj.nrcs_code +
-			": " + spp_obj.species_name + '</li>');
+		spp_match_array.forEach(obj => {
+			var list_item = $('<li>' + obj.item_code +
+			": " + obj.item_description + '</li>');
 			match_list.append(list_item);
 		});
 	}
