@@ -6,6 +6,7 @@ document.getElementById("search-box").addEventListener("keyup", updateMatchList)
 const region_code = "OR";
 
 var nrcs_spp_array = [];
+var tagged_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 // experimenting to color list items by local or nonlocal
@@ -26,6 +27,8 @@ $.get('nrcs_spp.txt', function(data) {
 	});
 //  console.log(nrcs_spp_array);
 	makeLocalSppArray();
+	makeTaggedSppArray();
+	console.log(tagged_spp_array);
 }, 'text');
 
 function makeLocalSppArray() {
@@ -50,6 +53,20 @@ function makeLocalSppArray() {
 			"item_description": orig_obj.species_name,
 			"display_class": "nonlocal"
 		};
+		return new_properties;
+	});
+}
+
+function makeTaggedSppArray() {
+	tagged_spp_array = nrcs_spp_array.map(orig_obj => {
+		let new_properties = {
+			"item_code": orig_obj.nrcs_code,
+			"item_description": orig_obj.species_name,
+			"is_local": false
+		};
+		if (orig_obj.distribution.includes(region_code + ",")) {
+			new_properties["is_local"] = true;
+		}
 		return new_properties;
 	});
 }
@@ -83,6 +100,7 @@ function updateMatchList() {
 				spp_match_array = spp_match_array.concat(nonlocal_spp_code_match_array);
 				// don't sort here; put the nonlocal after the sorted local species
 			}
+
 
 		spp_match_array.forEach(spp_obj => {
 			var list_item = $('<li>' + spp_obj.nrcs_code +
