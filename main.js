@@ -103,7 +103,8 @@ function updateMatchList() {
 
 
 		spp_match_array.forEach(obj => {
-			var list_item = $('<li>' + obj.item_code +
+			let display_class = obj.is_local ? "local" : "nonlocal";
+			var list_item = $('<li class="' + display_class + '">' + obj.item_code +
 			": " + obj.item_description + '</li>');
 			match_list.append(list_item);
 		});

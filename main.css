@@ -17,3 +17,11 @@ input {
   padding-bottom: 0.5em;
   padding-right: 0.5em;
 }
+
+#match-list li.local {
+  background-color: lightgreen;
+}
+
+#match-list li.nonlocal {
+  background-color: burlywood;
+}
