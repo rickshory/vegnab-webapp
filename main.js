@@ -28,7 +28,7 @@ $.get('nrcs_spp.txt', function(data) {
 //  console.log(nrcs_spp_array);
 	makeLocalSppArray();
 	makeTaggedSppArray();
-	console.log(tagged_spp_array);
+//	console.log(tagged_spp_array);
 }, 'text');
 
 function makeLocalSppArray() {
@@ -97,7 +97,7 @@ function updateMatchList() {
 				let nonlocal_spp_match_array = tagged_spp_array.filter(obj =>
 					!obj.is_local && obj.item_code.toLowerCase().startsWith(search_term));
 				// next, get full-text matches
-				// don't need to repeat any of the code matches
+				// no need to repeat any of the code matches
 				let nonlocal_no_code_array = tagged_spp_array.filter(obj =>
 					!obj.is_local && !nonlocal_spp_match_array.includes(obj));
 

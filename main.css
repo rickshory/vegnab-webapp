@@ -277,6 +277,11 @@ input {
   border-radius: 0.3em;
 }
 
+#vn-match-list {
+  overflow: auto;
+  /* height: 400px; */
+}
+
 #match-list {
   list-style-type: none; /* Remove bullets */
   list-style-position: inside;
