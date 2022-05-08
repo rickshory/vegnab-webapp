@@ -92,12 +92,25 @@ function updateMatchList() {
 				spp_match_array = spp_match_array.concat(local_fulltext_spp_match_array);
 				spp_match_array.sort();
 
-				// for testing, add nrcs_code matches of non-local species
-				// todo: use CSS to color them differently
-				let nonlocal_spp_code_match_array = tagged_spp_array.filter(obj =>
+				// add matches of non-local species, CSS will color them differently
+				// first, get strict code matches
+				let nonlocal_spp_match_array = tagged_spp_array.filter(obj =>
 					!obj.is_local && obj.item_code.toLowerCase().startsWith(search_term));
-				console.log(nonlocal_spp_code_match_array);
-				spp_match_array = spp_match_array.concat(nonlocal_spp_code_match_array);
+				// next, get full-text matches
+				// don't need to repeat any of the code matches
+				let nonlocal_no_code_array = tagged_spp_array.filter(obj =>
+					!obj.is_local && !nonlocal_spp_match_array.includes(obj));
+
+				let nonlocal_fulltext_spp_match_array = nonlocal_no_code_array.filter(obj =>
+					obj.item_description.toLowerCase().includes(search_term));
+				// put the nonlocal code and full-text results together
+				nonlocal_spp_match_array =
+					nonlocal_spp_match_array.concat(nonlocal_fulltext_spp_match_array);
+				// internally sort
+				nonlocal_spp_match_array.sort();
+				// put the nonlocal below the local
+//				console.log(nonlocal_spp_match_array);
+				spp_match_array = spp_match_array.concat(nonlocal_spp_match_array);
 				// don't sort here; put the nonlocal after the sorted local species
 			}
 
