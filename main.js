@@ -26,36 +26,9 @@ $.get('nrcs_spp.txt', function(data) {
 		return spp_obj;
 	});
 //  console.log(nrcs_spp_array);
-	makeLocalSppArray();
 	makeTaggedSppArray();
 //	console.log(tagged_spp_array);
 }, 'text');
-
-function makeLocalSppArray() {
-	local_spp_array = nrcs_spp_array.filter(spp_obj =>
-		spp_obj.distribution.includes(region_code + ","));
-//	console.log(local_spp_array);
-	nonlocal_spp_array = nrcs_spp_array.filter(spp_obj =>
-		!local_spp_array.includes(spp_obj));
-//	console.log(nonlocal_spp_array);
-	// for testing, do it laboriously
-	local_spp_display_array = local_spp_array.map(orig_obj => {
-		let new_properties = {
-			"item_code": orig_obj.nrcs_code,
-			"item_description": orig_obj.species_name,
-			"display_class": "local"
-		};
-		return new_properties;
-	});
-	nonlocal_spp_display_array = nonlocal_spp_array.map(orig_obj => {
-		let new_properties = {
-			"item_code": orig_obj.nrcs_code,
-			"item_description": orig_obj.species_name,
-			"display_class": "nonlocal"
-		};
-		return new_properties;
-	});
-}
 
 function makeTaggedSppArray() {
 	tagged_spp_array = nrcs_spp_array.map(orig_obj => {
