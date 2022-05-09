@@ -5,6 +5,7 @@
 }
 
 body {
+  overscroll-behavior-y: contain;
   align-items: center;
   display: flex;
   flex-direction: column;
