@@ -22,12 +22,24 @@
     <script src="main.js" defer></script>
   </head>
   <body>
-    <span class="appname">VegNab webapp</span>
-    <form id="search-form" autocomplete="off">
-      <input type="text" id="search-box" name="search-box" />
-    </form>
+    <div id="vnSidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="#anchor1" onclick="closeNav()">anchor1</a>
+      <a href="#anchor2" onclick="closeNav()">anchor2</a>
+    </div>
+    <div class="fixedattop">
+      <span class="appname">VegNab webapp</span>
+      <form id="search-form" autocomplete="off">
+        <input type="text" id="search-box" name="search-box" />
+      </form>
+    </div>
+
+
+
     <div id="vn-match-list" class="sppmatchlist">
      <ul id="match-list"></ul>
     </div>
+    <a name="anchor1"></a>
+    <a name="anchor2"></a>
   </body>
 </html>
