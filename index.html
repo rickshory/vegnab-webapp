@@ -21,6 +21,7 @@
     </script>
     <script src="main.js" defer></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css">
   </head>
   <body>
     <div class="container-fluid">
@@ -31,10 +32,16 @@
       <a href="#anchor2" onclick="closeNav()">anchor2</a>
     </div>  -->
     <div class="row">
-      <div class="col-sm-8">VegNab webapp</div>
+      <div class="col-sm-8">
+        VegNab webapp
+        <p>add <span class="glyphicon glyphicon-plus"></span></p>
+        <p>show more <span class="glyphicon glyphicon-menu-right"></span>
+        <p>show less<span class="glyphicon glyphicon-menu-up"></span>
+      </div>
       <div class="col-sm-4">
         <form id="search-form" autocomplete="off">
           <input type="text" id="search-box" name="search-box" />
+          <span class="glyphicon glyphicon-remove"></span>
         </form>
       </div>
     </div>
