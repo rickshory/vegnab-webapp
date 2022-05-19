@@ -116,5 +116,10 @@ function closeNav() {
 		document.getElementById("main").style.marginLeft= "0";
 }
 
+// // manually enable, from bootstrap
+// var collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
+// var collapseList = collapseElementList.map(function (collapseEl) {
+//   return new bootstrap.Collapse(collapseEl)
+// })
 
 })(); // Immediately-Invoked Function Expression (IIFE)
