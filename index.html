@@ -86,28 +86,31 @@
     <!--
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
      -->
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
         <div class="modal-content">
 
           <!-- Modal Header -->
           <div class="modal-header">
-            <h1 class="modal-title">Species Search</h4>
+            <form id="search-form" autocomplete="off">
+  <!--
+              <input type="text" id="search-box" name="search-box" />
+            </form>
+            <form action="/action_page.php">
+ -->
+              <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" id="search-box"
+                  placeholder="Type to search" name="search-box">
+                <label for="search-box">type to search</label>
+              </div>
+            </form>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
           <!-- Modal body -->
           <div class="modal-body">
-            <form id="search-form" autocomplete="off">
-              <input type="text" id="search-box" name="search-box" />
-            </form>
             <div class="sppmatchlist">
               <ul id="match-list" class="list-unstyled"></ul>
             </div>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
