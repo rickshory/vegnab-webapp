@@ -1,0 +1,327 @@
+/* Style sheet for the vegnab.com Website */
+* {box-sizing:border-box;}
+@media screen and (max-width: 800px){
+  body {margin: 3vh 0 3vh 0;}
+}
+
+body {
+  /* diable android chrome pull down refrsh */
+  overscroll-behavior-y: contain;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+
+  /* margin: 3vh 0 3vh 0; */
+  margin: 0 0 0 0;
+  text-align:start;
+}
+
+div.fixedattop {
+
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  padding: 5px;
+  background-color: #cae8ca;
+  width: 100%;
+  border: 3px solid #73AD21;
+}
+
+div.scrollable {
+  overflow-y: auto;
+}
+
+header {
+  float:none;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  max-width: 50em;
+  width: 90vw;
+  padding: 0 0 0.5em 0;
+  border-bottom: 3px solid #ddd;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.icon-3bars {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tinybar {
+    width: 21px;
+    height: 3px;
+    background-color: #333;
+    margin: 4px 0;
+    transition: 0.4s;
+}
+
+.left_icon {
+  float:left;
+  width:10%;
+}
+
+.appname {
+  color: #663300;
+  font-family: "Roboto condensed", sans-serif;
+  font-size: 6vw;
+}
+
+header aside {
+  float:right;
+  right: 0px;
+  width: 60vw;
+  text-align:right;
+  font-style:italic;
+}
+
+p {
+  font-size: 1em;
+  margin: 1em auto 0 auto;
+  text-indent: 1em;
+  text-align: start;
+  max-width: 50em;
+}
+
+/* Horizonal rules */
+.xhr {
+  color: #044a64;
+  height: 2px;
+}
+
+section {
+  max-width: 50em;
+  width: 90vw;
+  border-top: 2px solid #044a64;
+  padding-top: 1em;
+  padding-bottom:1em;
+}
+
+.cleartop {
+  border-top: 0px;
+  padding-top: 0em;
+}
+
+.clearbottom {
+  border-bottom: 0px;
+  padding-bottom: 0em;
+}
+
+section .padtop ul {
+  padding-top: 1em;
+}
+
+section .section-title {
+  font-weight:bold;
+  font-size:115%;
+  text-align: left;
+}
+
+section .section-tagline {
+  font-style:italic;
+  padding-bottom:1em;
+  font-size: 1em;
+  margin: 1em auto 0 auto;
+  text-indent: 1em;
+  text-align: start;
+  max-width: 50em;
+}
+
+article {
+  border-top: 1px solid #ddd;
+  padding-top: 1em;
+  padding-bottom:1em;
+}
+
+article .article-title {
+  font-weight:bold;
+  font-size:100%;
+  text-indent: 1em;
+  text-align: left;
+}
+
+/* Hyperlinks that look like buttons */
+.button {
+  background-color: #ddd;
+  border: 2px solid #aaa;
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 0 1ex 0 1ex;
+  white-space: nowrap;
+  font-size: 90%;
+  line-height: 150%;
+  color: black;
+}
+.button:visited {
+  color: black;
+}
+
+/* Sidebars on the right-hand side of the screen */
+.rightsidebar {
+  padding-right: 1ex;
+  margin: 1ex;
+  float: right;
+}
+
+/* Border box */
+.border2px {
+  border: 2px solid #044a64;
+  border-radius: 8px;
+}
+
+.hdrfont {
+  font-weight:bold;
+  font-size:115%;
+}
+.nounderline a { text-decoration: none }
+
+a { color: #044a64 }
+a:visited { color: #734559 }
+
+/* menu styling */
+
+.menu ul {
+  margin: 0;
+  list-style-type: none;
+  padding: 0;
+  overflow: auto;
+}
+
+.menu ul li {
+  color: white;
+}
+.menu ul li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 0.7ex 1.4ex;
+  text-decoration: none;
+}
+
+/* Styling specific to the main menu */
+
+.mainmenu ul {
+  background-color: #660033;
+  border-radius: 8px;
+}
+.mainmenu ul li {
+  float: left;
+}
+
+/* Add the "mobileonly" class to any elements that should be visible
+** on narrow-screen mobile devices only */
+@media screen and (min-width: 600px){
+  /* Settings for wide desktop screens */
+  .mobileonly {display: none;}
+  .appname {width: 50vw;}
+  header aside {width: 50vw;}
+}
+/* Add the "desktoponly" class to any elements that should be visible
+** on desktops with at least 600 pixels of horizontal space. */
+@media screen and (max-width: 600px){
+  /* Settings for narrow mobile screens */
+  .desktoponly {display: none;}
+  .left_icon {width: 10vw;}
+  .appname {
+    padding-left: 0.5em;
+    width: 90vw;
+  }
+}
+/* Add the "wideonly" class to any elements that should be visible
+** on wide-screen desktops with  */
+@media screen and (max-width: 800px){
+  /* Settings for screens that are less than 800px wide */
+  .wideonly {display: none;}
+}
+/* limit the size of appname text*/
+@media all and (min-width: 960px) {
+.appname {font-size: 50px;}
+}
+
+@media all and (max-width: 959px) and (min-width: 600px) {
+.appname {font-size: 5vw;}
+}
+
+@media all and (max-width: 599px) and (min-width: 50px) {
+.appname {font-size: 25px;}
+}
+
+input {
+  padding: 0.3em;
+  border-color: #cccccc;
+  border-radius: 0.3em;
+}
+
+#vn-match-list {
+  overflow: auto;
+  /* height: 400px; */
+}
+
+#match-list {
+  list-style-type: none; /* Remove bullets */
+  list-style-position: inside;
+  margin: 0; /* Remove defaults, more room for text */
+  padding: 0;
+  width: 100%;
+  background-color: #eeeeee;
+}
+
+#match-list li {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+  border-radius: 0.3em;
+}
+
+#match-list li.local {
+  background-color: lightgreen;
+}
+
+#match-list li.nonlocal {
+  background-color: burlywood;
+}
