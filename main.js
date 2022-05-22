@@ -5,6 +5,7 @@ document.getElementById("search-box").addEventListener("keyup", updateMatchList)
 // todo: automatically acquire or input region
 const region_code = "OR";
 
+var site_info_array = [];
 var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
@@ -104,6 +105,10 @@ function updateMatchList() {
 			match_list.append(list_item);
 		});
 	}
+}
+
+function storeSiteInfo() {
+
 }
 
 function openNav() {

@@ -76,10 +76,68 @@
       <a href="#anchor2" onclick="closeNav()">anchor2</a>
     </div>  -->
 
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+      data-bs-target="#vnSiteInfoScreen">
+      Add site
+    </button>
+
       <button type="button" class="btn btn-primary" data-bs-toggle="modal"
         data-bs-target="#vnSppSearchScreen">
         Add species
       </button>
+
+
+      <!-- begin modal, site info -->
+      <div id="vnSiteInfoScreen" class="modal site_info_screen">
+      <!--
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+       -->
+        <div class="modal-dialog modal-fullscreen-sm-down">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+              Site info
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="site_info_div">
+                <form id="site_info_form" autocomplete="off">
+      <!--
+                  <input type="text" id="search-box" name="search-box" />
+                </form>
+                <form action="/action_page.php">
+     -->
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="site_name"
+                      placeholder="Site name" name="site_name">
+                    <label for="site_name">Site name</label>
+                  </div>
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="site_notes"
+                      placeholder="Site notes" name="site_notes">
+                    <label for="site_notes">Site notes</label>
+                  </div>
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="site_date"
+                      placeholder="Site date" name="site_date">
+                    <label for="site_date">Site date</label>
+                  </div>
+                  <div class="form-floating mb-3 mt-3">
+                    <input type="text" class="form-control" id="site_location"
+                      placeholder="Site location" name="site_location">
+                    <label for="site_location">Site location</label>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end of modal, site info -->
+
 
     <!-- begin modal -->
     <div id="vnSppSearchScreen" class="modal spp_search_screen">
