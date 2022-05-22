@@ -6,6 +6,7 @@ document.getElementById("search-box").addEventListener("keyup", updateMatchList)
 const region_code = "OR";
 
 var site_info_array = [];
+var latest_site_date = new Date();
 var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
@@ -106,6 +107,12 @@ function updateMatchList() {
 		});
 	}
 }
+
+$("#btn-add-site").click(function () {
+	latest_site_date = new Date();
+//	$("#site_date").html(latest_site_date);
+	document.getElementById("site_date").innerHTML = latest_site_date;
+});
 
 function storeSiteInfo() {
 

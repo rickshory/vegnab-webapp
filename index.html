@@ -76,8 +76,10 @@
       <a href="#anchor2" onclick="closeNav()">anchor2</a>
     </div>  -->
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-      data-bs-target="#vnSiteInfoScreen">
+    <button type="button" class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#vnSiteInfoScreen"
+      id="btn-add-site">
       Add site
     </button>
 
@@ -98,7 +100,6 @@
             <!-- Modal Header -->
             <div class="modal-header">
               <h3>Site info</h3>
-
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
@@ -106,11 +107,7 @@
             <div class="modal-body">
               <div class="site_info_div">
                 <form id="site_info_form" autocomplete="off">
-      <!--
-                  <input type="text" id="search-box" name="search-box" />
-                </form>
-                <form action="/action_page.php">
-     -->
+
                   <div class="form-floating mb-3 mt-3">
                     <input type="text" class="form-control" id="site_name"
                       placeholder="Site name" name="site_name">
@@ -120,11 +117,14 @@
                     <textarea class="form-control" id="siteNotes" rows="4" placeholder="Notes..."></textarea>
                   </div>
 
+                  <p id="site_date" name="site_date">Site date should appear here</p>
+ <!--
                   <div class="form-floating mb-3 mt-3">
                     <input type="text" class="form-control" id="site_date"
                       placeholder="Site date" name="site_date">
                     <label for="site_date">Site date</label>
                   </div>
+  -->
                   <div class="form-floating mb-3 mt-3">
                     <input type="text" class="form-control" id="site_location"
                       placeholder="Site location" name="site_location">
