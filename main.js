@@ -109,6 +109,7 @@ function updateMatchList() {
 }
 
 $("#btn-add-site").click(function () {
+
 	latest_site_date = new Date();
 	$("#site_date").html(latest_site_date.toString());
 });
