@@ -113,16 +113,22 @@ $("#btn-add-site").click(function () {
 	$("#site_date").html(latest_site_date.toString());
 });
 
-$("#btn-save-site-info").click(function () {
-	let site_obj = {
-		"site_name": $("#site_name").val(),
-		"site_notes": $("#site_notes").val(),
-		"site_date": latest_site_date
-	};
-//	console.log(site_obj);
-	site_info_array.push(site_obj);
-	console.log(site_info_array);
-});
+
+$('#vnSiteInfoScreen').on('hide.bs.modal', function () {
+	 console.log('site_name : '+$("#site_name").val());
+	 console.log('site_notes : '+$("#site_notes").val());
+})
+
+// $("#btn-save-site-info").click(function () {
+// 	let site_obj = {
+// 		"site_name": $("#site_name").val(),
+// 		"site_notes": $("#site_notes").val(),
+// 		"site_date": latest_site_date
+// 	};
+// //	console.log(site_obj);
+// 	site_info_array.push(site_obj);
+// 	console.log(site_info_array);
+// });
 
 function storeSiteInfo() {
 
