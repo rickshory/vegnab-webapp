@@ -108,12 +108,15 @@
                 <form id="site_info_form" autocomplete="off">
 
                   <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control" id="site_name"
-                      placeholder="Site name" name="site_name">
+                    <input type="text" class="form-control"
+                      name="site_name" id="site_name"
+                      placeholder="Site name">
                     <label for="site_name">Site name</label>
                   </div>
                   <div class="form-group">
-                    <textarea class="form-control" id="siteNotes" rows="4" placeholder="Notes..."></textarea>
+                    <textarea class="form-control"
+                      name="site_notes" id="site_notes" rows="4" 
+                      placeholder="Notes..."></textarea>
                   </div>
 
                   <p id="site_date" name="site_date">Site date should appear here</p>
@@ -129,7 +132,9 @@
                       placeholder="Site location" name="site_location">
                     <label for="site_location">Site location</label>
                   </div>
-                  <button type="submit" class="btn btn-primary">Save</button>
+                  <button type="submit" class="btn btn-primary"
+                  name="btn-save-site-info" id="btn-save-site-info">
+                    Save</button>
                 </form>
               </div>
             </div>
