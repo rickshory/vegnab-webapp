@@ -108,11 +108,11 @@ function updateMatchList() {
 	}
 }
 
-var sppSearchModal = document.getElementById('vnSppSearchScreen')
-var sppSearchInput = document.getElementById('search-box')
+var sppSearchModal = document.getElementById('vnSppSearchScreen');
+var sppSearchInput = document.getElementById('search-box');
 
 sppSearchModal.addEventListener('shown.bs.modal', function () {
-  sppSearchInput.focus()
+  sppSearchInput.focus();
 })
 
 $("#btn-add-site").click(function () {
@@ -120,11 +120,23 @@ $("#btn-add-site").click(function () {
 	$("#site_date").html(latest_site_date.toString());
 });
 
+var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
+var vnSiteName = document.getElementById('site_name');
+var vnSiteNotes = document.getElementById('site_notes');
+vnSiteInfoModal.addEventListener('hidden.bs.modal', function (event) {
+	let SiteNameString = vnSiteName.value.toString();
+	let SiteNotesString = vnSiteNotes.value.toString();
+	console.log('site_name : '+ SiteNameString);
+	console.log('site_notes : '+ SiteNotesString);
 
-$('#vnSiteInfoScreen').on('hide.bs.modal', function () {
-	 console.log('site_name : '+$("#site_name").val());
-	 console.log('site_notes : '+$("#site_notes").val());
-})
+	// console.log('site_name : '+$("#site_name").val());
+	// console.log('site_notes : '+$("#site_notes").val());
+});
+
+// $('#vnSiteInfoScreen').on('hide.bs.modal', function () {
+// 	 console.log('site_name : '+$("#site_name").val());
+// 	 console.log('site_notes : '+$("#site_notes").val());
+// })
 
 // $("#btn-save-site-info").click(function () {
 // 	let site_obj = {
