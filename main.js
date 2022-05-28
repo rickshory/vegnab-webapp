@@ -123,7 +123,7 @@ $("#btn-add-site").click(function () {
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
-vnSiteInfoModal.addEventListener('hidden.bs.modal', function (event) {
+vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 	let SiteNameString = vnSiteName.value.toString();
 	let SiteNotesString = vnSiteNotes.value.toString();
 	console.log('site_name : '+ SiteNameString);
