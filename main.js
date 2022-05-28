@@ -108,6 +108,13 @@ function updateMatchList() {
 	}
 }
 
+var sppSearchModal = document.getElementById('vnSppSearchScreen')
+var sppSearchInput = document.getElementById('search-box')
+
+sppSearchModal.addEventListener('shown.bs.modal', function () {
+  sppSearchInput.focus()
+})
+
 $("#btn-add-site").click(function () {
 	latest_site_date = new Date();
 	$("#site_date").html(latest_site_date.toString());
