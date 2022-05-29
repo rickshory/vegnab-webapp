@@ -124,6 +124,8 @@ var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
+	event.preventDefault();
+	console.log("In modal Hide event");
 	let SiteNameString = vnSiteName.value.toString();
 	let SiteNotesString = vnSiteNotes.value.toString();
 	console.log('site_name : '+ SiteNameString);
