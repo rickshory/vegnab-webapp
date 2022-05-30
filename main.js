@@ -181,6 +181,11 @@ vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 // 	console.log(site_info_array);
 // });
 
+function useSiteInfo() {
+	console.log("in useSiteInfo");
+	alert("in useSiteInfo");
+}
+
 function storeSiteInfo() {
 
 }
