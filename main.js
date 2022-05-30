@@ -137,14 +137,13 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   sppSearchInput.focus();
 })
 
-// var vnAddSiteButton = document.getElementById('btn-add-site');
-// var vnSiteDate = document.getElementById('site_date');
-//
-//
-// vnAddSiteButton.addEventListener('onclick', function () {
-// 	latest_site_date = new Date();
-// 	vnSiteDate.innerHTML = latest_site_date.toString();
-// });
+var vnAddSiteButton = document.getElementById('btn-add-site');
+var vnSiteDate = document.getElementById('site_date');
+
+vnAddSiteButton.addEventListener('onclick', function () {
+	latest_site_date = new Date();
+	vnSiteDate.innerHTML = latest_site_date.toString();
+});
 
 // $("#btn-add-site").click(function () {
 // 	latest_site_date = new Date();
