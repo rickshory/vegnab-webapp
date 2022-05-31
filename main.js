@@ -147,6 +147,9 @@ function storeSiteInfo() {
 	let SiteNotesString = vnSiteNotes.value.toString();
 	console.log('site_name : '+ SiteNameString);
 	console.log('site_notes : '+ SiteNotesString);
+	// do verification and storage, and then if OK dismiss the modal
+	console.log('about the hide the modal');
+	vnSiteInfoModal.modal('hide');
 }
 
 function openNav() {
