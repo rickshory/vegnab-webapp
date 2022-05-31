@@ -180,6 +180,7 @@ vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 // 	site_info_array.push(site_obj);
 // 	console.log(site_info_array);
 // });
+document.getElementById('btn-save-site-info').addEventListener('click', useSiteInfo);
 
 function useSiteInfo() {
 	console.log("in useSiteInfo");
