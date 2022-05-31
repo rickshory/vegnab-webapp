@@ -103,8 +103,7 @@
             <!-- Modal body -->
             <div class="modal-body">
               <div class="site_info_div">
-                <form  action="index.html" id="site_info_form" autocomplete="off"
-                   onsubmit="useSiteInfo()">
+                <form  id="site_info_form" autocomplete="off">
 
                   <div class="form-floating mb-3 mt-3">
                     <input type="text" class="form-control"
@@ -131,8 +130,9 @@
                       placeholder="Site location" name="site_location">
                     <label for="site_location">Site location</label>
                   </div>
-                  <button type="submit" class="btn btn-primary"
-                  name="btn-save-site-info" id="btn-save-site-info">
+                  <button type="button" class="btn btn-primary"
+                    name="btn-save-site-info" id="btn-save-site-info"
+                    onclick="useSiteInfo()">
                     Save</button>
                 </form>
               </div>
