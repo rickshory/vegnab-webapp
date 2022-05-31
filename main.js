@@ -121,14 +121,18 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
 var vnAddSiteButton = document.getElementById('btn-add-site');
 var vnSiteDate = document.getElementById('site_date');
 
-vnAddSiteButton.addEventListener('onclick', function () {
-	latest_site_date = new Date();
-	vnSiteDate.innerHTML = latest_site_date.toString();
-});
-
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
+
+vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
+	console.log("In Shown event for SiteInfo modal");
+	latest_site_date = new Date();
+	console.log(latest_site_date);
+	vnSiteDate.innerHTML = latest_site_date.toString();
+	console.log("Date set on modal");
+});
+
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 	event.preventDefault();
 	console.log("In modal Hide event");
