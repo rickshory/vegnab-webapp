@@ -134,23 +134,19 @@ vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
 });
 
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
-	event.preventDefault();
+//	event.preventDefault();
 	console.log("In modal Hide event");
+});
+
+document.getElementById('btn-save-site-info').addEventListener('click', storeSiteInfo);
+
+function storeSiteInfo() {
+	console.log("In storeSiteInfo fn");
+	console.log('self element : ' + self.id);
 	let SiteNameString = vnSiteName.value.toString();
 	let SiteNotesString = vnSiteNotes.value.toString();
 	console.log('site_name : '+ SiteNameString);
 	console.log('site_notes : '+ SiteNotesString);
-});
-
-document.getElementById('btn-save-site-info').addEventListener('click', useSiteInfo);
-
-function useSiteInfo() {
-	console.log("in useSiteInfo");
-	alert("in useSiteInfo");
-}
-
-function storeSiteInfo() {
-
 }
 
 function openNav() {
