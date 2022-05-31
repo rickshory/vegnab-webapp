@@ -28,21 +28,6 @@ fetch('nrcs_spp.txt')
 		makeLocalAndNonlocalSppArrays();
   });
 
-// $.get('nrcs_spp.txt', function(data) {
-// 	let tmp_array = data.split("\n");
-// 	nrcs_spp_array = tmp_array.map(str => {
-// 		spp_flds = str.split("\t");
-// 		let spp_obj = {
-// 			"nrcs_code": spp_flds[0],
-// 			"species_name": spp_flds[1],
-// 			"distribution": spp_flds[2]
-// 		};
-// 		return spp_obj;
-// 	});
-// //  console.log(nrcs_spp_array);
-// 	makeLocalAndNonlocalSppArrays();
-// }, 'text');
-
 function makeLocalAndNonlocalSppArrays() {
 	// for performance, create these two smaller arrays, each seldom updated,
 	// that will be filtered for matches on each keystroke
@@ -120,10 +105,6 @@ function updateMatchList() {
 
 		spp_match_array.forEach(obj => {
 			let display_class = obj.is_local ? "local" : "nonlocal";
-			// var list_item = $('<li class="' + display_class + '">' + obj.item_code +
-			// ": " + obj.item_description + '</li>');
-			// match_list.append(list_item);
-
 			match_list.innerHTML += '<li class="' + display_class + '">' + obj.item_code +
 		 		": " + obj.item_description + '</li>';
 		});
@@ -145,11 +126,6 @@ vnAddSiteButton.addEventListener('onclick', function () {
 	vnSiteDate.innerHTML = latest_site_date.toString();
 });
 
-// $("#btn-add-site").click(function () {
-// 	latest_site_date = new Date();
-// 	$("#site_date").html(latest_site_date.toString());
-// });
-
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
@@ -160,26 +136,8 @@ vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 	let SiteNotesString = vnSiteNotes.value.toString();
 	console.log('site_name : '+ SiteNameString);
 	console.log('site_notes : '+ SiteNotesString);
-
-	// console.log('site_name : '+$("#site_name").val());
-	// console.log('site_notes : '+$("#site_notes").val());
 });
 
-// $('#vnSiteInfoScreen').on('hide.bs.modal', function () {
-// 	 console.log('site_name : '+$("#site_name").val());
-// 	 console.log('site_notes : '+$("#site_notes").val());
-// })
-
-// $("#btn-save-site-info").click(function () {
-// 	let site_obj = {
-// 		"site_name": $("#site_name").val(),
-// 		"site_notes": $("#site_notes").val(),
-// 		"site_date": latest_site_date
-// 	};
-// //	console.log(site_obj);
-// 	site_info_array.push(site_obj);
-// 	console.log(site_info_array);
-// });
 document.getElementById('btn-save-site-info').addEventListener('click', useSiteInfo);
 
 function useSiteInfo() {
