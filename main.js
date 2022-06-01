@@ -122,6 +122,10 @@ var vnAddSiteButton = document.getElementById('btn-add-site');
 var vnSiteDate = document.getElementById('site_date');
 
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
+// following syntax breaks the addEventListener
+// var vnSiteInfoModal = new bootstrap.Modal(document.getElementById('vnSiteInfoScreen'), {
+//   keyboard: true
+// });
 var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
@@ -149,7 +153,7 @@ function storeSiteInfo() {
 	console.log('site_notes : '+ SiteNotesString);
 	// do verification and storage, and then if OK dismiss the modal
 	console.log('about the hide the modal');
-	vnSiteInfoModal.modal('hide');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
 }
 
 function openNav() {
