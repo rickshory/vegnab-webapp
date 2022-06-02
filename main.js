@@ -145,14 +145,29 @@ vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 document.getElementById('btn-save-site-info').addEventListener('click', storeSiteInfo);
 
 function storeSiteInfo() {
-	console.log("In storeSiteInfo fn");
-	console.log('self element : ' + self.id);
-	let SiteNameString = vnSiteName.value.toString();
-	let SiteNotesString = vnSiteNotes.value.toString();
-	console.log('site_name : '+ SiteNameString);
-	console.log('site_notes : '+ SiteNotesString);
-	// do verification and storage, and then if OK dismiss the modal
-	console.log('about the hide the modal');
+//	console.log("In storeSiteInfo fn");
+//	console.log('self element : ' + self.id);
+	let SiteNameString = vnSiteName.value.toString().trim();
+//	console.log('site_name : '+ SiteNameString);
+	// do verification
+  if (SiteNameString === "") {
+    alert("Need a site name");
+    vnSiteName.value = ""; // in case some whitespace was there
+    vnSiteName.focus();
+    return;
+  }
+  let SiteNotesString = vnSiteNotes.value.toString().trim();
+//  console.log('site_notes : '+ SiteNotesString);
+  if (SiteNotesString === "") {
+    alert("Need some site notes");
+    vnSiteNotes.value = ""; // in case some whitespace was there
+    vnSiteNotes.focus();
+    return;
+  }
+  // store data
+  
+  // dismiss the modal
+  console.log('about the hide the modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
 }
 
