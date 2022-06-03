@@ -10,6 +10,8 @@ var latest_site_date = new Date();
 var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
+var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
+// sites, so nothing visible will happen
 
 fetch('nrcs_spp.txt')
   .then(response => response.text())
@@ -171,9 +173,19 @@ function storeSiteInfo() {
     "date": latest_site_date
   };
   site_info_array.push(site_obj);
+  showSitesTimeout = setTimeout(showSites, 10);
   // dismiss the modal
   console.log('about the hide the modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+}
+
+function showSites() {
+  let site_list = document.getElementById("site-list");
+  site_list.innerHTML = "";
+  site_info_array.forEach(obj => {
+    site_list.innerHTML += '<li class="site_item">' + obj.name +
+      ", " + obj.notes + ", " + obj.date + '</li>';
+  });
 }
 
 function openNav() {
