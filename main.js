@@ -165,7 +165,12 @@ function storeSiteInfo() {
     return;
   }
   // store data
-  
+  let site_obj = {
+    "name": SiteNameString,
+    "notes": SiteNotesString,
+    "date": latest_site_date
+  };
+  site_info_array.push(site_obj);
   // dismiss the modal
   console.log('about the hide the modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
