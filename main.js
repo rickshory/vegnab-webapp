@@ -172,7 +172,7 @@ function storeSiteInfo() {
     "notes": SiteNotesString,
     "date": latest_site_date
   };
-  site_info_array.push(site_obj);
+  site_info_array.unshift(site_obj);
   showSitesTimeout = setTimeout(showSites, 10);
   // dismiss the modal
   console.log('about the hide the modal');
