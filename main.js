@@ -181,6 +181,10 @@ function storeSiteInfo() {
 
 function showSites() {
   let site_list = document.getElementById("sites-accordion");
+  if (site_info_array.length == 0) {
+    site_list.innerHTML = '<h2>No sites yet</h2>';
+    return;
+  }
   site_list.innerHTML = "";
   site_info_array.forEach((obj, index) => {
     site_list.innerHTML += '<div class="card">' +
