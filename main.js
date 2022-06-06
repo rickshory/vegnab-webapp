@@ -132,11 +132,8 @@ var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
 vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
-	console.log("In Shown event for SiteInfo modal");
 	latest_site_date = new Date();
-	console.log(latest_site_date);
 	vnSiteDate.innerHTML = latest_site_date.toString();
-	console.log("Date set on modal");
 });
 
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
@@ -173,6 +170,10 @@ function storeSiteInfo() {
     "date": latest_site_date
   };
   site_info_array.unshift(site_obj);
+  // clear form for next time
+  vnSiteName.value = "";
+  vnSiteNotes.value = "";
+  // trigger to refresh site list
   showSitesTimeout = setTimeout(showSites, 10);
   // dismiss the modal
   console.log('about the hide the modal');
@@ -180,6 +181,7 @@ function storeSiteInfo() {
 }
 
 function showSites() {
+  // show the sites in an accordion list, top item expanded by default
   let site_list = document.getElementById("sites-accordion");
   if (site_info_array.length == 0) {
     site_list.innerHTML = '<h2>No sites yet</h2>';
