@@ -180,11 +180,23 @@ function storeSiteInfo() {
 }
 
 function showSites() {
-  let site_list = document.getElementById("site-list");
+  let site_list = document.getElementById("sites-accordion");
   site_list.innerHTML = "";
   site_info_array.forEach((obj, index) => {
-    site_list.innerHTML += '<li class="site_item">' + index + ": " + obj.name +
-      ", " + obj.notes + ", " + obj.date + '</li>';
+    site_list.innerHTML += '<div class="card">' +
+'  <div class="card-header">' +
+'    <a class="' + (index > 0 ? 'collapsed ' : '') +
+'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) + '">' +
+      obj.name +
+'    </a>' +
+'  </div>' +
+'  <div id="collapse' + (index + 1) + '" class="collapse' +
+(index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
+'    <div class="card-body">' +
+      obj.notes + '<br>' + obj.date + '<br>' +
+'    </div>' +
+'  </div>' +
+'</div>';
   });
 }
 
