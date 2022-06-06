@@ -169,6 +169,7 @@ function storeSiteInfo() {
     "notes": SiteNotesString,
     "date": latest_site_date
   };
+  // new item at the beginning
   site_info_array.unshift(site_obj);
   // clear form for next time
   vnSiteName.value = "";
@@ -200,6 +201,10 @@ function showSites() {
 (index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
 '    <div class="card-body">' +
       obj.notes + '<br>' + obj.date + '<br>' +
+'      <button type="button" class="btn btn-primary" data-bs-toggle="modal"' +
+'        data-bs-target="#vnSppSearchScreen">' +
+'        Add species' +
+'      </button>' +
 '    </div>' +
 '  </div>' +
 '</div>';
