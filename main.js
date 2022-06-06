@@ -182,8 +182,8 @@ function storeSiteInfo() {
 function showSites() {
   let site_list = document.getElementById("site-list");
   site_list.innerHTML = "";
-  site_info_array.forEach(obj => {
-    site_list.innerHTML += '<li class="site_item">' + obj.name +
+  site_info_array.forEach((obj, index) => {
+    site_list.innerHTML += '<li class="site_item">' + index + ": " + obj.name +
       ", " + obj.notes + ", " + obj.date + '</li>';
   });
 }
