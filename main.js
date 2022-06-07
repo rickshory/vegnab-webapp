@@ -12,6 +12,7 @@ var local_spp_array = [];
 var nonlocal_spp_array = [];
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
+var match_list = document.getElementById("match-list");
 
 fetch('nrcs_spp.txt')
   .then(response => response.text())
@@ -57,17 +58,10 @@ function makeLocalAndNonlocalSppArrays() {
 //	console.log(nonlocal_spp_array);
 }
 
-function handleChosenSppItemClick(el) {
-  let spp = el.textContent;
-  alert(spp);
-}
-
 function updateMatchList() {
 	console.log("updateMatchList");
 //	var search_term = $("#search-box").val().toLowerCase();
 	var search_term = document.getElementById("search-box").value.toLowerCase();
-//	var match_list = $('#match-list');
-	var match_list = document.getElementById("match-list");
 	// todo: deal with backspace removal of characters
 	match_list.innerHTML = ""; // clear any previous content
 	if (search_term.length > 1) {
@@ -113,11 +107,23 @@ function updateMatchList() {
 		spp_match_array.forEach(obj => {
 			let display_class = obj.is_local ? "local" : "nonlocal";
 			match_list.innerHTML += '<li class="' + display_class +
-        '" onclick="handleChosenSppItemClick(this)">' + obj.item_code +
+        '" id="' + obj.item_code + '">' + obj.item_code +
 		 		': ' + obj.item_description + '</li>';
 		});
 	}
 }
+
+match_list.addEventListener('click', function (e) {
+  // match_list is parent of all the list items
+    var target = e.target; // Clicked element
+    while (target && target.parentNode !== match_list) {
+        target = target.parentNode; // If the clicked element isn't a direct child
+        if(!target) { return; } // If element doesn't exist
+    }
+    if (target.tagName === 'LI'){ // tagName returns uppercase
+        alert(target.id);
+    }
+});
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
