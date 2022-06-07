@@ -57,6 +57,11 @@ function makeLocalAndNonlocalSppArrays() {
 //	console.log(nonlocal_spp_array);
 }
 
+function handleChosenSppItemClick(el) {
+  let spp = el.textContent;
+  alert(spp);
+}
+
 function updateMatchList() {
 	console.log("updateMatchList");
 //	var search_term = $("#search-box").val().toLowerCase();
@@ -107,8 +112,9 @@ function updateMatchList() {
 
 		spp_match_array.forEach(obj => {
 			let display_class = obj.is_local ? "local" : "nonlocal";
-			match_list.innerHTML += '<li class="' + display_class + '">' + obj.item_code +
-		 		": " + obj.item_description + '</li>';
+			match_list.innerHTML += '<li class="' + display_class +
+        '" onclick="handleChosenSppItemClick(this)">' + obj.item_code +
+		 		': ' + obj.item_description + '</li>';
 		});
 	}
 }
