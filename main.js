@@ -180,7 +180,7 @@ function storeSiteInfo() {
   // store data
   let site_obj = {
     // multiple sites would never be created in the same millisecond
-    "id": new Date().getTime(),
+    "id": new Date().getTime().toString(),
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": latest_site_date
