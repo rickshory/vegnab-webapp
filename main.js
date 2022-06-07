@@ -121,7 +121,9 @@ match_list.addEventListener('click', function (e) {
         if(!target) { return; } // If element doesn't exist
     }
     if (target.tagName === 'LI'){ // tagName returns uppercase
-        alert(target.id);
+//        alert(target.id);
+        let spp = target.textContent;
+        alert(spp);
     }
 });
 
