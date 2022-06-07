@@ -179,6 +179,8 @@ function storeSiteInfo() {
   }
   // store data
   let site_obj = {
+    // multiple sites would never be created in the same millisecond
+    "id": new Date().getTime(),
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": latest_site_date
@@ -214,7 +216,7 @@ function showSites() {
 '  <div id="collapse' + (index + 1) + '" class="collapse' +
 (index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
 '    <div class="card-body">' +
-      obj.notes + '<br>' + obj.date + '<br>' +
+      obj.id + '<br>' + obj.notes + '<br>' + obj.date + '<br>' +
 '      <button type="button" class="btn btn-primary" data-bs-toggle="modal"' +
 '        data-bs-target="#vnSppSearchScreen">' +
 '        Add species' +
