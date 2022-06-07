@@ -197,16 +197,17 @@ function storeSiteInfo() {
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
 }
 
+var sites_accordion = document.getElementById("sites-accordion");
+
 function showSites() {
   // show the sites in an accordion list, top item expanded by default
-  let site_list = document.getElementById("sites-accordion");
   if (site_info_array.length == 0) {
-    site_list.innerHTML = '<h2>No sites yet</h2>';
+    sites_accordion.innerHTML = '<h2>No sites yet</h2>';
     return;
   }
-  site_list.innerHTML = "";
+  sites_accordion.innerHTML = "";
   site_info_array.forEach((obj, index) => {
-    site_list.innerHTML += '<div class="card">' +
+    sites_accordion.innerHTML += '<div class="card">' +
 '  <div class="card-header">' +
 '    <a class="' + (index > 0 ? 'collapsed ' : '') +
 'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) + '">' +
@@ -226,6 +227,10 @@ function showSites() {
 '</div>';
   });
 }
+
+sites_accordion.addEventListener('shown.bs.collapse', function (event) {
+	console.log("In accordion collapse event");
+});
 
 function openNav() {
 		document.getElementById("vnSidenav").style.width = "250px";
