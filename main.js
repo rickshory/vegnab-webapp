@@ -195,7 +195,7 @@ function storeSiteInfo() {
   // trigger to refresh site list
   showSitesTimeout = setTimeout(showSites, 10);
   // dismiss the modal
-  console.log('about the hide the modal');
+  console.log('About to hide the Site Info modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
 }
 
@@ -236,11 +236,19 @@ function showSites() {
 }
 
 sites_accordion.addEventListener('shown.bs.collapse', function (event) {
-	console.log("In accordion collapse event");
+	console.log("In accordion shown event");
 });
 
 sites_accordion.addEventListener('show.bs.collapse', function (event) {
-	console.log("Begin accordion collapse event");
+	console.log("Begin accordion show event");
+});
+
+sites_accordion.addEventListener('hide.bs.collapse', function (event) {
+	console.log("Begin accordion hide event");
+});
+
+sites_accordion.addEventListener('hidden.bs.collapse', function (event) {
+	console.log("In accordion hidden event");
 });
 
 function openNav() {
