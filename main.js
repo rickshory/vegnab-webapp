@@ -214,9 +214,11 @@ function showSites() {
       current_site_id = obj.id;
     }
     sites_accordion.innerHTML += '<div class="card">' +
-'  <div class="card-header">' +
-'    <a class="' + (index > 0 ? 'collapsed ' : '') +
-'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) + '">' +
+'  <div class="card-header" id="heading' + (index + 1) + '">' +
+'    <a class="' + (index == 0 ? '' : 'collapsed ') +
+'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
+'" aria-expanded="' + (index == 0 ? 'true' : 'false') +
+'" aria-controls="collapse' + (index + 1) + '">' +
       obj.name +
 '    </a>' +
 '  </div>' +
