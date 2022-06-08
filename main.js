@@ -6,6 +6,7 @@ document.getElementById("search-box").addEventListener("keyup", updateMatchList)
 const region_code = "OR";
 
 var site_info_array = [];
+var current_site_id = "";
 var latest_site_date = new Date();
 var nrcs_spp_array = [];
 var local_spp_array = [];
@@ -185,6 +186,7 @@ function storeSiteInfo() {
     "notes": SiteNotesString,
     "date": latest_site_date
   };
+  current_site_id = site_obj.id;
   // new item at the beginning
   site_info_array.unshift(site_obj);
   // clear form for next time
@@ -203,10 +205,14 @@ function showSites() {
   // show the sites in an accordion list, top item expanded by default
   if (site_info_array.length == 0) {
     sites_accordion.innerHTML = '<h2>No sites yet</h2>';
+    current_site_id = "";
     return;
   }
   sites_accordion.innerHTML = "";
   site_info_array.forEach((obj, index) => {
+    if (index === 0) {
+      current_site_id = obj.id;
+    }
     sites_accordion.innerHTML += '<div class="card">' +
 '  <div class="card-header">' +
 '    <a class="' + (index > 0 ? 'collapsed ' : '') +
@@ -231,6 +237,10 @@ function showSites() {
 
 sites_accordion.addEventListener('shown.bs.collapse', function (event) {
 	console.log("In accordion collapse event");
+});
+
+sites_accordion.addEventListener('show.bs.collapse', function (event) {
+	console.log("Begin accordion collapse event");
 });
 
 function openNav() {
