@@ -180,7 +180,8 @@ function storeSiteInfo() {
   }
   // store data
   let site_obj = {
-    // multiple sites would never be created in the same millisecond
+    // multiple sites would never be created in the same millisecond, so id
+    // would be unique
     "id": new Date().getTime().toString(),
     "name": SiteNameString,
     "notes": SiteNotesString,
@@ -235,7 +236,9 @@ function showSites() {
 '  </div>' +
 '</div>';
   });
-  // try assigning listeners after all HTML written
+  // Assign listeners after all HTML written, emperically works.
+  // If assigned in the same loop as writing hTML, only the first button
+  // gets its listener, others not.
   site_info_array.forEach((obj, index) => {
     document.getElementById(obj.id).addEventListener('click',
     function(event) {
@@ -246,6 +249,8 @@ function showSites() {
     console.log("click listener added for button " + obj.id);
   })
 }
+// From what I have been able to find out, event listeners are deleted with the
+// element if there are no refernces to that element.
 
 // sites_accordion.addEventListener('shown.bs.collapse', function (event) {
 // 	console.log("In accordion shown event");
