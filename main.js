@@ -234,6 +234,12 @@ function showSites() {
 '    </div>' +
 '  </div>' +
 '</div>';
+    document.getElementById(obj.id).addEventListener('click',
+    function(event) {
+      console.log("In button '" + obj.id + "' click event");
+      console.log("currentTarget: " + event.currentTarget.id);
+      console.log("target: " + event.target.id);
+    }, false)
   });
 }
 
