@@ -242,37 +242,14 @@ function showSites() {
   site_info_array.forEach((obj, index) => {
     document.getElementById(obj.id).addEventListener('click',
     function(event) {
-      console.log("In button '" + obj.id + "' click event");
-      console.log("currentTarget: " + event.currentTarget.id);
-      console.log("target: " + event.target.id);
+      // Set global 'current_site_id', to be used on any species items added in
+      // the modal that opens from this button click.
+      current_site_id = event.currentTarget.id;
     }, false)
-    console.log("click listener added for button " + obj.id);
   })
 }
 // From what I have been able to find out, event listeners are deleted with the
 // element if there are no refernces to that element.
-
-// sites_accordion.addEventListener('shown.bs.collapse', function (event) {
-// 	console.log("In accordion shown event");
-//   console.log("currentTarget: " + event.currentTarget.id);
-//   console.log("target: " + event.target.id);
-//   let cardList = document.getElementsByClassName('card');
-//   for (let thisCard of cardList) {
-//     console.log(thisCard);
-//   }
-// });
-
-// sites_accordion.addEventListener('show.bs.collapse', function (event) {
-// 	console.log("Begin accordion show event");
-// });
-//
-// sites_accordion.addEventListener('hide.bs.collapse', function (event) {
-// 	console.log("Begin accordion hide event");
-// });
-//
-// sites_accordion.addEventListener('hidden.bs.collapse', function (event) {
-// 	console.log("In accordion hidden event");
-// });
 
 function openNav() {
 		document.getElementById("vnSidenav").style.width = "250px";
@@ -283,11 +260,5 @@ function closeNav() {
 		document.getElementById("vnSidenav").style.width = "0";
 		document.getElementById("main").style.marginLeft= "0";
 }
-
-// // manually enable, from bootstrap
-// var collapseElementList = [].slice.call(document.querySelectorAll('.collapse'))
-// var collapseList = collapseElementList.map(function (collapseEl) {
-//   return new bootstrap.Collapse(collapseEl)
-// })
 
 })(); // Immediately-Invoked Function Expression (IIFE)
