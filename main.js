@@ -239,6 +239,8 @@ function showSites() {
 
 sites_accordion.addEventListener('shown.bs.collapse', function (event) {
 	console.log("In accordion shown event");
+  console.log("currentTarget: " + event.currentTarget.id);
+  console.log("target: " + event.target.id);
   let cardList = document.getElementsByClassName('card');
   for (let thisCard of cardList) {
     console.log(thisCard);
