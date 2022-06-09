@@ -239,19 +239,23 @@ function showSites() {
 
 sites_accordion.addEventListener('shown.bs.collapse', function (event) {
 	console.log("In accordion shown event");
+  let cardList = document.getElementsByClassName('card');
+  for (let thisCard of cardList) {
+    console.log(thisCard);
+  }
 });
 
-sites_accordion.addEventListener('show.bs.collapse', function (event) {
-	console.log("Begin accordion show event");
-});
-
-sites_accordion.addEventListener('hide.bs.collapse', function (event) {
-	console.log("Begin accordion hide event");
-});
-
-sites_accordion.addEventListener('hidden.bs.collapse', function (event) {
-	console.log("In accordion hidden event");
-});
+// sites_accordion.addEventListener('show.bs.collapse', function (event) {
+// 	console.log("Begin accordion show event");
+// });
+//
+// sites_accordion.addEventListener('hide.bs.collapse', function (event) {
+// 	console.log("Begin accordion hide event");
+// });
+//
+// sites_accordion.addEventListener('hidden.bs.collapse', function (event) {
+// 	console.log("In accordion hidden event");
+// });
 
 function openNav() {
 		document.getElementById("vnSidenav").style.width = "250px";
