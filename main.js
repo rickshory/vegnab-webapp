@@ -234,6 +234,9 @@ function showSites() {
 '    </div>' +
 '  </div>' +
 '</div>';
+  });
+  // try assigning listeners after all HTML written
+  site_info_array.forEach((obj, index) => {
     document.getElementById(obj.id).addEventListener('click',
     function(event) {
       console.log("In button '" + obj.id + "' click event");
@@ -241,18 +244,18 @@ function showSites() {
       console.log("target: " + event.target.id);
     }, false)
     console.log("click listener added for button " + obj.id);
-  });
+  })
 }
 
-sites_accordion.addEventListener('shown.bs.collapse', function (event) {
-	console.log("In accordion shown event");
-  console.log("currentTarget: " + event.currentTarget.id);
-  console.log("target: " + event.target.id);
-  let cardList = document.getElementsByClassName('card');
-  for (let thisCard of cardList) {
-    console.log(thisCard);
-  }
-});
+// sites_accordion.addEventListener('shown.bs.collapse', function (event) {
+// 	console.log("In accordion shown event");
+//   console.log("currentTarget: " + event.currentTarget.id);
+//   console.log("target: " + event.target.id);
+//   let cardList = document.getElementsByClassName('card');
+//   for (let thisCard of cardList) {
+//     console.log(thisCard);
+//   }
+// });
 
 // sites_accordion.addEventListener('show.bs.collapse', function (event) {
 // 	console.log("Begin accordion show event");
