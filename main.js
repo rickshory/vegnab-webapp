@@ -240,6 +240,7 @@ function showSites() {
       console.log("currentTarget: " + event.currentTarget.id);
       console.log("target: " + event.target.id);
     }, false)
+    console.log("click listener added for button " + obj.id);
   });
 }
 
