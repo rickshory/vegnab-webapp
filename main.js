@@ -240,6 +240,19 @@ function showSites() {
 '  </div>' +
 '</div>';
   });
+ // fill in species lists for sites
+ site_info_array.forEach((obj, index) => {
+   let this_site_spp_array = site_spp_array.filter(spp_obj =>
+     spp_obj.site_id === obj.id)
+     .sort((s1, s2) => (s1.id < cs.id) ? 1 : (s1.id > s2.id) ? -1 : 0);
+  let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
+  this_site_spp_list.innerHTML = "";
+  this_site_spp_array.forEach((spp_obj, spp_index) => {
+    this_site_spp_list.innerHTML += '<li id="' + spp_obj.id + '">' +
+    spp_obj.species + '</li>';
+  })
+ })
+
   // Assign listeners after all HTML written, emperically works.
   // If assigned in the same loop as writing hTML, only the first button
   // gets its listener, others not.
