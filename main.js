@@ -8,6 +8,8 @@ const region_code = "OR";
 var site_info_array = [];
 var current_site_id = "";
 var latest_site_date = new Date();
+var site_spp_array = []; // the species items for all the sites, internally
+// indexed by which site each one belongs to.
 var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
@@ -232,6 +234,8 @@ function showSites() {
 '        data-bs-target="#vnSppSearchScreen">' +
 '        Add species' +
 '      </button>' +
+'      <ul id="spp-list-for-' + obj.id + '" class="list-unstyled">' +
+'      </ul>'
 '    </div>' +
 '  </div>' +
 '</div>';
@@ -245,6 +249,8 @@ function showSites() {
       // Set global 'current_site_id', to be used on any species items added in
       // the modal that opens from this button click.
       current_site_id = event.currentTarget.id;
+      // The 'New spp' button on each site's card has the same id (numeric
+      // text) as that site's internal id.
     }, false)
   })
 }
