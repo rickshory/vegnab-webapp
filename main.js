@@ -126,7 +126,21 @@ match_list.addEventListener('click', function (e) {
     if (target.tagName === 'LI'){ // tagName returns uppercase
 //        alert(target.id);
         let spp = target.textContent;
-        alert(spp);
+        console.log(spp);
+        // for testing, use the code and description as one string "species"
+        let spp_entry_date = new Date();
+        let new_spp_item = {
+          "id": spp_entry_date.getTime().toString(),
+          "site_id": current_site_id,
+          "species": spp,
+          "spp_date": spp_entry_date
+        };
+        site_spp_array.unshift(new_spp_item);
+        // trigger to refresh site list
+        showSitesTimeout = setTimeout(showSites, 10);
+        // dismiss the modal
+        console.log('About to hide the Species Search modal');
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
     }
 });
 
@@ -244,7 +258,7 @@ function showSites() {
  site_info_array.forEach((obj, index) => {
    let this_site_spp_array = site_spp_array.filter(spp_obj =>
      spp_obj.site_id === obj.id)
-     .sort((s1, s2) => (s1.id < cs.id) ? 1 : (s1.id > s2.id) ? -1 : 0);
+     .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
   let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
   this_site_spp_list.innerHTML = "";
   this_site_spp_array.forEach((spp_obj, spp_index) => {
@@ -268,7 +282,8 @@ function showSites() {
   })
 }
 // From what I have been able to find out, event listeners are deleted with the
-// element if there are no refernces to that element.
+// element if there are no refernces to that element, so re-creating them each
+// time like this should work.
 
 function openNav() {
 		document.getElementById("vnSidenav").style.width = "250px";
