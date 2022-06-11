@@ -1,5 +1,4 @@
 (function () {
-document.getElementById("search-box").addEventListener("keyup", updateMatchList);
 
 // for testing, region is "OR" (Oregon)
 // todo: automatically acquire or input region
@@ -63,8 +62,7 @@ function makeLocalAndNonlocalSppArrays() {
 
 function updateMatchList() {
 	console.log("updateMatchList");
-//	var search_term = $("#search-box").val().toLowerCase();
-	var search_term = document.getElementById("search-box").value.toLowerCase();
+	var search_term = sppSearchInput.value.toLowerCase();
 	// todo: deal with backspace removal of characters
 	match_list.innerHTML = ""; // clear any previous content
 	if (search_term.length > 1) {
@@ -138,6 +136,9 @@ match_list.addEventListener('click', function (e) {
         site_spp_array.unshift(new_spp_item);
         // trigger to refresh site list
         showSitesTimeout = setTimeout(showSites, 10);
+        // clear the search for next time
+
+
         // dismiss the modal
         console.log('About to hide the Species Search modal');
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
@@ -146,8 +147,10 @@ match_list.addEventListener('click', function (e) {
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
-
+sppSearchInput.addEventListener("keyup", updateMatchList);
 sppSearchModal.addEventListener('shown.bs.modal', function () {
+  sppSearchInput.value = "";
+  match_list.innerHTML = "";
   sppSearchInput.focus();
 })
 
