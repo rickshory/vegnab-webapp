@@ -4,6 +4,21 @@
 // todo: automatically acquire or input region
 const region_code = "OR";
 
+// testing observables
+const observable = rxjs.Observable.create(observer => {
+  observer.next("hello");
+  observer.next("world");
+});
+
+observable.subscribe(val => obs_show(val));
+
+// for testing, to view observable values
+function obs_show(val) {
+  let el = document.createElement('p');
+  el.innerText = val;
+  document.body.appendChild(el);
+};
+
 var site_info_array = [];
 var current_site_id = "";
 var latest_site_date = new Date();
