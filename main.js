@@ -7,7 +7,7 @@ const region_code = "OR";
 // testing observables
 const observable = rxjs.from(["Hello", "world"]);
 
-observable.subscribe(val => obs_show(val));
+//observable.subscribe(val => obs_show(val));
 
 // for testing, to view observable values
 function obs_show(val) {
@@ -22,6 +22,7 @@ var latest_site_date = new Date();
 var site_spp_array = []; // the species items for all the sites, internally
 // indexed by which site each one belongs to.
 var nrcs_spp_array = [];
+var obsvAllSpp = rxjs.from(nrcs_spp_array);
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
@@ -41,6 +42,8 @@ fetch('nrcs_spp.txt')
 			};
 			return spp_obj;
 		});
+    // for testing, redefine this global here
+    obsvAllSpp = rxjs.from(nrcs_spp_array);
 	//  console.log(nrcs_spp_array);
 		makeLocalAndNonlocalSppArrays();
   });
