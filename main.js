@@ -5,10 +5,7 @@
 const region_code = "OR";
 
 // testing observables
-const observable = rxjs.Observable.create(observer => {
-  observer.next("hello");
-  observer.next("world");
-});
+const observable = rxjs.Observable.of("Hello", "world");
 
 observable.subscribe(val => obs_show(val));
 
