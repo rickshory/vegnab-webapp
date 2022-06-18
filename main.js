@@ -173,7 +173,7 @@ match_list.addEventListener('click', function (e) {
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
-sppSearchInput.addEventListener("keyup", updateMatchList);
+sppSearchInput.addEventListener("input", updateMatchList);
 sppSearchModal.addEventListener('shown.bs.modal', function () {
   sppSearchInput.value = "";
   match_list.innerHTML = "";
