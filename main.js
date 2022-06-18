@@ -82,8 +82,8 @@ function updateMatchList() {
 	match_list.innerHTML = ""; // clear any previous content
 	if (search_term.length > 1) {
     // test obsvAllSpp here
-    const result = obsvAllSpp.pipe(rxjs.first());
-    result.subscribe(spp_obj => console.log(spp_obj.item_code));
+    const obsvFirst = obsvAllSpp.pipe(rxjs.first());
+    obsvFirst.subscribe(spp_obj => console.log(spp_obj));
     // obsvAllSpp
     //   .debounceTime(1000)
     //   .subscribe(spp_obj => {
