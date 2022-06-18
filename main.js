@@ -81,6 +81,15 @@ function updateMatchList() {
 	// todo: deal with backspace removal of characters
 	match_list.innerHTML = ""; // clear any previous content
 	if (search_term.length > 1) {
+    // test obsvAllSpp here
+    const result = obsvAllSpp.pipe(rxjs.first());
+    result.subscribe(spp_obj => console.log(spp_obj.item_code));
+    // obsvAllSpp
+    //   .debounceTime(1000)
+    //   .subscribe(spp_obj => {
+    //     console.log(spp_obj.item_code);
+    // });
+
 		// first, get the strict matches on item_code for local species
 		let spp_match_array = local_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
