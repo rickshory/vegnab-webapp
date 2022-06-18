@@ -87,16 +87,10 @@ function updateMatchList() {
         spp_obj.distribution.includes(region_code + ",")))
       .pipe(rxjs.filter(spp_obj =>
         spp_obj.nrcs_code.toLowerCase().startsWith(search_term)))
-      .pipe(rxjs.first())
       .subscribe(spp_obj => {
         let sppString = spp_obj.nrcs_code + ': ' + spp_obj.species_name;
         console.log(sppString);
       });
-    // obsvAllSpp
-    //   .debounceTime(1000)
-    //   .subscribe(spp_obj => {
-    //     console.log(spp_obj.item_code);
-    // });
 
 		// first, get the strict matches on item_code for local species
 		let spp_match_array = local_spp_array.filter(obj =>
