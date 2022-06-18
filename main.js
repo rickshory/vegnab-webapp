@@ -85,6 +85,8 @@ function updateMatchList() {
     obsvAllSpp
       .pipe(rxjs.filter(spp_obj =>
         spp_obj.distribution.includes(region_code + ",")))
+      .pipe(rxjs.filter(spp_obj =>
+        spp_obj.nrcs_code.toLowerCase().startsWith(search_term)))
       .pipe(rxjs.first())
       .subscribe(spp_obj => {
         let sppString = spp_obj.nrcs_code + ': ' + spp_obj.species_name;
