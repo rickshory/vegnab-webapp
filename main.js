@@ -82,8 +82,12 @@ function updateMatchList() {
 	match_list.innerHTML = ""; // clear any previous content
 	if (search_term.length > 1) {
     // test obsvAllSpp here
-    const obsvFirst = obsvAllSpp.pipe(rxjs.first());
-    obsvFirst.subscribe(spp_obj => console.log(spp_obj.species_name));
+
+    const obsvFirst = obsvAllSpp.pipe(rxjs.first())
+      .subscribe(spp_obj => {
+      let sppString = spp_obj.nrcs_code + ': ' + spp_obj.species_name;
+      console.log(sppString);
+    });
     // obsvAllSpp
     //   .debounceTime(1000)
     //   .subscribe(spp_obj => {
