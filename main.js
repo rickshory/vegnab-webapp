@@ -256,12 +256,13 @@ function showSites() {
     current_site_id = "";
     return;
   }
-  sites_accordion.innerHTML = "";
+
+  let sites_accordion_listitems = "";
   site_info_array.forEach((obj, index) => {
     if (index === 0) {
       current_site_id = obj.id;
     }
-    sites_accordion.innerHTML += '<div class="card">' +
+    sites_accordion_listitems += '<div class="card">' +
 '  <div class="card-header" id="heading' + (index + 1) + '">' +
 '    <a class="' + (index == 0 ? '' : 'collapsed ') +
 'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
@@ -280,24 +281,26 @@ function showSites() {
 '        Add species' +
 '      </button>' +
 '      <ul id="spp-list-for-' + obj.id + '" class="list-unstyled">' +
-'      </ul>'
+'      </ul>' +
 '    </div>' +
 '  </div>' +
 '</div>';
   });
+  sites_accordion.innerHTML = sites_accordion_listitems;
+
  // fill in species lists for sites
  site_info_array.forEach((obj, index) => {
    let this_site_spp_array = site_spp_array.filter(spp_obj =>
      spp_obj.site_id === obj.id)
      .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
   let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
-  let list_string = "";
+  let spp_listitems_string = "";
   this_site_spp_array.forEach((spp_obj, spp_index) => {
-    list_string += '<li id="' + spp_obj.id + '">' +
+    spp_listitems_string += '<li id="' + spp_obj.id + '">' +
     spp_obj.species + '</li>';
   })
-  this_site_spp_list.innerHTML = list_string;
- })
+  this_site_spp_list.innerHTML = spp_listitems_string;
+}) // end of filling in species lists for sites
 
   // Assign listeners after all HTML written, emperically works.
   // If assigned in the same loop as writing hTML, only the first button
@@ -311,8 +314,8 @@ function showSites() {
       // The 'New spp' button on each site's card has the same id (numeric
       // text) as that site's internal id.
     }, false)
-  })
-}
+  }) // end of adding event listeners
+} // end of fn showSites
 // From what I have been able to find out, event listeners are deleted with the
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
