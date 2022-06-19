@@ -130,13 +130,15 @@ function updateMatchList() {
 				spp_match_array = spp_match_array.concat(nonlocal_spp_match_array);
 				// don't sort here; leave the nonlocal after the sorted local species
 			}
-
-		spp_match_array.forEach(obj => {
+    // build list contents, then assign innerHTML all at once
+    let list_string = "";
+    spp_match_array.forEach(obj => {
 			let display_class = obj.is_local ? "local" : "nonlocal";
-			match_list.innerHTML += '<li class="' + display_class +
+			list_string += '<li class="' + display_class +
         '" id="' + obj.item_code + '">' + obj.item_code +
 		 		': ' + obj.item_description + '</li>';
 		});
+    match_list.innerHTML = list_string;
 	}
 }
 
@@ -289,11 +291,12 @@ function showSites() {
      spp_obj.site_id === obj.id)
      .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
   let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
-  this_site_spp_list.innerHTML = "";
+  let list_string = "";
   this_site_spp_array.forEach((spp_obj, spp_index) => {
-    this_site_spp_list.innerHTML += '<li id="' + spp_obj.id + '">' +
+    list_string += '<li id="' + spp_obj.id + '">' +
     spp_obj.species + '</li>';
   })
+  this_site_spp_list.innerHTML = list_string;
  })
 
   // Assign listeners after all HTML written, emperically works.
