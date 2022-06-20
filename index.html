@@ -62,14 +62,14 @@
       <a href="#anchor1" onclick="closeNav()">anchor1</a>
       <a href="#anchor2" onclick="closeNav()">anchor2</a>
     </div>  -->
-
-    <button type="button" class="btn btn-primary"
+<div class="d-grid gap-2">
+    <button type="button" class="btn btn-primary  btn-lg"
       data-bs-toggle="modal"
       data-bs-target="#vnSiteInfoScreen"
       name="btn-add-site" id="btn-add-site">
       Add site
     </button>
-
+</div>
       <!-- try showing sites as an accordion -->
       <div class="container mt-3">
         <!-- innerHTML of accordion will be filled in by a function -->
@@ -98,13 +98,13 @@
                 <form  id="site_info_form" autocomplete="off">
 
                   <div class="form-floating mb-3 mt-3">
-                    <input type="text" class="form-control"
+                    <input type="text" class="form-control form-control-lg"
                       name="site_name" id="site_name"
                       placeholder="Site name">
                     <label for="site_name">Site name</label>
                   </div>
                   <div class="form-group">
-                    <textarea class="form-control"
+                    <textarea class="form-control form-control-lg"
                       name="site_notes" id="site_notes" rows="4"
                       placeholder="Notes..."></textarea>
                   </div>
@@ -122,7 +122,7 @@
                       placeholder="Site location" name="site_location">
                     <label for="site_location">Site location</label>
                   </div>
-                  <button type="button" class="btn btn-primary"
+                  <button type="button" class="btn btn-primary  btn-lg"
                     name="btn-save-site-info" id="btn-save-site-info">
                     Save</button>
                 </form>
@@ -146,7 +146,7 @@
           <div class="modal-header">
             <form id="search-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" id="search-box"
+                <input type="text" class="form-control form-control-lg" id="search-box"
                   placeholder="Type to search" name="search-box">
                 <label for="search-box">type to search</label>
               </div>

@@ -268,7 +268,7 @@ function showSites() {
 'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
 '" aria-expanded="' + (index == 0 ? 'true' : 'false') +
 '" aria-controls="collapse' + (index + 1) + '">' +
-      obj.name +
+'    <h3>' +  obj.name + '</h3>' + 
 '    </a>' +
 '  </div>' +
 '  <div id="collapse' + (index + 1) + '" class="collapse' +
@@ -276,7 +276,7 @@ function showSites() {
 '    <div class="card-body">' +
       obj.notes + '<br>' + obj.date + '<br>' +
 '      <button type="button" id="' + obj.id +
-'" class="btn btn-primary" data-bs-toggle="modal"' +
+'" class="btn btn-primary  btn-lg" data-bs-toggle="modal"' +
 '        data-bs-target="#vnSppSearchScreen">' +
 '        Add species' +
 '      </button>' +
