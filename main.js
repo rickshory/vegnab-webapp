@@ -308,14 +308,4 @@ function showSites() {
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
 
-function openNav() {
-		document.getElementById("vnSidenav").style.width = "250px";
-		document.getElementById("main").style.marginLeft = "250px";
-}
-
-function closeNav() {
-		document.getElementById("vnSidenav").style.width = "0";
-		document.getElementById("main").style.marginLeft= "0";
-}
-
 })(); // Immediately-Invoked Function Expression (IIFE)
