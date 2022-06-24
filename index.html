@@ -22,7 +22,9 @@
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="VegNab web app">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">VegNab web app</a>
-      <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarsExample03" aria-controls="navbarsExample03"
+          aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -30,6 +32,9 @@
         <ul class="navbar-nav me-auto mb-2 mb-sm-0">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Send lists</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
@@ -53,16 +58,16 @@
     </div>
   </nav>
   <!-- end of bootstrap navbar -->
-    <div class="container-fluid">
-<div class="d-grid gap-2">
-    <button type="button" class="btn btn-primary  btn-lg"
-      data-bs-toggle="modal"
-      data-bs-target="#vnSiteInfoScreen"
-      name="btn-add-site" id="btn-add-site">
-      Add site
-    </button>
-</div>
-      <!-- try showing sites as an accordion -->
+  <div class="container-fluid">
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-primary  btn-lg"
+          data-bs-toggle="modal"
+          data-bs-target="#vnSiteInfoScreen"
+          name="btn-add-site" id="btn-add-site">
+          Add site
+        </button>
+    </div>
+      <!-- show sites and their lists as an accordion -->
       <div class="container mt-3">
         <!-- innerHTML of accordion will be filled in by a function -->
         <div id="sites-accordion">
@@ -158,6 +163,37 @@
       </div>
     </div>
     <!-- end of modal, species search-->
+
+    <!-- begin modal, send data -->
+    <div id="vnSendDataScreen" class="modal send_data_screen">
+    <!--
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+     -->
+      <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            Send data
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form id="send-form" autocomplete="off">
+              <div class="form-floating mb-3 mt-3">
+                <label for="email_address-box">Email address</label>
+                <input type="email" class="form-control form-control-lg" id="email_address-box"
+                  placeholder="Email" name="email_address-box" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">Send your data by email.</div>
+              </div>
+              <button type="button" class="btn btn-primary btn-close"
+                   data-bs-dismiss="modal">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, send data-->
 
     <a name="anchor1"></a>
     <a name="anchor2"></a>
