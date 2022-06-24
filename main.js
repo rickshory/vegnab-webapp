@@ -22,7 +22,6 @@ var latest_site_date = new Date();
 var site_spp_array = []; // the species items for all the sites, internally
 // indexed by which site each one belongs to.
 var nrcs_spp_array = [];
-var obsvAllSpp = rxjs.from(nrcs_spp_array);
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
@@ -81,17 +80,6 @@ function updateMatchList() {
 	// todo: deal with backspace removal of characters
 	match_list.innerHTML = ""; // clear any previous content
 	if (search_term.length > 1) {
-    // test obsvAllSpp here
-    obsvAllSpp
-      .pipe(rxjs.filter(spp_obj =>
-        spp_obj.distribution.includes(region_code + ",")))
-      .pipe(rxjs.filter(spp_obj =>
-        spp_obj.nrcs_code.toLowerCase().startsWith(search_term)))
-      .subscribe(spp_obj => {
-        let sppString = spp_obj.nrcs_code + ': ' + spp_obj.species_name;
-        console.log(sppString);
-      });
-
 		// first, get the strict matches on item_code for local species
 		let spp_match_array = local_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
@@ -268,7 +256,7 @@ function showSites() {
 'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
 '" aria-expanded="' + (index == 0 ? 'true' : 'false') +
 '" aria-controls="collapse' + (index + 1) + '">' +
-'    <h3>' +  obj.name + '</h3>' + 
+'    <h3>' +  obj.name + '</h3>' +
 '    </a>' +
 '  </div>' +
 '  <div id="collapse' + (index + 1) + '" class="collapse' +
