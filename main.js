@@ -153,8 +153,6 @@ match_list.addEventListener('click', function (e) {
         // trigger to refresh site list
         showSitesTimeout = setTimeout(showSites, 10);
         // clear the search for next time
-
-
         // dismiss the modal
         console.log('About to hide the Species Search modal');
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
@@ -307,5 +305,11 @@ function showSites() {
 // From what I have been able to find out, event listeners are deleted with the
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
+
+function sendData() {
+  alert("in sendData function");
+  let EmailAddrString = document.getElementById('email_address-box').value.toString().trim();
+
+} // end of fn sendData
 
 })(); // Immediately-Invoked Function Expression (IIFE)

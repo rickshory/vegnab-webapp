@@ -78,9 +78,6 @@
 
       <!-- begin modal, site info -->
       <div id="vnSiteInfoScreen" class="modal site_info_screen">
-      <!--
-      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-       -->
         <div class="modal-dialog modal-fullscreen-sm-down">
           <div class="modal-content">
 
@@ -134,9 +131,6 @@
 
     <!-- begin modal, species search -->
     <div id="vnSppSearchScreen" class="modal spp_search_screen">
-    <!--
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-     -->
       <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
         <div class="modal-content">
 
@@ -167,9 +161,6 @@
 
     <!-- begin modal, send data -->
     <div id="vnSendDataScreen" class="modal send_data_screen" role="dialog">
-    <!--
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-     -->
       <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
         <div class="modal-content">
 
@@ -190,8 +181,9 @@
                   <h3>Send your data by email.</h3>
                 </div>
               </div>
-              <button type="button" class="btn btn-primary"
-                   data-bs-dismiss="modal">Send</button>
+              <button type="button" class="btn btn-primary" name="btn-send-data"
+                  id="btn-send-data" onclick="sendData()"
+                  data-bs-dismiss="modal">Send</button>
             </form>
           </div>
         </div>
