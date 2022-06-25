@@ -29,8 +29,6 @@ fetch('nrcs_spp.txt')
 			};
 			return spp_obj;
 		});
-    // for testing, redefine this global here
-    obsvAllSpp = rxjs.from(nrcs_spp_array);
 	//  console.log(nrcs_spp_array);
 		makeLocalAndNonlocalSppArrays();
   });
