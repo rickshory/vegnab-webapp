@@ -175,19 +175,22 @@
 
           <!-- Modal Header -->
           <div class="modal-header">
-            Send data
+            <h3>Send data</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
           <!-- Modal body -->
           <div class="modal-body">
             <form id="send-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
-                <label for="email_address-box">Email address</label>
                 <input type="email" class="form-control form-control-lg" id="email_address-box"
                   placeholder="Email" name="email_address-box" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text">Send your data by email.</div>
+                <label for="email_address-box">Email address</label>
+                <div id="emailHelp" class="form-text">
+                  <h3>Send your data by email.</h3>
+                </div>
               </div>
-              <button type="button" class="btn btn-primary btn-close"
+              <button type="button" class="btn btn-primary"
                    data-bs-dismiss="modal">Send</button>
             </form>
           </div>
