@@ -292,9 +292,11 @@ function showSites() {
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
 
+document.getElementById('btn-send-data').addEventListener('click', sendData);
+
 function sendData() {
   alert("in sendData function");
-  let EmailAddrString = document.getElementById('email_address-box').value.toString().trim();
+  let EmailAddrString = document.getElementById('email_address_box').value.toString().trim();
 
 } // end of fn sendData
 
