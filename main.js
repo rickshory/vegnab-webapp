@@ -297,7 +297,8 @@ document.getElementById('btn-send-data').addEventListener('click', sendData);
 function sendData() {
   alert("in sendData function");
   let EmailAddrString = document.getElementById('email_address_box').value.toString().trim();
-
+  // validation here
+  window.open('mailto:' + EmailAddrString + '?subject=subject&body=body');
 
   console.log('About to hide the Send Data modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
