@@ -298,15 +298,20 @@ function sendData() {
 //  alert("in sendData function");
   let emailAddrString = document.getElementById('email_address_box').value.toString().trim();
   // validation here
+  if (emailAddrString == "") {
+    alert("no email address");
+    return;
+  }
+
   console.log(emailAddrString);
-//  window.open('mailto:' + EmailAddrString + '?subject=subject&body=body');
-  let emailSubjectStr = "Data from VegNab web app"
-  let emailBodyStr = "Site 1, today, ABCO Abies concolor"
-  let emailLink = 'mailto:' + emailAddrString
-    + '&subject=' + encodeURIComponent(emailSubjectStr)
-    + '&body=' + encodeURIComponent(emailBodyStr);
-//  window.location.href = emailLink;
-  window.open(emailLink);
+  window.open('mailto:' + emailAddrString + '?subject=Test_subject&body=Test_body_no_spaces');
+//   let emailSubjectStr = "Data from VegNab web app"
+//   let emailBodyStr = "Site 1, today, ABCO Abies concolor"
+//   let emailLink = 'mailto:' + emailAddrString
+//     + '&subject=' + encodeURIComponent(emailSubjectStr)
+//     + '&body=' + encodeURIComponent(emailBodyStr);
+// //  window.location.href = emailLink;
+//   window.open(emailLink);
 
   console.log('About to hide the Send Data modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
