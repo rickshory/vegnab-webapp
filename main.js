@@ -298,6 +298,9 @@ function sendData() {
   alert("in sendData function");
   let EmailAddrString = document.getElementById('email_address_box').value.toString().trim();
 
+
+  console.log('About to hide the Send Data modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
 } // end of fn sendData
 
 })(); // Immediately-Invoked Function Expression (IIFE)
