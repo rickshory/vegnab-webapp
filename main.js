@@ -304,11 +304,16 @@ function sendData() {
   }
 
   console.log(emailAddrString);
-  let emailSubjectStr = "VegNab webapp data"; // try spaces
-  let emailBodyStr = "Site 1\ntoday\nABCO\tAbies concolor"
-  window.open('mailto:' + emailAddrString
+  let emailSubjectStr = "VegNab webapp data";
+  let emailBodyStr = "Site 1\ntoday\nABCO\tAbies concolor";
+  // spaces, linebreaks and tabs get correctly encoded
+  // spaces and linebreaks come through in Gmail, but tabs turn into spaces
+  let emailMsg = 'mailto:' + emailAddrString
     + '?subject=' + encodeURIComponent(emailSubjectStr)
-    + '&body=' +  encodeURIComponent(emailBodyStr));
+    + '&body=' +  encodeURIComponent(emailBodyStr);
+  // check message is not too long, etc.
+
+  window.open(emailMsg); // works on phone, not on laptop
 
   console.log('About to hide the Send Data modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
