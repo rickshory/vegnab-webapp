@@ -304,21 +304,11 @@ function sendData() {
   }
 
   console.log(emailAddrString);
-  let emailSubjectStr = "The test subject"; // try spaces
-  let emailBodyStr = "Test body that has spaces"
+  let emailSubjectStr = "VegNab webapp data"; // try spaces
+  let emailBodyStr = "Site 1\ntoday\nABCO\tAbies concolor"
   window.open('mailto:' + emailAddrString
     + '?subject=' + encodeURIComponent(emailSubjectStr)
     + '&body=' +  encodeURIComponent(emailBodyStr));
-
-//  window.open('mailto:' + emailAddrString + '?subject=Test_subject&body=Test_body_no_spaces');
-
-//   let emailSubjectStr = "Data from VegNab web app"
-//   let emailBodyStr = "Site 1, today, ABCO Abies concolor"
-//   let emailLink = 'mailto:' + emailAddrString
-//     + '&subject=' + encodeURIComponent(emailSubjectStr)
-//     + '&body=' + encodeURIComponent(emailBodyStr);
-// //  window.location.href = emailLink;
-//   window.open(emailLink);
 
   console.log('About to hide the Send Data modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
