@@ -304,11 +304,11 @@ function sendData() {
   }
 
   console.log(emailAddrString);
-  let emailSubjectStr = "Test_subject"; // no spaces
-  let emailBodyStr = "Test_body_no_spaces"
+  let emailSubjectStr = "The test subject"; // try spaces
+  let emailBodyStr = "Test body that has spaces"
   window.open('mailto:' + emailAddrString
-    + '?subject=' + emailSubjectStr
-    + '&body=' +  emailBodyStr);
+    + '?subject=' + encodeURIComponent(emailSubjectStr)
+    + '&body=' +  encodeURIComponent(emailBodyStr));
 
 //  window.open('mailto:' + emailAddrString + '?subject=Test_subject&body=Test_body_no_spaces');
 
