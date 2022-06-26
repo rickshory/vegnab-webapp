@@ -304,7 +304,14 @@ function sendData() {
   }
 
   console.log(emailAddrString);
-  window.open('mailto:' + emailAddrString + '?subject=Test_subject&body=Test_body_no_spaces');
+  let emailSubjectStr = "Test_subject"; // no spaces
+  let emailBodyStr = "Test_body_no_spaces"
+  window.open('mailto:' + emailAddrString
+    + '?subject=' + emailSubjectStr
+    + '&body=' +  emailBodyStr);
+
+//  window.open('mailto:' + emailAddrString + '?subject=Test_subject&body=Test_body_no_spaces');
+
 //   let emailSubjectStr = "Data from VegNab web app"
 //   let emailBodyStr = "Site 1, today, ABCO Abies concolor"
 //   let emailLink = 'mailto:' + emailAddrString
