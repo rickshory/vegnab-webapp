@@ -59,6 +59,8 @@
     </div>
   </nav>
   <!-- end of bootstrap navbar -->
+
+  <!-- begin main screen -->
   <div class="container-fluid">
     <div class="d-grid gap-2">
         <button type="button" class="btn btn-primary  btn-lg"
@@ -174,15 +176,31 @@
           <div class="modal-body">
             <form id="send-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
+                <div class="dropdown">
+                  <button class="btn btn-primary btn-lg dropdown-toggle"
+                      type="button" id="dropdownMenuChooseSite"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      Site, which data to send
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuChooseSite">
+                    <li><a class="dropdown-item" href="#"><h3>Example site 1</h3></a></li>
+                    <li><a class="dropdown-item" href="#"><h3>2nd site example</h3></a></li>
+                    <li><a class="dropdown-item" href="#"><h3>Site example 3rd</h3></a></li>
+                  </ul>
+                  <div class="form-text">
+                    <h3>-</h3>
+                  </div>
+                </div>
                 <input type="email" class="form-control form-control-lg"
-                  id="email_address_box" name="email_address-box"
-                  placeholder="Email" aria-describedby="emailHelp" required>
+                    id="email_address_box" name="email_address-box"
+                    placeholder="Email" aria-describedby="emailHelp" required>
                 <label for="email_address-box">Email address</label>
                 <div id="emailHelp" class="form-text">
-                  <h3>Send your data by email V3.</h3>
+                  <h3>Send your data by email.</h3>
                 </div>
               </div>
-              <button type="button" class="btn btn-primary" name="btn-send-data"
+              <button type="button" class="btn btn-primary btn-lg"
+                  name="btn-send-data"
                   id="btn-send-data">Send</button>
             </form>
           </div>
