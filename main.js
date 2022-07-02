@@ -295,7 +295,7 @@ function showSites() {
 // time like this should work.
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
-  alert("in vnSendDataScreen 'shown.bs.modal'");
+//  alert("in vnSendDataScreen 'shown.bs.modal'");
 	if (site_info_array.length == 0) {
     sites_available_to_send_list.innerHTML = '';
     site_chosen_to_send = -1;
@@ -306,8 +306,8 @@ vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 
   let strSitesAvaiableList = '';
   site_info_array.forEach((obj, index) => {
-    strSitesAvaiableList += '"<li class="dropdown-item" id = "siteToSend_'
-        + index + '"><h3>' +  obj.name + '</h3></li>"';
+    strSitesAvaiableList += '<li class="dropdown-item" id = "siteToSend_'
+        + index + '"><h3>' +  obj.name + '</h3></li>';
   })
   sites_available_to_send_list.innerHTML = strSitesAvaiableList;
   document.getElementById('siteChosenToSend').innerHTML = '';
@@ -322,9 +322,15 @@ sites_available_to_send_list.addEventListener('click', function (e) {
     }
     if (target.tagName === 'LI'){ // tagName returns uppercase
 //        alert(target.id);
-        document.getElementById('siteChosenToSend').innerHTML =
-            '<h3>' + target.textContent + '</h3>'
-
+      // the element id is the string "siteToSend_" (to avoic confusion with
+      // any other elements) followed by the index number in the Sites array
+      //
+//      let ar = (target.id).split("_");
+//      console.log(ar);
+      site_chosen_to_send = parseInt((target.id).split("_")[1]);
+//      console.log("site_chosen_to_send = " + site_chosen_to_send);
+      document.getElementById('siteChosenToSend').innerHTML =
+          '<h3>' + target.textContent + '</h3>'
     }
 });
 
@@ -334,24 +340,38 @@ function sendData() {
 //  alert("in sendData function");
   let emailAddrString = document.getElementById('email_address_box').value.toString().trim();
   // validation here
+  if (site_info_array.length == 0) {
+    alert("No sites yet. Nothing to send.");
+    return;
+  }
   if (site_chosen_to_send == -1) {
     alert("no site chosen");
     return;
   }
-  if (site_chosen_to_send == 0) {
-    alert("No sites yet. Nothing to send.");
-    return;
-  }
+
   if (emailAddrString == "") {
     alert("no email address");
     return;
   }
 
   console.log(emailAddrString);
-  let siteObj = site_info_array(site_chosen_to_send - 1);
   let emailSubjectStr = "VegNab webapp data";
-  let emailBodyStr = "Site 1\ntoday\nABCO\tAbies concolor";
-
+  let siteObj = site_info_array[site_chosen_to_send];
+  console.log('siteObj: ' + siteObj);
+  let emailBodyStr = 'Site name: ' + siteObj.name + '\n'
+    + 'Notes: ' + siteObj.notes + '\n'
+    + 'Date: ' + siteObj.date + '\n' ;
+  let this_site_spp_array = site_spp_array.filter(spp_obj =>
+    spp_obj.site_id === siteObj.id)
+    .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
+  if (this_site_spp_array.length == 0) {
+    emailBodyStr += '\n(No species yet)';
+  } else {
+    this_site_spp_array.forEach((spp_obj, spp_index) => {
+      emailBodyStr += '\n' + spp_obj.species;
+    })
+  }
+    //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
   // spaces, linebreaks and tabs get correctly encoded
   // spaces and linebreaks come through in Gmail, but tabs turn into spaces
   let emailMsg = 'mailto:' + emailAddrString
