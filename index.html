@@ -179,33 +179,44 @@
           <div class="modal-body">
             <form id="send-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
-                <div class="dropdown">
-                  <button class="btn btn-primary btn-lg dropdown-toggle"
-                      type="button" id="dropdownMenuChooseSite"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-                      Site, which data to send
-                  </button>
-                  <ul id = "sendFormSitesList" class="dropdown-menu"
-                      aria-labelledby="dropdownMenuChooseSite">
-                    <li class="dropdown-item" id = "siteToSend_0"><h3>No sites yet 1</h3></li>
-                    <li class="dropdown-item" id = "siteToSend_1"><h3>No sites yet 2</h3></li>
-                    <li class="dropdown-item" id = "siteToSend_2"><h3>No sites yet 3</h3></li>
-                  </ul>
-                  <div id = "siteChosenToSend" class="form-text">
-                    <h3>-</h3>
+                <div class="row"> <!-- first row, dropdown and site chosen -->
+                  <div class="col"> <!-- first column, dropdown -->
+                    <div class="dropdown">
+                      <button class="btn btn-primary btn-lg dropdown-toggle"
+                          type="button" id="dropdownMenuChooseSite"
+                          data-bs-toggle="dropdown" aria-expanded="false">
+                          Site, which data to send
+                      </button>
+                      <ul id = "sendFormSitesList" class="dropdown-menu"
+                          aria-labelledby="dropdownMenuChooseSite">
+                        <li class="dropdown-item" id = "siteToSend_0"><h3>No sites yet 1</h3></li>
+                        <li class="dropdown-item" id = "siteToSend_1"><h3>No sites yet 2</h3></li>
+                        <li class="dropdown-item" id = "siteToSend_2"><h3>No sites yet 3</h3></li>
+                      </ul>
+                    </div>
+                  </div> <!-- end of first column, dropdown -->
+                  <div class="col"> <!-- 2nd column, site chosen -->
+                    <div id = "siteChosenToSend" class="form-text">
+                      <h3>-</h3>
+                    </div>
+                  </div> <!-- end of 2nd column, site chosen -->
+                </div> <!-- end of first row, dropdown and site chosen -->
+                <div class="row"> <!-- 2nd row, email and labels -->
+                  <input type="email" class="form-control form-control-lg"
+                      id="email_address_box" name="email_address-box"
+                      placeholder="Email" aria-describedby="emailHelp" required>
+                  <label for="email_address-box">Email address</label>
+                  <div id="emailHelp" class="form-text">
+                    <h3>Send your data by email.</h3>
                   </div>
-                </div>
-                <input type="email" class="form-control form-control-lg"
-                    id="email_address_box" name="email_address-box"
-                    placeholder="Email" aria-describedby="emailHelp" required>
-                <label for="email_address-box">Email address</label>
-                <div id="emailHelp" class="form-text">
-                  <h3>Send your data by email.</h3>
-                </div>
-              </div>
-              <button type="button" class="btn btn-primary btn-lg"
-                  name="btn-send-data"
-                  id="btn-send-data">Send</button>
+                </div> <!-- end of 2nd row, email and labels -->
+                <div class="row"> <!-- 3rd row, 'Send' button -->
+                  <button type="button" class="btn btn-primary btn-lg"
+                      name="btn-send-data"
+                      id="btn-send-data">Send
+                  </button>
+                </div> <!-- end of 3rd row, 'Send' button -->
+              </div> <!-- end of form-floating -->
             </form>
           </div>
         </div>
