@@ -301,7 +301,10 @@ sites_available_to_send_list.addEventListener('click', function (e) {
         if(!target) { return; } // If element doesn't exist
     }
     if (target.tagName === 'LI'){ // tagName returns uppercase
-        alert(target.innerHTML);
+        alert(target.id);
+        document.getElementById('siteChosenToSend').innerHTML =
+            '<h3>' + target.textContent + '</h3>'
+
         // let spp = target.textContent;
         // console.log(spp);
         // // for testing, use the code and description as one string "species"
