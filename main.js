@@ -15,6 +15,7 @@ var nonlocal_spp_array = [];
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
 var match_list = document.getElementById("match-list");
+var sites_available_to_send_list = document.getElementById("sendFormSitesList");
 
 fetch('nrcs_spp.txt')
   .then(response => response.text())
@@ -291,6 +292,32 @@ function showSites() {
 // From what I have been able to find out, event listeners are deleted with the
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
+
+sites_available_to_send_list.addEventListener('click', function (e) {
+  // list is parent of all the list items
+    var target = e.target; // Clicked element
+    while (target && target.parentNode !== sites_available_to_send_list) {
+        target = target.parentNode; // If the clicked element isn't a direct child
+        if(!target) { return; } // If element doesn't exist
+    }
+    if (target.tagName === 'LI'){ // tagName returns uppercase
+        alert(target.innerHTML);
+        // let spp = target.textContent;
+        // console.log(spp);
+        // // for testing, use the code and description as one string "species"
+        // let spp_entry_date = new Date();
+        // let new_spp_item = {
+        //   "id": spp_entry_date.getTime().toString(),
+        //   "site_id": current_site_id,
+        //   "species": spp,
+        //   "spp_date": spp_entry_date
+        // };
+        // site_spp_array.unshift(new_spp_item);
+        // // trigger to refresh site list
+        // showSitesTimeout = setTimeout(showSites, 10);
+        // // clear the search for next time
+    }
+});
 
 document.getElementById('btn-send-data').addEventListener('click', sendData);
 
