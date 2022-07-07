@@ -2,7 +2,10 @@
 
 // for testing, region is "OR" (Oregon)
 // todo: automatically acquire or input region
-const region_code = "OR";
+var region_code = "OR";
+// for testing, ignore subspecies and varieties
+// todo: make this an option
+var include_subspp_var = false;
 
 var site_info_array = [];
 var current_site_id = "";
@@ -33,7 +36,7 @@ fetch('nrcs_spp.txt')
 			};
 			return spp_obj;
 		});
-	  console.log(nrcs_spp_array);
+//	  console.log(nrcs_spp_array);
 		makeLocalAndNonlocalSppArrays();
   });
 
@@ -43,7 +46,8 @@ function makeLocalAndNonlocalSppArrays() {
   // retain separate fields in original array but concatenate in local and
   //  nonlocal for easier searching
 	let tmp_local_array = nrcs_spp_array.filter(spp_obj =>
-		spp_obj.distribution.includes(region_code + ","));
+		((spp_obj.distribution.includes(region_code + ",")) &&
+    (include_subspp_var ? true : (spp_obj.subspp_var == ""))));
 	local_spp_array = tmp_local_array.map(orig_obj => {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
@@ -54,7 +58,8 @@ function makeLocalAndNonlocalSppArrays() {
 		return new_properties;
 	});
 	let tmp_nonlocal_array = nrcs_spp_array.filter(spp_obj =>
-		!tmp_local_array.includes(spp_obj));
+		((!tmp_local_array.includes(spp_obj)) &&
+    (include_subspp_var ? true : (spp_obj.subspp_var == ""))));
 //	console.log(local_spp_array);
 	nonlocal_spp_array = tmp_nonlocal_array.map(orig_obj => {
 		let new_properties = {
