@@ -26,24 +26,29 @@ fetch('nrcs_spp.txt')
 			spp_flds = str.split("\t");
 			let spp_obj = {
 				"nrcs_code": spp_flds[0],
-				"species_name": spp_flds[1],
-				"distribution": spp_flds[2]
+				"base_species": spp_flds[1],
+        "subspp_var": (spp_flds[2] == null ? "" : spp_flds[2]),
+        "common_names": (spp_flds[3] == null ? "" : spp_flds[3]),
+				"distribution": (spp_flds[4] == null ? "" : spp_flds[4])
 			};
 			return spp_obj;
 		});
-	//  console.log(nrcs_spp_array);
+	  console.log(nrcs_spp_array);
 		makeLocalAndNonlocalSppArrays();
   });
 
 function makeLocalAndNonlocalSppArrays() {
 	// for performance, create these two smaller arrays, each seldom updated,
 	// that will be filtered for matches on each keystroke
+  // retain separate fields in original array but concatenate in local and
+  //  nonlocal for easier searching
 	let tmp_local_array = nrcs_spp_array.filter(spp_obj =>
 		spp_obj.distribution.includes(region_code + ","));
 	local_spp_array = tmp_local_array.map(orig_obj => {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
-			"item_description": orig_obj.species_name,
+			"item_description": orig_obj.base_species + orig_obj.subspp_var
+          + orig_obj.common_names,
 			"is_local": true
 		};
 		return new_properties;
@@ -54,7 +59,8 @@ function makeLocalAndNonlocalSppArrays() {
 	nonlocal_spp_array = tmp_nonlocal_array.map(orig_obj => {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
-			"item_description": orig_obj.species_name,
+      "item_description": orig_obj.base_species + orig_obj.subspp_var
+          + orig_obj.common_names,
 			"is_local": false
 		};
 		return new_properties;

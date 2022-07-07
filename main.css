@@ -17,12 +17,6 @@ $font-family-sans-serif:
   // Emoji fonts
   "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 
-  @media only screen and (max-width: 600px) {
-    body {
-      class: h1;
-    }
-  }
-
 #match-list li.local {
   background-color: lightgreen;
 }
