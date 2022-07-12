@@ -241,7 +241,7 @@ switch(err.code) {
 function showPosition(position) {
   vnSiteLocation.innerHTML = "Latitude: " + position.coords.latitude +
   "<br>Longitude: " + position.coords.longitude +
-  "<br>Accuracy: " + position.coords.accuracy + "m";
+  "<br>Accuracy: " + position.coords.accuracy.toFixed(1) + " meters";
 }
 
 function checkSitePositionAccuracy() {
@@ -254,12 +254,16 @@ function checkSitePositionAccuracy() {
     return;
   }
   console.log("location: " + latest_position.coords.toString());
-  vnSiteLocation.innerHTML = "Latitude: " + latest_position.coords.latitude +
-      "<br>Longitude: " + latest_position.coords.longitude +
-      "<br>Accuracy: " + latest_position.coords.accuracy + "m";
+  let stLoc = "Latitude: " + latest_position.coords.latitude +
+      "<br>Longitude: " + latest_position.coords.longitude;
+  if (!siteAccuracyAccepted) {
+    stLoc += "<br>Target accuracy: " + defaultSiteLocationAcceptableAccuracy + " meters";
+  }
+  stLoc += "<br>Accuracy: " + latest_position.coords.accuracy.toFixed(1) + " meters";
+  vnSiteLocation.innerHTML = stLoc;
   if (latest_position.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
     siteAccuracyAccepted = true;
-    clearInterval(sitePeriodcLocationCheckFlag);
+//    clearInterval(sitePeriodcLocationCheckFlag);
   }
 }
 
