@@ -16,11 +16,13 @@ var browser_supports_geolocation = false; // until determined true
 var position_tracker_id = 0;
 // latest position
 var latest_position;
+
 locationOptions = {
-  enableHighAccuracy: false,
+  enableHighAccuracy: true,
   timeout: 5000,
   maximumAge: 0
 };
+
 // keep acquiring site location until accuracy is <= this
 // user can manually accept greater innaccuracty
 var defaultSiteLocationAcceptableAccuracy = 7;
