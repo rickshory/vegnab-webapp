@@ -6,6 +6,10 @@ var region_code = "OR";
 // for testing, ignore subspecies and varieties
 // todo: make this an option
 var include_subspp_var = false;
+
+// value returned by setInterval, for periocally checking the location for a
+// site; used to clear the ticker using clearInterval
+var sitePeriodcLocationCheckFlag;
 var browser_supports_geolocation = false; // until determined true
 // return value used to halt position tracking
 // by calling clearWatch on this id
@@ -17,7 +21,10 @@ locationOptions = {
   timeout: 5000,
   maximumAge: 0
 };
-
+// keep acquiring site location until accuracy is <= this
+// user can manually accept greater innaccuracty
+var defaultSiteLocationAcceptableAccuracy = 7;
+var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accepted
 
 var site_info_array = [];
 var current_site_id = "";
@@ -237,6 +244,25 @@ function showPosition(position) {
   "<br>Accuracy: " + position.coords.accuracy + "m";
 }
 
+function checkSitePositionAccuracy() {
+  // called for a new site, periocally, until position is accurate enough
+  console.log("entered checkSitePositionAccuracy");
+  if (siteAccuracyAccepted) {
+    // stop the ticker that periocally calls this function
+    console.log("echeckSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
+    clearInterval(sitePeriodcLocationCheckFlag);
+    return;
+  }
+  console.log("location: " + latest_position.coords.toString());
+  vnSiteLocation.innerHTML = "Latitude: " + latest_position.coords.latitude +
+      "<br>Longitude: " + latest_position.coords.longitude +
+      "<br>Accuracy: " + latest_position.coords.accuracy + "m";
+  if (latest_position.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
+    siteAccuracyAccepted = true;
+    clearInterval(sitePeriodcLocationCheckFlag);
+  }
+}
+
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 // following syntax breaks the addEventListener
 // var vnSiteInfoModal = new bootstrap.Modal(document.getElementById('vnSiteInfoScreen'), {
@@ -249,11 +275,19 @@ vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
   getLocation();
+  siteAccuracyAccepted = false;
+  console.log("about to call startTrackingPosition");
+  startTrackingPosition();
+  console.log("about to start site location checking ticker");
+  sitePeriodcLocationCheckFlag = setInterval(checkSitePositionAccuracy, 2000);
 });
 
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 //	event.preventDefault();
 	console.log("In modal Hide event");
+  siteAccuracyAccepted = true;
+  clearInterval(sitePeriodcLocationCheckFlag);
+  stopTrackingPosition();
 });
 
 document.getElementById('btn-save-site-info').addEventListener('click', storeSiteInfo);
