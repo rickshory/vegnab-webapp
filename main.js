@@ -6,6 +6,18 @@ var region_code = "OR";
 // for testing, ignore subspecies and varieties
 // todo: make this an option
 var include_subspp_var = false;
+var browser_supports_geolocation = false; // until determined true
+// return value used to halt position tracking
+// by calling clearWatch on this id
+var position_tracker_id = 0;
+// latest position
+var latest_position;
+locationOptions = {
+  enableHighAccuracy: false,
+  timeout: 5000,
+  maximumAge: 0
+};
+
 
 var site_info_array = [];
 var current_site_id = "";
@@ -177,6 +189,46 @@ function getLocation() {
   } else {
     vnSiteLocation.innerHTML = "Geolocation is not supported by this browser.";
   }
+}
+
+function startTrackingPosition() {
+  if (navigator.geolocation) {
+    browser_supports_geolocation = true;
+    position_tracker_id = navigator.geolocation.watchPosition(trackPosition,
+        locationError, locationOptions);
+  } else {
+    browser_supports_geolocation = false;
+  }
+}
+
+function stopTrackingPosition() {
+  navigator.geolocation.clearWatch(position_tracker_id);
+}
+
+function trackPosition(position) {
+  // called every time postion changes
+  latest_position = position;
+}
+
+function locationError(err) {
+  console.warn('ERROR(' + err.code + '): ' + err.message);
+/*
+switch(err.code) {
+  case err.PERMISSION_DENIED:
+    x.innerHTML = "User denied the request for Geolocation."
+    break;
+  case err.POSITION_UNAVAILABLE:
+    x.innerHTML = "Location information is unavailable."
+    break;
+  case err.TIMEOUT:
+    x.innerHTML = "The request to get user location timed out."
+    break;
+  case err.UNKNOWN_ERROR:
+    x.innerHTML = "An unknown error occurred."
+    break;
+}
+*/
+
 }
 
 function showPosition(position) {
