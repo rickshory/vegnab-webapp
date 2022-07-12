@@ -169,6 +169,20 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
 
 var vnAddSiteButton = document.getElementById('btn-add-site');
 var vnSiteDate = document.getElementById('site_date');
+var vnSiteLocation = document.getElementById("site_location");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    vnSiteLocation.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  vnSiteLocation.innerHTML = "Latitude: " + position.coords.latitude +
+  "<br>Longitude: " + position.coords.longitude;
+}
 
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 // following syntax breaks the addEventListener
@@ -181,6 +195,7 @@ var vnSiteNotes = document.getElementById('site_notes');
 vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
+  getLocation();
 });
 
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
