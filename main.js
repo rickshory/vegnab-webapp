@@ -233,7 +233,8 @@ switch(err.code) {
 
 function showPosition(position) {
   vnSiteLocation.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude;
+  "<br>Longitude: " + position.coords.longitude +
+  "<br>Accuracy: " + position.coords.accuracy + "m";
 }
 
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
