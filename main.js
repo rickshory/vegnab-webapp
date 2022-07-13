@@ -14,8 +14,9 @@ var browser_supports_geolocation = false; // until determined true
 // return value used to halt position tracking
 // by calling clearWatch on this id
 var position_tracker_id = 0;
-// latest position
-var latest_position;
+
+var latestLocation; // latest locaation acquired
+var siteLocation; // site location to use
 
 locationOptions = {
   enableHighAccuracy: true,
@@ -216,7 +217,7 @@ function stopTrackingPosition() {
 
 function trackPosition(position) {
   // called every time postion changes
-  latest_position = position;
+  latestLocation = position;
 }
 
 function locationError(err) {
@@ -249,15 +250,16 @@ function showPosition(position) {
 function checkSitePositionAccuracy() {
   // called for a new site, periocally, until position is accurate enough
   console.log("entered checkSitePositionAccuracy");
-  if (latest_position.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
+  if (latestLocation.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
     siteAccuracyAccepted = true;
+    siteLocation = latestLocation; // remember, and no longer null
   }
-  let stLoc = "Latitude: " + latest_position.coords.latitude +
-      "<br>Longitude: " + latest_position.coords.longitude;
+  let stLoc = "Latitude: " + latestLocation.coords.latitude +
+      "<br>Longitude: " + latestLocation.coords.longitude;
   if (!siteAccuracyAccepted) {
     stLoc += "<br>Target accuracy: " + defaultSiteLocationAcceptableAccuracy + " meters";
   }
-  stLoc += "<br>Accuracy: " + latest_position.coords.accuracy.toFixed(1) + " meters";
+  stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
   vnSiteLocation.innerHTML = stLoc;
   if (siteAccuracyAccepted) {
     // stop the ticker that periocally calls this function
@@ -278,6 +280,7 @@ var vnSiteNotes = document.getElementById('site_notes');
 vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
+  siteLocation = null; // null flags that it is not yet determined
   getLocation();
   siteAccuracyAccepted = false;
   console.log("about to call startTrackingPosition");
@@ -316,6 +319,11 @@ function storeSiteInfo() {
     vnSiteNotes.focus();
     return;
   }
+  // // TODO: check that location is within tolerance
+  // for now, just use latest location
+  if (siteLocation == null) {
+    siteLocation = latestLocation;
+  }
   // store data
   let site_obj = {
     // multiple sites would never be created in the same millisecond, so id
@@ -323,7 +331,8 @@ function storeSiteInfo() {
     "id": new Date().getTime().toString(),
     "name": SiteNameString,
     "notes": SiteNotesString,
-    "date": latest_site_date
+    "date": latest_site_date,
+    "location": site_location
   };
   current_site_id = site_obj.id;
   // new item at the beginning
@@ -477,7 +486,14 @@ function sendData() {
   console.log('siteObj: ' + siteObj);
   let emailBodyStr = 'Site name: ' + siteObj.name + '\n'
     + 'Notes: ' + siteObj.notes + '\n'
-    + 'Date: ' + siteObj.date + '\n' ;
+    + 'Date: ' + siteObj.date + '\n';
+  if (siteObj.location == null) {
+    emailBodyStr += 'Location unknown\n';
+  } else {
+    emailBodyStr += 'Location: (' + siteObj.location.coords.latitude
+        + ', ' + siteObj.location.coords.longitude
+        + ') +- ' + siteObj.location.coords.accuracy.toFixed(1) + ' meters\n';
+  }
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteObj.id)
     .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
