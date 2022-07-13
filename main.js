@@ -332,7 +332,7 @@ function storeSiteInfo() {
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": latest_site_date,
-    "location": site_location
+    "location": JSON.parse(JSON.stringify(siteLocation)) // deep copy
   };
   current_site_id = site_obj.id;
   // new item at the beginning
