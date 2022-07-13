@@ -249,13 +249,9 @@ function showPosition(position) {
 function checkSitePositionAccuracy() {
   // called for a new site, periocally, until position is accurate enough
   console.log("entered checkSitePositionAccuracy");
-  if (siteAccuracyAccepted) {
-    // stop the ticker that periocally calls this function
-    console.log("echeckSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
-    clearInterval(sitePeriodcLocationCheckFlag);
-    return;
+  if (latest_position.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
+    siteAccuracyAccepted = true;
   }
-  console.log("location: " + latest_position.coords.toString());
   let stLoc = "Latitude: " + latest_position.coords.latitude +
       "<br>Longitude: " + latest_position.coords.longitude;
   if (!siteAccuracyAccepted) {
@@ -263,9 +259,11 @@ function checkSitePositionAccuracy() {
   }
   stLoc += "<br>Accuracy: " + latest_position.coords.accuracy.toFixed(1) + " meters";
   vnSiteLocation.innerHTML = stLoc;
-  if (latest_position.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
-    siteAccuracyAccepted = true;
-//    clearInterval(sitePeriodcLocationCheckFlag);
+  if (siteAccuracyAccepted) {
+    // stop the ticker that periocally calls this function
+    console.log("echeckSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
+    clearInterval(sitePeriodcLocationCheckFlag);
+    return;
   }
 }
 
