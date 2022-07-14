@@ -254,6 +254,11 @@ function checkSitePositionAccuracy() {
     siteAccuracyAccepted = true;
     siteLocation = latestLocation; // remember, and no longer null
   }
+  document.getElementById('site_location_latitude').innerHTML = latestLocation.coords.latitude;
+  document.getElementById('site_location_longitude').innerHTML = latestLocation.coords.longitude;
+  document.getElementById('site_location_accuracy').innerHTML = latestLocation.coords.accuracy.toFixed(1);
+  document.getElementById('site_location_target_accuracy').innerHTML = "" + defaultSiteLocationAcceptableAccuracy;
+
   let stLoc = "Latitude: " + latestLocation.coords.latitude +
       "<br>Longitude: " + latestLocation.coords.longitude;
   if (!siteAccuracyAccepted) {
