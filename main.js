@@ -499,7 +499,7 @@ function sendData() {
   } else {
     emailBodyStr += 'Location: (' + siteObj.latitude
         + ', ' + siteObj.longitude
-        + ') +- ' + siteObj.accuracy + ' meters\n';
+        + ') \00B1 ' + siteObj.accuracy + ' meters\n';
   }
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteObj.id)
