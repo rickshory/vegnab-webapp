@@ -493,7 +493,7 @@ function sendData() {
   console.log('siteObj: ' + siteObj);
   let emailBodyStr = 'Site name: ' + siteObj.name + '\n'
     + 'Notes: ' + siteObj.notes + '\n'
-    + 'Date: ' + siteObj.date + '\n';
+    + 'Date: ' + siteObj.date.toISOString() + '\n';
   if (false) { // // TODO: validate here
     emailBodyStr += 'Location unknown\n';
   } else {
