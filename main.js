@@ -17,6 +17,10 @@ var position_tracker_id = 0;
 
 var latestLocation; // latest locaation acquired
 var siteLocation; // site location to use
+// numeric, but will only be inserted as text into sent data
+var siteLat = "";
+var siteLon = "";
+var siteAcc = "";
 
 locationOptions = {
   enableHighAccuracy: true,
@@ -254,11 +258,9 @@ function checkSitePositionAccuracy() {
     siteAccuracyAccepted = true;
     siteLocation = latestLocation; // remember, and no longer null
   }
-  document.getElementById('site_location_latitude').innerHTML = latestLocation.coords.latitude;
-  document.getElementById('site_location_longitude').innerHTML = latestLocation.coords.longitude;
-  document.getElementById('site_location_accuracy').innerHTML = latestLocation.coords.accuracy.toFixed(1);
-  document.getElementById('site_location_target_accuracy').innerHTML = "" + defaultSiteLocationAcceptableAccuracy;
-
+  siteLat = "" + latestLocation.coords.latitude;
+  siteLon = "" + latestLocation.coords.longitude;
+  siteAcc = "" + latestLocation.coords.accuracy.toFixed(1);
   let stLoc = "Latitude: " + latestLocation.coords.latitude +
       "<br>Longitude: " + latestLocation.coords.longitude;
   if (!siteAccuracyAccepted) {
@@ -326,9 +328,7 @@ function storeSiteInfo() {
   }
   // // TODO: check that location is within tolerance
   // for now, just use latest location
-  if (siteLocation == null) {
-    siteLocation = latestLocation;
-  }
+
   // store data
   let site_obj = {
     // multiple sites would never be created in the same millisecond, so id
@@ -337,7 +337,9 @@ function storeSiteInfo() {
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": latest_site_date,
-    "location": JSON.parse(JSON.stringify(siteLocation)) // deep copy
+    "latitude": siteLat,
+    "longitude": siteLon,
+    "accuracy": siteAcc
   };
   current_site_id = site_obj.id;
   // new item at the beginning
@@ -492,12 +494,12 @@ function sendData() {
   let emailBodyStr = 'Site name: ' + siteObj.name + '\n'
     + 'Notes: ' + siteObj.notes + '\n'
     + 'Date: ' + siteObj.date + '\n';
-  if (siteObj.location == null) {
+  if (false) { // // TODO: validate here
     emailBodyStr += 'Location unknown\n';
   } else {
-    emailBodyStr += 'Location: (' + siteObj.location.coords.latitude
-        + ', ' + siteObj.location.coords.longitude
-        + ') +- ' + siteObj.location.coords.accuracy.toFixed(1) + ' meters\n';
+    emailBodyStr += 'Location: (' + siteObj.latitude
+        + ', ' + siteObj.longitude
+        + ') +- ' + siteObj.accuracy + ' meters\n';
   }
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteObj.id)
