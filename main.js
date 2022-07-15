@@ -180,7 +180,7 @@ match_list.addEventListener('click', function (e) {
           "id": spp_entry_date.getTime().toString(),
           "site_id": current_site_id,
           "species": spp,
-          "spp_date": spp_entry_date,
+          "date": spp_entry_date,
           "latitude": sppItemLat,
           "longitude": sppItemLon,
           "accuracy": sppItemAcc
@@ -553,7 +553,7 @@ function sendData() {
   } else {
     emailBodyStr += 'Location: (' + siteObj.latitude
         + ', ' + siteObj.longitude
-        + ') &#177; ' + siteObj.accuracy + ' meters\n';
+        + ') accuracy ' + siteObj.accuracy + ' meters\n';
   }
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteObj.id)
@@ -562,7 +562,10 @@ function sendData() {
     emailBodyStr += '\n(No species yet)';
   } else {
     this_site_spp_array.forEach((spp_obj, spp_index) => {
-      emailBodyStr += '\n' + spp_obj.species;
+      emailBodyStr += '\n' + spp_obj.species
+          + ' ' + spp_obj.species.date.toISOString()
+          + ' ' + '(' + spp_obj.latitude + ', ' + spp_obj.longitude
+              + ') accuracy ' + spp_obj.accuracy + ' meters';
     })
   }
     //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
