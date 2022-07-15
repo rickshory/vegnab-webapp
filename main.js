@@ -10,6 +10,7 @@ var include_subspp_var = false;
 // value returned by setInterval, for periocally checking the location for a
 // site; used to clear the ticker using clearInterval
 var sitePeriodcLocationCheckFlag;
+var sppItemPeriodcLocationCheckFlag; // same for species item
 var browser_supports_geolocation = false; // until determined true
 // return value used to halt position tracking
 // by calling clearWatch on this id
@@ -22,6 +23,11 @@ var siteLat = "";
 var siteLon = "";
 var siteAcc = "";
 
+// numeric, but will only be inserted as text into sent data
+var sppItemLat = "";
+var sppItemLon = "";
+var sppItemAcc = "";
+
 locationOptions = {
   enableHighAccuracy: true,
   timeout: 5000,
@@ -32,6 +38,8 @@ locationOptions = {
 // user can manually accept greater innaccuracty
 var defaultSiteLocationAcceptableAccuracy = 7;
 var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accepted
+var sppItemLocationTargetAccuracy = 7;
+var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
 var site_info_array = [];
 var current_site_id = "";
@@ -172,7 +180,10 @@ match_list.addEventListener('click', function (e) {
           "id": spp_entry_date.getTime().toString(),
           "site_id": current_site_id,
           "species": spp,
-          "spp_date": spp_entry_date
+          "spp_date": spp_entry_date,
+          "latitude": sppItemLat,
+          "longitude": sppItemLon,
+          "accuracy": sppItemAcc
         };
         site_spp_array.unshift(new_spp_item);
         // trigger to refresh site list
@@ -191,6 +202,23 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   sppSearchInput.value = "";
   match_list.innerHTML = "";
   sppSearchInput.focus();
+  // start acquiring location, in anticipation of the species
+  sppItemAccuracyAccepted = false;
+  console.log("about to call startTrackingPosition");
+  startTrackingPosition();
+  console.log("about to start spp location checking ticker");
+  sppItemPeriodcLocationCheckFlag = setInterval(checkSppItemPositionAccuracy, 500);
+})
+
+sppSearchModal.addEventListener('hidden.bs.modal', function () {
+
+// TODO: option to pause here to wait for better accuracy
+  sppItemAccuracyAccepted = true; // flag OK, one way or the other
+  // stop acquiring location, use what we have at this point
+  console.log("about to stop spp location checking ticker");
+  clearInterval(sppItemPeriodcLocationCheckFlag);
+  console.log("about to call stopTrackingPosition");
+  stopTrackingPosition();
 })
 
 var vnAddSiteButton = document.getElementById('btn-add-site');
@@ -275,6 +303,32 @@ function checkSitePositionAccuracy() {
     return;
   }
 }
+
+function checkSppItemPositionAccuracy() {
+  // called for a new species item, periocally, until position is accurate enough
+  console.log("entered checkSppItemPositionAccuracy");
+  if (latestLocation.coords.accuracy <= sppItemLocationTargetAccuracy) {
+    sppItemAccuracyAccepted = true;
+  }
+  sppItemLat = "" + latestLocation.coords.latitude;
+  sppItemLon = "" + latestLocation.coords.longitude;
+  sppItemAcc = "" + latestLocation.coords.accuracy.toFixed(1);
+  // let stLoc = "Latitude: " + latestLocation.coords.latitude +
+  //     "<br>Longitude: " + latestLocation.coords.longitude;
+  // if (!sppItemAccuracyAccepted) {
+  //   stLoc += "<br>Target accuracy: " + defaultSiteLocationAcceptableAccuracy + " meters";
+  // }
+  // stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
+  // vnSiteLocation.innerHTML = stLoc;
+  if (sppItemAccuracyAccepted) {
+    // stop the ticker that periocally calls this function
+    console.log("checkSppItemPositionAccuracy found sppItemAccuracyAccepted, stopping ticker");
+    clearInterval(sppItemPeriodcLocationCheckFlag);
+    return;
+  }
+}
+/* sppItemLat  sppItemLon  sppItemAcc */
+
 
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 // following syntax breaks the addEventListener
