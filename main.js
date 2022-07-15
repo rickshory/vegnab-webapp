@@ -563,7 +563,7 @@ function sendData() {
   } else {
     this_site_spp_array.forEach((spp_obj, spp_index) => {
       emailBodyStr += '\n' + spp_obj.species
-          + ' ' + spp_obj.species.date.toISOString()
+          + ' ' + spp_obj.date.toISOString()
           + ' ' + '(' + spp_obj.latitude + ', ' + spp_obj.longitude
               + ') accuracy ' + spp_obj.accuracy + ' meters';
     })
