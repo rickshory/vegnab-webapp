@@ -92,15 +92,14 @@
                 <form  id="site_info_form" autocomplete="off">
 
                   <div class="form-floating mb-3 mt-3">
+                    <p>Site name</p>
                     <input type="text" class="form-control form-control-lg"
-                      name="site_name" id="site_name"
-                      placeholder="Site name">
-                    <label for="site_name">Site name</label>
+                      id="site_name">
                   </div>
                   <div class="form-group">
+                    <p>Notes</p>
                     <textarea class="form-control form-control-lg"
-                      name="site_notes" id="site_notes" rows="4"
-                      placeholder="Notes..."></textarea>
+                      id="site_notes" rows="4"></textarea>
                   </div>
                   <div id="site_date">Site date should appear here</div>
                   <div id="site_location">Site location should appear here</div>
@@ -124,9 +123,9 @@
           <div class="modal-header">
             <form id="search-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control form-control-lg" id="search-box"
-                  placeholder="Type to search" name="search-box">
-                <label for="search-box">type to search</label>
+                <p>Type to search</p>
+                <input type="text" class="form-control form-control-lg" 
+                    id="search-box">
               </div>
             </form>
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
