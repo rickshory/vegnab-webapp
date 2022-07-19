@@ -33,3 +33,7 @@ body {
 #match-list li.nonlocal {
   background-color: burlywood;
 }
+
+input[type="text"] {
+    font-size:22px;
+}
