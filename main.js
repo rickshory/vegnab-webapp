@@ -435,7 +435,6 @@ function showSites() {
 '  <div id="collapse' + (index + 1) + '" class="collapse' +
 (index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
 '    <div class="card-body">' +
-      obj.notes + '<br>' + obj.date + '<br>' +
 '      <button type="button" id="' + obj.id +
 '" class="btn btn-primary  btn-lg" data-bs-toggle="modal"' +
 '        data-bs-target="#vnSppSearchScreen">' +
