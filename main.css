@@ -37,3 +37,7 @@ body {
 input[type="text"] {
     font-size:22px;
 }
+
+textarea {
+    font-size:22px;
+}
