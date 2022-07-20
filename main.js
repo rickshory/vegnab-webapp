@@ -16,7 +16,7 @@ var browser_supports_geolocation = false; // until determined true
 // by calling clearWatch on this id
 var position_tracker_id = 0;
 
-var latestLocation; // latest locaation acquired
+var latestLocation; // latest location acquired
 var siteLocation; // site location to use
 // numeric, but will only be inserted as text into sent data
 var siteLat = "";
@@ -41,6 +41,9 @@ var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accep
 var sppItemLocationTargetAccuracy = 7;
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
+// Create a map to manage site species list click listeners as they are 
+// added and removed
+const siteSppListHandlers = new Map();
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
@@ -468,8 +471,14 @@ function showSites() {
   site_info_array.forEach((obj, index) => {
     document.getElementById(obj.id).addEventListener('click',
     function(event) {
-      // Set global 'current_site_id', to be used on any species items added in
-      // the modal that opens from this button click.
+      // Manage global 'current_site_id', to be used on any
+      //  species items added in the modal that opens from this button click.
+      // Also manage the listener of the existing site's species list
+      // if there was a site previouly current, its list has a listener
+      if (!(current_site_id == "")) { // remove the old listener
+        let oldList = document.getElementById("spp-list-for-" + current_site_id)
+        oldList.removeEventListener("click", myFunction);
+      }
       current_site_id = event.currentTarget.id;
       // The 'New spp' button on each site's card has the same id (numeric
       // text) as that site's internal id.
