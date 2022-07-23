@@ -41,9 +41,27 @@ var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accep
 var sppItemLocationTargetAccuracy = 7;
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
-// Create a map to manage site species list click listeners as they are 
+// Create a map to manage site species list click listeners as they are
 // added and removed
-const siteSppListHandlers = new Map();
+const siteSppListHandlersMap = new Map();
+const setupSiteSppListClick = function(siteID) {
+    return function onSiteSppListClick(event) {
+        console.log(event);
+        console.log(siteID);
+    }
+}
+
+const addSiteSppListClick = (siteID) => {
+  document.getElementById("spp-list-for-" + siteID)
+      .addEventListener("click", fnID = setupSiteSppListClick(siteID), true);
+  siteSppListHandlersMap.set(siteID, fnID);
+};
+
+const removeSiteSppListClick = (siteID) => {
+  document.getElementById("spp-list-for-" + siteID)
+      .removeEventListener("click", siteSppListHandlersMap.get(siteID), true);
+};
+
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
@@ -488,6 +506,8 @@ function showSites() {
 // From what I have been able to find out, event listeners are deleted with the
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
+
+
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSendDataScreen 'shown.bs.modal'");
