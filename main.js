@@ -494,12 +494,12 @@ function showSites() {
       // Also manage the listener of the existing site's species list
       // if there was a site previouly current, its list has a listener
       if (!(current_site_id == "")) { // remove the old listener
-        let oldList = document.getElementById("spp-list-for-" + current_site_id)
-        oldList.removeEventListener("click", myFunction);
+        removeSiteSppListClick(current_site_id);
       }
       current_site_id = event.currentTarget.id;
       // The 'New spp' button on each site's card has the same id (numeric
       // text) as that site's internal id.
+      addSiteSppListClick(current_site_id);
     }, false)
   }) // end of adding event listeners
 } // end of fn showSites
