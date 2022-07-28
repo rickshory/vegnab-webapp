@@ -41,29 +41,6 @@ var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accep
 var sppItemLocationTargetAccuracy = 7;
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
-// Create a map to manage site species list click listeners as they are
-// added and removed
-const siteSppListHandlersMap = new Map();
-const setupSiteSppListClick = function(siteID) {
-    return function onSiteSppListClick(event) {
-        console.log(event);
-        console.log(siteID);
-    }
-}
-
-const addSiteSppListClick = (siteID) => {
-  console.log('in addSiteSppListClick');
-  document.getElementById("spp-list-for-" + siteID)
-      .addEventListener("click", fnID = setupSiteSppListClick(siteID), false);
-  siteSppListHandlersMap.set(siteID, fnID);
-};
-
-const removeSiteSppListClick = (siteID) => {
-  console.log('in removeSiteSppListClick');
-  document.getElementById("spp-list-for-" + siteID)
-      .removeEventListener("click", siteSppListHandlersMap.get(siteID), false);
-};
-
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
@@ -500,29 +477,7 @@ function showSites() {
     }
   });
 
-}) // end of filling in species lists for sites
-
-  // // Assign listeners after all HTML written, emperically works.
-  // // If assigned in the same loop as writing HTML, only the first button
-  // // gets its listener, others not.
-  // site_info_array.forEach((obj, index) => {
-  //   document.getElementById(obj.id).addEventListener('click',
-  //   function(event) {
-  //     // Manage global 'current_site_id', to be used on any
-  //     //  species items added in the modal that opens from this button click.
-  //     // Also manage the listener of the existing site's species list
-  //     // if there was a site previouly current, its list has a listener
-  //     if (!(current_site_id == "")) { // remove the old listener
-  //       console.log('About to remove spp listener for ' + current_site_id);
-  //       removeSiteSppListClick(current_site_id);
-  //     }
-  //     current_site_id = event.currentTarget.id;
-  //     // The 'New spp' button on each site's card has the same id (numeric
-  //     // text) as that site's internal id.
-  //     console.log('About to add spp listener for ' + current_site_id);
-  //     addSiteSppListClick(current_site_id);
-  //   }, false)
-  // }) // end of adding event listeners
+  }) // end of filling in species lists for sites
 } // end of fn showSites
 // From what I have been able to find out, event listeners are deleted with the
 // element if there are no refernces to that element, so re-creating them each
