@@ -52,14 +52,16 @@ const setupSiteSppListClick = function(siteID) {
 }
 
 const addSiteSppListClick = (siteID) => {
+  console.log('in addSiteSppListClick');
   document.getElementById("spp-list-for-" + siteID)
-      .addEventListener("click", fnID = setupSiteSppListClick(siteID), true);
+      .addEventListener("click", fnID = setupSiteSppListClick(siteID), false);
   siteSppListHandlersMap.set(siteID, fnID);
 };
 
 const removeSiteSppListClick = (siteID) => {
+  console.log('in removeSiteSppListClick');
   document.getElementById("spp-list-for-" + siteID)
-      .removeEventListener("click", siteSppListHandlersMap.get(siteID), true);
+      .removeEventListener("click", siteSppListHandlersMap.get(siteID), false);
 };
 
 var site_info_array = [];
@@ -484,7 +486,7 @@ function showSites() {
 }) // end of filling in species lists for sites
 
   // Assign listeners after all HTML written, emperically works.
-  // If assigned in the same loop as writing hTML, only the first button
+  // If assigned in the same loop as writing HTML, only the first button
   // gets its listener, others not.
   site_info_array.forEach((obj, index) => {
     document.getElementById(obj.id).addEventListener('click',
@@ -494,11 +496,13 @@ function showSites() {
       // Also manage the listener of the existing site's species list
       // if there was a site previouly current, its list has a listener
       if (!(current_site_id == "")) { // remove the old listener
+        console.log('About to remove spp listener for ' + current_site_id);
         removeSiteSppListClick(current_site_id);
       }
       current_site_id = event.currentTarget.id;
       // The 'New spp' button on each site's card has the same id (numeric
       // text) as that site's internal id.
+      console.log('About to add spp listener for ' + current_site_id);
       addSiteSppListClick(current_site_id);
     }, false)
   }) // end of adding event listeners
