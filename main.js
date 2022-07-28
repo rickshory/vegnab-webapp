@@ -492,9 +492,10 @@ function showSites() {
         if(!target) { return; } // If element doesn't exist
     }
     if (target.tagName === 'LI'){ // tagName returns uppercase
-//        alert(target.id);
-        let spp = target.textContent;
-        console.log(spp);
+      console.log("list ID: " + e.currentTarget.id);
+      console.log("item ID: " + target.id);
+      let spp = target.textContent;
+      console.log(spp);
 
     }
   });
