@@ -35,7 +35,7 @@ locationOptions = {
 };
 
 // keep acquiring site location until accuracy is <= this
-// user can manually accept greater innaccuracty
+// user can manually accept greater inaccuracty
 var defaultSiteLocationAcceptableAccuracy = 7;
 var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accepted
 var sppItemLocationTargetAccuracy = 7;
@@ -165,34 +165,34 @@ function updateMatchList() {
 
 match_list.addEventListener('click', function (e) {
   // match_list is parent of all the list items
-    var target = e.target; // Clicked element
-    while (target && target.parentNode !== match_list) {
-        target = target.parentNode; // If the clicked element isn't a direct child
-        if(!target) { return; } // If element doesn't exist
-    }
-    if (target.tagName === 'LI'){ // tagName returns uppercase
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== match_list) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI'){ // tagName returns uppercase
 //        alert(target.id);
-        let spp = target.textContent;
-        console.log(spp);
-        // for testing, use the code and description as one string "species"
-        let spp_entry_date = new Date();
-        let new_spp_item = {
-          "id": spp_entry_date.getTime().toString(),
-          "site_id": current_site_id,
-          "species": spp,
-          "date": spp_entry_date,
-          "latitude": sppItemLat,
-          "longitude": sppItemLon,
-          "accuracy": sppItemAcc
-        };
-        site_spp_array.unshift(new_spp_item);
-        // trigger to refresh site list
-        showSitesTimeout = setTimeout(showSites, 10);
-        // clear the search for next time
-        // dismiss the modal
-        console.log('About to hide the Species Search modal');
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-    }
+    let spp = target.textContent;
+    console.log(spp);
+    // for testing, use the code and description as one string "species"
+    let spp_entry_date = new Date();
+    let new_spp_item = {
+      "id": spp_entry_date.getTime().toString(),
+      "site_id": current_site_id,
+      "species": spp,
+      "date": spp_entry_date,
+      "latitude": sppItemLat,
+      "longitude": sppItemLon,
+      "accuracy": sppItemAcc
+    };
+    site_spp_array.unshift(new_spp_item);
+    // trigger to refresh site list
+    showSitesTimeout = setTimeout(showSites, 10);
+    // clear the search for next time
+    // dismiss the modal
+    console.log('About to hide the Species Search modal');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+  }
 });
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
@@ -211,7 +211,6 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
 })
 
 sppSearchModal.addEventListener('hidden.bs.modal', function () {
-
 // TODO: option to pause here to wait for better accuracy
   sppItemAccuracyAccepted = true; // flag OK, one way or the other
   // stop acquiring location, use what we have at this point
@@ -313,13 +312,6 @@ function checkSppItemPositionAccuracy() {
   sppItemLat = "" + latestLocation.coords.latitude;
   sppItemLon = "" + latestLocation.coords.longitude;
   sppItemAcc = "" + latestLocation.coords.accuracy.toFixed(1);
-  // let stLoc = "Latitude: " + latestLocation.coords.latitude +
-  //     "<br>Longitude: " + latestLocation.coords.longitude;
-  // if (!sppItemAccuracyAccepted) {
-  //   stLoc += "<br>Target accuracy: " + defaultSiteLocationAcceptableAccuracy + " meters";
-  // }
-  // stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
-  // vnSiteLocation.innerHTML = stLoc;
   if (sppItemAccuracyAccepted) {
     // stop the ticker that periocally calls this function
     console.log("checkSppItemPositionAccuracy found sppItemAccuracyAccepted, stopping ticker");
@@ -327,8 +319,6 @@ function checkSppItemPositionAccuracy() {
     return;
   }
 }
-/* sppItemLat  sppItemLon  sppItemAcc */
-
 
 var vnSiteInfoModal = document.getElementById('vnSiteInfoScreen');
 // following syntax breaks the addEventListener
@@ -448,35 +438,34 @@ function showSites() {
   });
   sites_accordion.innerHTML = sites_accordion_listitems;
 
- // fill in species lists for sites
- site_info_array.forEach((obj, index) => {
-   let this_site_spp_array = site_spp_array.filter(spp_obj =>
-     spp_obj.site_id === obj.id)
-     .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
-  let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
-  let spp_listitems_string = "";
-  this_site_spp_array.forEach((spp_obj, spp_index) => {
-    spp_listitems_string += '<li id="' + spp_obj.id + '">' +
-    spp_obj.species + '</li>';
-  })
-  this_site_spp_list.innerHTML = spp_listitems_string;
-  // add a listener to the species list
-  this_site_spp_list.addEventListener('click', function (e) {
-  // spp list is parent of all the list items
-    var target = e.target; // Clicked element
-    while (target && target.parentNode !== this_site_spp_list) {
-        target = target.parentNode; // If the clicked element isn't a direct child
-        if(!target) { return; } // If element doesn't exist
-    }
-    if (target.tagName === 'LI'){ // tagName returns uppercase
-      console.log("list ID: " + e.currentTarget.id);
-      console.log("item ID: " + target.id);
-      let spp = target.textContent;
-      console.log(spp);
+   // fill in species lists for sites
+   site_info_array.forEach((obj, index) => {
+     let this_site_spp_array = site_spp_array.filter(spp_obj =>
+       spp_obj.site_id === obj.id)
+       .sort((s1, s2) => (s1.spp_date < s2.spp_date) ? 1 : (s1.spp_date > s2.spp_date) ? -1 : 0);
+    let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
+    let spp_listitems_string = "";
+    this_site_spp_array.forEach((spp_obj, spp_index) => {
+      spp_listitems_string += '<li id="' + spp_obj.id + '">' +
+      spp_obj.species + '</li>';
+    })
+    this_site_spp_list.innerHTML = spp_listitems_string;
+    // add a listener to the species list
+    this_site_spp_list.addEventListener('click', function (e) {
+    // spp list is parent of all the list items
+      var target = e.target; // Clicked element
+      while (target && target.parentNode !== this_site_spp_list) {
+          target = target.parentNode; // If the clicked element isn't a direct child
+          if(!target) { return; } // If element doesn't exist
+      }
+      if (target.tagName === 'LI'){ // tagName returns uppercase
+        console.log("list ID: " + e.currentTarget.id);
+        console.log("item ID: " + target.id);
+        let spp = target.textContent;
+        console.log(spp);
 
-    }
-  });
-
+      }
+    });
   }) // end of filling in species lists for sites
 } // end of fn showSites
 // From what I have been able to find out, event listeners are deleted with the
@@ -506,23 +495,20 @@ vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 
 sites_available_to_send_list.addEventListener('click', function (e) {
   // list is parent of all the list items
-    var target = e.target; // Clicked element
-    while (target && target.parentNode !== sites_available_to_send_list) {
-        target = target.parentNode; // If the clicked element isn't a direct child
-        if(!target) { return; } // If element doesn't exist
-    }
-    if (target.tagName === 'LI'){ // tagName returns uppercase
-//        alert(target.id);
-      // the element id is the string "siteToSend_" (to avoic confusion with
-      // any other elements) followed by the index number in the Sites array
-      //
-//      let ar = (target.id).split("_");
-//      console.log(ar);
-      site_chosen_to_send = parseInt((target.id).split("_")[1]);
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== sites_available_to_send_list) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    // the element id is the string "siteToSend_" (to avoic confusion with
+    // any other elements) followed by the index number in the Sites array
+    //
+    site_chosen_to_send = parseInt((target.id).split("_")[1]);
 //      console.log("site_chosen_to_send = " + site_chosen_to_send);
-      document.getElementById('siteChosenToSend').innerHTML =
-          '<h3>' + target.textContent + '</h3>'
-    }
+    document.getElementById('siteChosenToSend').innerHTML =
+        '<h3>' + target.textContent + '</h3>'
+  }
 });
 
 document.getElementById('btn-send-data').addEventListener('click', sendData);
