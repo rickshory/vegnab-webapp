@@ -47,6 +47,7 @@ var site_chosen_to_send = -1;
 var latest_site_date = new Date();
 var site_spp_array = []; // the species items for all the sites, internally
 // indexed by which site each one belongs to.
+var current_spp_item_id = ""; // tracks which item, for working on details
 var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
@@ -459,8 +460,9 @@ function showSites() {
           if(!target) { return; } // If element doesn't exist
       }
       if (target.tagName === 'LI'){ // tagName returns uppercase
+        current_spp_item_id = target.id; // store in global, to track which item workd on
         console.log("list ID: " + e.currentTarget.id);
-        console.log("item ID: " + target.id);
+        console.log("item ID: " + current_spp_item_id);
         let spp = target.textContent;
         console.log(spp);
         var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
@@ -475,7 +477,14 @@ function showSites() {
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
 
-
+vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
+//  alert("in vnSppDetailScreen 'shown.bs.modal'");
+	if (current_spp_item_id == "") {
+    return;
+  }
+  let detailed_spp_item = site_spp_array.find(itm => itm.id === current_spp_item_id);
+  document.getElementById('spp-for-details').innerHTML = detailed_spp_item.species;
+});
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSendDataScreen 'shown.bs.modal'");
