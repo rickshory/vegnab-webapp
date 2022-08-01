@@ -463,7 +463,10 @@ function showSites() {
         console.log("item ID: " + target.id);
         let spp = target.textContent;
         console.log(spp);
-
+        var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
+          keyboard: false
+        });
+        vnSppDtlModal.show();
       }
     });
   }) // end of filling in species lists for sites
