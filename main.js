@@ -494,6 +494,15 @@ vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
       = detailed_spp_item.date;
 });
 
+document.getElementById('btn-delete-spp-item').addEventListener('click', function (e) {
+//  var target = e.target; // Clicked element
+ console.log("in click event for 'btn-delete-spp-item'");
+ bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
+ let i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
+ site_spp_array.splice(i, 1);
+ showSites();
+});
+
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSendDataScreen 'shown.bs.modal'");
 	if (site_info_array.length == 0) {
