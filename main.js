@@ -477,13 +477,22 @@ function showSites() {
 // element if there are no refernces to that element, so re-creating them each
 // time like this should work.
 
+// Why does the following work? Is 'vnSppDetailScreen' and object readable by its ID?
 vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSppDetailScreen 'shown.bs.modal'");
-	if (current_spp_item_id == "") {
+  let detailed_spp_item = site_spp_array.find(itm => itm.id === current_spp_item_id);
+  if (current_spp_item_id === "undefined") {
     return;
   }
-  let detailed_spp_item = site_spp_array.find(itm => itm.id === current_spp_item_id);
-  document.getElementById('spp-for-details').innerHTML = detailed_spp_item.species;
+  document.getElementById('spp-for-details').innerHTML
+      = detailed_spp_item.species;
+  document.getElementById('spp-detail-location').innerHTML
+      = '(' + detailed_spp_item.latitude
+      + ', ' + detailed_spp_item.longitude
+      + '), accuracy ' + detailed_spp_item.accuracy + ' m';
+  document.getElementById('spp-detail-timestamp').innerHTML
+      = detailed_spp_item.date;
+
 });
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
