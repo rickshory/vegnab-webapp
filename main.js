@@ -492,7 +492,6 @@ vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
       + '), accuracy ' + detailed_spp_item.accuracy + ' m';
   document.getElementById('spp-detail-timestamp').innerHTML
       = detailed_spp_item.date;
-
 });
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {

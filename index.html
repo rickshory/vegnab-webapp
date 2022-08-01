@@ -163,15 +163,26 @@
 
           <!-- Modal body -->
           <div class="modal-body">
-            <button type="button" class="btn btn-primary btn-lg"
-                id="btn-delete-spp-item">Delete this species item
-            </button>
-            <button type="button" class="btn btn-primary btn-lg"
-                id="btn-mark-uncertain-spp">Mark uncertain of species
-            </button>
-            <button type="button" class="btn btn-primary btn-lg"
-                id="btn-mark-uncertain-genus">Mark uncertain of genus
-            </button>
+            <div class="d-grid gap-5">
+              <button type="button" class="btn btn-primary btn-lg"
+                  id="btn-delete-spp-item">
+                  Delete this species item, entered by mistake
+              </button>
+              <button type="button" class="btn btn-primary btn-lg"
+                  id="btn-mark-uncertain-spp">
+                  Mark this item as uncertain of species
+              </button>
+              <button type="button" class="btn btn-primary btn-lg"
+                  id="btn-mark-uncertain-genus">
+                  Mark this item as uncertain of genus
+              </button>
+              <button type="button" class="btn btn-primary btn-lg"
+                  id="btn-mark-not-uncertain">
+                  Remove any uncertainty mark for this item
+              </button>
+            </div>
+          </div>
+          <div class="modal-footer">
             <div class="row" id="spp-detail-location">
               <!-- filled in on Modal Shown -->
               Species item location will appear here
