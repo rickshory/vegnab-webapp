@@ -503,6 +503,36 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
  showSites();
 });
 
+document.getElementById('btn-mark-uncertain-spp').addEventListener('click', function (e) {
+//  var target = e.target; // Clicked element
+ console.log("in click event for 'btn-mark-uncertain-spp'");
+ bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
+ let ucModal = new bootstrap.Modal(document.getElementById('vnUnderConstructionScreen'), {
+   keyboard: false
+ });
+ ucModal.show();
+});
+
+document.getElementById('btn-mark-uncertain-genus').addEventListener('click', function (e) {
+//  var target = e.target; // Clicked element
+ console.log("in click event for 'btn-mark-uncertain-genus'");
+ bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
+ let ucModal = new bootstrap.Modal(document.getElementById('vnUnderConstructionScreen'), {
+   keyboard: false
+ });
+ ucModal.show();
+});
+
+document.getElementById('btn-mark-not-uncertain').addEventListener('click', function (e) {
+//  var target = e.target; // Clicked element
+ console.log("in click event for 'btn-mark-not-uncertain'");
+ bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
+ let ucModal = new bootstrap.Modal(document.getElementById('vnUnderConstructionScreen'), {
+   keyboard: false
+ });
+ ucModal.show();
+});
+
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSendDataScreen 'shown.bs.modal'");
 	if (site_info_array.length == 0) {
