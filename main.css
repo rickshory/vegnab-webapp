@@ -33,3 +33,9 @@ body, textarea, input[type="text"], input[type="email"], button, select {
 #match-list li.nonlocal {
   background-color: burlywood;
 }
+
+.btn-xl {
+    padding: 10px 20px;
+    font-size: 20px;
+    border-radius: 10px;
+}

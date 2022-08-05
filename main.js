@@ -428,7 +428,7 @@ function showSites() {
 (index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
 '    <div class="card-body">' +
 '      <button type="button" id="' + obj.id +
-'" class="btn btn-primary  btn-lg" data-bs-toggle="modal"' +
+'" class="btn btn-primary  btn-xl" data-bs-toggle="modal"' +
 '        data-bs-target="#vnSppSearchScreen">' +
 '        Add species' +
 '      </button>' +
