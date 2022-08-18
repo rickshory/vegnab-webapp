@@ -1,5 +1,20 @@
 (function () {
 
+// is this the right place to put the Service Worker setup?
+if ('serviceWorker' in navigator) {
+  // Register a service worker hosted at the root of the
+  // site using the default scope.
+  // Fails because there is no 'sw.js' yet, but console logs
+  //  indicates this code does get run
+  navigator.serviceWorker.register('/sw.js').then((registration) => {
+    console.log('Service worker registration succeeded:', registration);
+  }, /*catch*/ (error) => {
+    console.error(`Service worker registration failed: ${error}`);
+  });
+} else {
+  console.error('Service workers are not supported.');
+}
+
 // for testing, region is "OR" (Oregon)
 // todo: automatically acquire or input region
 var region_code = "OR";
