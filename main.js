@@ -129,55 +129,56 @@ function updateMatchList() {
 	var search_term = sppSearchInput.value.toLowerCase();
 	// todo: deal with backspace removal of characters
 	match_list.innerHTML = ""; // clear any previous content
+  // get the different kinds of matches, will concatenate as the html string
+  let local_spp_match_array = [];
+  let nonlocal_spp_match_array = [];
+
 	if (search_term.length > 1) {
-		// first, get the strict matches on item_code for local species
-		let spp_match_array = local_spp_array.filter(obj =>
+		// get the strict matches on item_code for local species
+		local_spp_match_array = local_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
+		if (search_term.length > 2) {
+			// get local full-text matches
+			// at least 3 characters, to include short genera such as "Poa" and "Zea"
 
-			if (search_term.length > 2) {
-				// get local full-text matches local
-				// at least 3 characters
-				// to include short genera such as "Poa" and "Zea"
+			// no need to duplicate any item_code matches
+			let local_no_code_array = local_spp_array.filter(obj =>
+				!local_spp_match_array.includes(obj));
+			let local_fulltext_spp_match_array = local_no_code_array.filter(obj =>
+				obj.item_description.toLowerCase().includes(search_term));
+			local_spp_match_array = local_spp_match_array.concat(local_fulltext_spp_match_array);
+			local_spp_match_array.sort(); // internally sort local spp, by code
 
-				// no need to duplicate any item_code matches
-				let local_no_code_array = local_spp_array.filter(obj =>
-					!spp_match_array.includes(obj));
-				let local_fulltext_spp_match_array = local_no_code_array.filter(obj =>
-					obj.item_description.toLowerCase().includes(search_term));
-				spp_match_array = spp_match_array.concat(local_fulltext_spp_match_array);
-				spp_match_array.sort(); // internally sort local spp, by code
+			// add matches of non-local species, CSS will color them differently
+			// first, get strict code matches
+			nonlocal_spp_match_array = nonlocal_spp_array.filter(obj =>
+				obj.item_code.toLowerCase().startsWith(search_term));
+			// next, get full-text matches
+			// no need to repeat any of the code matches
+			let nonlocal_no_code_array = nonlocal_spp_array.filter(obj =>
+				!nonlocal_spp_match_array.includes(obj));
 
-				// add matches of non-local species, CSS will color them differently
-				// first, get strict code matches
-				let nonlocal_spp_match_array = nonlocal_spp_array.filter(obj =>
-					obj.item_code.toLowerCase().startsWith(search_term));
-				// next, get full-text matches
-				// no need to repeat any of the code matches
-				let nonlocal_no_code_array = nonlocal_spp_array.filter(obj =>
-					!nonlocal_spp_match_array.includes(obj));
-
-				let nonlocal_fulltext_spp_match_array = nonlocal_no_code_array.filter(obj =>
-					obj.item_description.toLowerCase().includes(search_term));
-				// put the nonlocal code and full-text results together
-				nonlocal_spp_match_array =
-					nonlocal_spp_match_array.concat(nonlocal_fulltext_spp_match_array);
-				// internally sort
-				nonlocal_spp_match_array.sort();
-				// put the nonlocal below the local
-//				console.log(nonlocal_spp_match_array);
-				spp_match_array = spp_match_array.concat(nonlocal_spp_match_array);
-				// don't sort here; leave the nonlocal after the sorted local species
-			}
-    // build list contents, then assign innerHTML all at once
-    let list_string = "";
-    spp_match_array.forEach(obj => {
-			let display_class = obj.is_local ? "local" : "nonlocal";
-			list_string += '<li class="' + display_class +
-        '" id="' + obj.item_code + '">' + obj.item_code +
-		 		': ' + obj.item_description + '</li>';
-		});
-    match_list.innerHTML = list_string;
+			let nonlocal_fulltext_spp_match_array = nonlocal_no_code_array.filter(obj =>
+				obj.item_description.toLowerCase().includes(search_term));
+			// put the nonlocal code and full-text results together
+			nonlocal_spp_match_array =
+				nonlocal_spp_match_array.concat(nonlocal_fulltext_spp_match_array);
+			// internally sort
+			nonlocal_spp_match_array.sort();
+		}
 	}
+  // build list contents, if any, then assign innerHTML all at once
+  let list_string = "";
+  local_spp_match_array.forEach(obj => {
+    list_string += '<li class="local" id="' + obj.item_code + '">'
+      + obj.item_code + ': ' + obj.item_description + '</li>';
+  });
+  // put nonlocal (less relevant) after local
+  nonlocal_spp_match_array.forEach(obj => {
+    list_string += '<li class="nonlocal" id="' + obj.item_code + '">'
+      + obj.item_code + ': ' + obj.item_description + '</li>';
+  });
+  match_list.innerHTML = list_string;
 }
 
 match_list.addEventListener('click', function (e) {
