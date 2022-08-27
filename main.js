@@ -132,7 +132,13 @@ function updateMatchList() {
   // get the different kinds of matches, will concatenate as the html string
   let local_spp_match_array = [];
   let nonlocal_spp_match_array = [];
+  let found_spp_match_array = [];
 
+  if (search_term.length > 0) {
+    found_spp_match_array = found_spp_array.filter(obj =>
+			obj.item_code.toLowerCase().startsWith(search_term));
+    found_spp_match_array.sort();
+  }
 	if (search_term.length > 1) {
 		// get the strict matches on item_code for local species
 		local_spp_match_array = local_spp_array.filter(obj =>
@@ -169,6 +175,10 @@ function updateMatchList() {
 	}
   // build list contents, if any, then assign innerHTML all at once
   let list_string = "";
+  found_spp_match_array.forEach(obj => {
+    list_string += '<li class="prevfound" id="' + obj.item_code + '">'
+      + obj.item_code + ': ' + obj.item_description + '</li>';
+  });
   local_spp_match_array.forEach(obj => {
     list_string += '<li class="local" id="' + obj.item_code + '">'
       + obj.item_code + ': ' + obj.item_description + '</li>';
@@ -213,7 +223,7 @@ match_list.addEventListener('click', function (e) {
     if (!found_spp_array.includes(found_spp)) {
       found_spp_array.push(found_spp)
     }
-    console.log(found_spp_array);
+//    console.log(found_spp_array);
 
     // trigger to refresh site list
     showSitesTimeout = setTimeout(showSites, 10);
