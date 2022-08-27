@@ -26,6 +26,14 @@ body, textarea, input[type="text"], input[type="email"], button, select {
 	}
 }
 
+#match-list li.prevfound {
+  background-color: white;
+}
+
+#match-list li.placeholder {
+  background-color: lightblue;
+}
+
 #match-list li.local {
   background-color: lightgreen;
 }
