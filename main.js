@@ -66,6 +66,8 @@ var current_spp_item_id = ""; // tracks which item, for working on details
 var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
+var found_spp_array = []; // track which species have been previously found
+
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
 var match_list = document.getElementById("match-list");
@@ -103,8 +105,7 @@ function makeLocalAndNonlocalSppArrays() {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
 			"item_description": orig_obj.genus + orig_obj.species
-          + orig_obj.subspp_var + orig_obj.common_names,
-			"is_local": true
+          + orig_obj.subspp_var + orig_obj.common_names
 		};
 		return new_properties;
 	});
@@ -116,8 +117,7 @@ function makeLocalAndNonlocalSppArrays() {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
       "item_description": orig_obj.genus + orig_obj.species
-          + orig_obj.subspp_var + orig_obj.common_names,
-			"is_local": false
+          + orig_obj.subspp_var + orig_obj.common_names
 		};
 		return new_properties;
 	});
@@ -188,7 +188,7 @@ match_list.addEventListener('click', function (e) {
       target = target.parentNode; // If the clicked element isn't a direct child
       if(!target) { return; } // If element doesn't exist
   }
-  if (target.tagName === 'LI'){ // tagName returns uppercase
+  if (target.tagName === 'LI') { // tagName returns uppercase
 //        alert(target.id);
     let spp = target.textContent;
     console.log(spp);
@@ -204,6 +204,17 @@ match_list.addEventListener('click', function (e) {
       "accuracy": sppItemAcc
     };
     site_spp_array.unshift(new_spp_item);
+    // remember that this species has been found
+    let a = spp.split(":");
+    let found_spp = {
+      "item_code": a[0].trim(),
+      "item_description": a[1].trim()
+    };
+    if (!found_spp_array.includes(found_spp)) {
+      found_spp_array.push(found_spp)
+    }
+    console.log(found_spp_array);
+
     // trigger to refresh site list
     showSitesTimeout = setTimeout(showSites, 10);
     // clear the search for next time
@@ -476,7 +487,7 @@ function showSites() {
           target = target.parentNode; // If the clicked element isn't a direct child
           if(!target) { return; } // If element doesn't exist
       }
-      if (target.tagName === 'LI'){ // tagName returns uppercase
+      if (target.tagName === 'LI') { // tagName returns uppercase
         current_spp_item_id = target.id; // store in global, to track which item workd on
         console.log("list ID: " + e.currentTarget.id);
         console.log("item ID: " + current_spp_item_id);
