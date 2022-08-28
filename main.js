@@ -142,34 +142,40 @@ function updateMatchList() {
 	if (search_term.length > 1) {
 		// get the strict matches on item_code for local species
 		local_spp_match_array = local_spp_array.filter(obj =>
-			obj.item_code.toLowerCase().startsWith(search_term)
-      && !found_spp_array.includes(obj));
+			obj.item_code.toLowerCase().startsWith(search_term));
 		if (search_term.length > 2) {
 			// get local full-text matches
 			// at least 3 characters, to include short genera such as "Poa" and "Zea"
 
-			// no need to duplicate any item_code matches or found spp
-			let local_no_code_array = local_spp_array.filter(obj =>
-				!local_spp_match_array.includes(obj) && !found_spp_array.includes(obj));
-			let local_fulltext_spp_match_array = local_no_code_array.filter(obj =>
+      // get full-text matches
+      let local_fulltext_spp_match_array = local_spp_array.filter(obj =>
 				obj.item_description.toLowerCase().includes(search_term));
-			local_spp_match_array = local_spp_match_array.concat(local_fulltext_spp_match_array);
+      // remove any code repeats
+      local_fulltext_spp_match_array = local_fulltext_spp_match_array.filter(ar =>
+        !local_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
+      // put the code matches together with the full-text matches
+      local_spp_match_array = local_spp_match_array.concat(local_fulltext_spp_match_array);
+      // remove any previously-found repeats
+      local_spp_match_array = local_spp_match_array.filter(ar =>
+        !found_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
 			local_spp_match_array.sort(); // internally sort local spp, by code
 
 			// add matches of non-local species, CSS will color them differently
-			// first, get strict code matches
+			// get strict code matches
 			nonlocal_spp_match_array = nonlocal_spp_array.filter(obj =>
-				obj.item_code.toLowerCase().startsWith(search_term) && !found_spp_array.includes(obj));
-			// next, get full-text matches
-			// no need to repeat any of the code matches
-			let nonlocal_no_code_array = nonlocal_spp_array.filter(obj =>
-				!nonlocal_spp_match_array.includes(obj) && !found_spp_array.includes(obj));
-
-			let nonlocal_fulltext_spp_match_array = nonlocal_no_code_array.filter(obj =>
-				obj.item_description.toLowerCase().includes(search_term) && !found_spp_array.includes(obj));
+				obj.item_code.toLowerCase().startsWith(search_term));
+			// get full-text matches
+			let nonlocal_fulltext_spp_match_array = nonlocal_spp_array.filter(obj =>
+				obj.item_description.toLowerCase().includes(search_term));
+      // remove any code repeats
+      nonlocal_fulltext_spp_match_array = nonlocal_fulltext_spp_match_array.filter(ar =>
+        !nonlocal_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
 			// put the nonlocal code and full-text results together
 			nonlocal_spp_match_array =
 				nonlocal_spp_match_array.concat(nonlocal_fulltext_spp_match_array);
+      // remove any previously-found repeats
+      nonlocal_spp_match_array = nonlocal_spp_match_array.filter(ar =>
+        !found_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
 			// internally sort
 			nonlocal_spp_match_array.sort();
 		}
