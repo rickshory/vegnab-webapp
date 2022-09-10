@@ -1,16 +1,51 @@
 const cacheName = 'VegNab-v0.00';
 const appShellFiles = [
-  '/vegnab-webapp/',
-  '/vegnab-webapp/index.html',
-  '/vegnab-webapp/main.js',
-  '/vegnab-webapp/main.css',
-  '/vegnab-webapp/nrcs_spp.txt',
-  '/vegnab-webapp/favicon_io/android-chrome-192x192.png',
-  '/vegnab-webapp/favicon_io/android-chrome-512x512.png',
-  '/vegnab-webapp/favicon_io/apple-touch-icon.png',
-  '/vegnab-webapp/favicon_io/favicon.ico',
-  '/vegnab-webapp/favicon_io/favicon-16x16.png',
-  '/vegnab-webapp/favicon_io/favicon-32x32.png',
-  '/vegnab-webapp/favicon_io/site.webmanifest',
+//  '/vegnab-webapp/',
+  '../index.html',
+  '../main.js',
+  '../main.css',
+  '../nrcs_spp.txt',
+  '../favicon_io/android-chrome-192x192.png',
+  '../favicon_io/android-chrome-512x512.png',
+  '../favicon_io/apple-touch-icon.png',
+  '../favicon_io/favicon.ico',
+  '../favicon_io/favicon-16x16.png',
+  '../favicon_io/favicon-32x32.png',
+  '../favicon_io/site.webmanifest',
 ];
-// not the sw.js file itself
+// the sw.js file itself does not go in the cache
+// in case there are extra files to cache
+const extraFiles = []; // reserve space
+const contentToCache = appShellFiles.concat(extraFiles);
+
+// Installing Service Worker
+self.addEventListener('install', (e) => {
+  console.log('[Service Worker install] Begin install');
+  e.waitUntil((async () => {
+    const cache = await caches.open(cacheName);
+    console.log('[Service Worker install] Caching content');
+    await cache.addAll(contentToCache);
+// // check that file name format is correct
+//     contentToCache.forEach(obj => {
+//       const response = await fetch(obj);
+// //      const cache = await caches.open(cacheName);
+//       console.log(`[Service Worker install] Caching resource: ${obj.url}`);
+//       console.log(`[Service Worker install] Response: ${response.clone()}`);
+//       cache.put(obj, response.clone());
+//     });
+  })());
+});
+
+// Fetching content using Service Worker
+self.addEventListener('fetch', (e) => {
+  e.respondWith((async () => {
+    const r = await caches.match(e.request);
+    console.log(`[Service Worker fetch] Fetching resource: ${e.request.url}`);
+    if (r) return r;
+    const response = await fetch(e.request);
+    const cache = await caches.open(cacheName);
+    console.log(`[Service Worker fetch] Caching new resource: ${e.request.url}`);
+    cache.put(e.request, response.clone());
+    return response;
+  })());
+});
