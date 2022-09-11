@@ -68,17 +68,14 @@ self.addEventListener('fetch', (e) => {
           console.log('  Response for %s from network is: %O',
             e.request.url, response);
 
-          if (response.status < 400 &&
-              response.headers.has('content-type')) {
-            // This avoids caching responses that we know are errors (i.e. HTTP status code of 4xx or 5xx).
-            // Note that for opaque filtered responses (https://fetch.spec.whatwg.org/#concept-filtered-response-opaque)
-            // we can't access the response headers.
-            // It is something to keep in mind if you're attempting to cache other resources from a cross-origin
-            // domain that doesn't support CORS, though!
-            // We call .clone() on the response to save a copy of it to the cache. By doing so, we get to keep
-            // the original response object which we will return back to the controlled page.
-            // (see https://developer.mozilla.org/en-US/docs/Web/API/Request/clone)
+          if (response.status < 400) {
+            // This avoids caching responses that we know are errors
+            //(i.e. HTTP status code of 4xx or 5xx).
             console.log('  Caching the response to', e.request.url);
+            // We call .clone() on the response to save a copy of it to the
+            // cache. By doing so, we get to keep the original response object
+            // which we will return back to the controlled page.
+            // (see https://developer.mozilla.org/en-US/docs/Web/API/Request/clone)
             cache.put(e.request, response.clone());
           } else {
             console.log('  Not caching the response to', e.request.url);
