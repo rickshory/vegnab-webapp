@@ -18,25 +18,17 @@ const appShellFiles = [
 const extraFiles = []; // reserve space
 const contentToCache = appShellFiles.concat(extraFiles);
 
-// Installing Service Worker
+// install Service Worker
 self.addEventListener('install', (e) => {
   console.log('[Service Worker install] Begin install');
   e.waitUntil((async () => {
     const cache = await caches.open(cacheName);
     console.log('[Service Worker install] Caching content');
     await cache.addAll(contentToCache);
-// // check that file name format is correct
-//     contentToCache.forEach(obj => {
-//       const response = await fetch(obj);
-// //      const cache = await caches.open(cacheName);
-//       console.log(`[Service Worker install] Caching resource: ${obj.url}`);
-//       console.log(`[Service Worker install] Response: ${response.clone()}`);
-//       cache.put(obj, response.clone());
-//     });
   })());
 });
 
-// Fetching content using Service Worker
+// fetch content using Service Worker
 self.addEventListener('fetch', (e) => {
   e.respondWith((async () => {
     const r = await caches.match(e.request);
@@ -48,4 +40,15 @@ self.addEventListener('fetch', (e) => {
     cache.put(e.request, response.clone());
     return response;
   })());
+});
+
+// cleanup on version change
+self.addEventListener('activate', (e) => {
+  e.waitUntil(caches.keys().then((keyList) => {
+    return Promise.all(keyList.map((key) => {
+      if (key === cacheName) { return; }
+      console.log(`[Service Worker activate] deleting key: ${key}`);
+      return caches.delete(key);
+    }));
+  }));
 });
