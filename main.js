@@ -730,12 +730,30 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
   } else {
     let strRegionsAvaiableList = '';
     regions_array.forEach((obj, index) => {
-      strRegionsAvaiableList += '<li class="dropdown-item" id = "region_code_'
+      strRegionsAvaiableList += '<li class="dropdown-item" id = "regionCode_'
           + obj.code + '"><h3>' +  obj.name + '</h3></li>';
     })
     settingsFormRegionsList.innerHTML = strRegionsAvaiableList;
   }
 });
 
+settingsFormRegionsList.addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== settingsFormRegionsList) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    // the element id is the string "regionCode_" (to avoic confusion with
+    // any other elements) followed by the two-letter code of the region
+    //
+    region_code = (target.id).split("_")[1];
+//      console.log("region_code = " + region_code);
+    document.getElementById('regionChosen').innerHTML =
+        '<h3>' + target.textContent + '</h3>';
+    const updateRegionTimeout = setTimeout(makeLocalAndNonlocalSppArrays, 10);
+  }
+});
 
 })(); // Immediately-Invoked Function Expression (IIFE)
