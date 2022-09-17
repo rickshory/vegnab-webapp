@@ -3,6 +3,7 @@ const appShellFiles = [
 //  '/vegnab-webapp/',
   '../index.html',
   '../main.js',
+  '../regions.js',
   '../main.css',
   '../nrcs_spp.txt',
   '../favicon_io/android-chrome-192x192.png',
