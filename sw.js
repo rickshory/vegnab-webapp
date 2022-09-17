@@ -5,6 +5,7 @@ const appShellFiles = [
   '../main.js',
   '../regions.js',
   '../bootstrap.bundle.min.js',
+  '../bootstrap.bundle.min.js.map',
   '../main.css',
   '../bootstrap.min.css',
   '../bootstrap.min.css.map',
