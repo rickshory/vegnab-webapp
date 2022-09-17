@@ -7,6 +7,7 @@ const appShellFiles = [
   '../bootstrap.bundle.min.js',
   '../main.css',
   '../bootstrap.min.css',
+  '../bootstrap.min.css.map',
   '../bootstrap-glyphicons.css',
   '../nrcs_spp.txt',
   '../favicon_io/android-chrome-192x192.png',
