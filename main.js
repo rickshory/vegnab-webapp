@@ -327,6 +327,10 @@ function showPosition(position) {
 function checkSitePositionAccuracy() {
   // called for a new site, periocally, until position is accurate enough
   console.log("entered checkSitePositionAccuracy");
+  if (latestLocation === undefined) {
+    console.log("latestLocation not yet defined");
+    return;
+  }
   if (latestLocation.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
     siteAccuracyAccepted = true;
     siteLocation = latestLocation; // remember, and no longer null
