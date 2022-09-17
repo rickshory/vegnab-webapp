@@ -1,4 +1,4 @@
-var regions = [
+var regions_array = [
   {
     code: "AL",
     name: "Alabama",

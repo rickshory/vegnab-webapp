@@ -714,4 +714,28 @@ function sendData() {
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
 } // end of fn sendData
 
+// Why does the following work? Is 'vnSettingsScreen' and object readable by its ID?
+vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
+//  alert("in vnSettingsScreen 'shown.bs.modal'");
+  let region_item = regions_array.find(itm => itm.code === region_code);
+  if (region_item === "undefined") {
+    document.getElementById('regionChosen').innerHTML
+        = "no region chosen";
+  } else {
+    document.getElementById('regionChosen').innerHTML
+        = "<h3>" + region_item.name + "</h3>";
+  }
+  if (regions_array.length == 0) {
+    settingsFormRegionsList.innerHTML = '';
+  } else {
+    let strRegionsAvaiableList = '';
+    regions_array.forEach((obj, index) => {
+      strRegionsAvaiableList += '<li class="dropdown-item" id = "region_code_'
+          + obj.code + '"><h3>' +  obj.name + '</h3></li>';
+    })
+    settingsFormRegionsList.innerHTML = strRegionsAvaiableList;
+  }
+});
+
+
 })(); // Immediately-Invoked Function Expression (IIFE)
