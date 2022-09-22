@@ -218,43 +218,46 @@ match_list.addEventListener('click', function (e) {
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
 //        alert(target.id);
-    // // TODO: catch the case of a placeholder here, or other error
-    console.log("Taget ID: " + target.id);
+    // if a regular species code
+    if (nrcs_spp_array.some(obj => obj.nrcs_code == target.id)) {
+      let spp = target.textContent;
+      console.log(spp);
+      // for testing, use the code and description as one string "species"
+      let spp_entry_date = new Date();
+      let new_spp_item = {
+        "id": spp_entry_date.getTime().toString(),
+        "site_id": current_site_id,
+        "species": spp,
+        "date": spp_entry_date,
+        "latitude": sppItemLat,
+        "longitude": sppItemLon,
+        "accuracy": sppItemAcc
+      };
+      site_spp_array.unshift(new_spp_item);
+      // remember that this species has been found
+      let a = spp.split(":");
+      let found_spp = {
+        "item_code": a[0].trim(),
+        "item_description": a[1].trim()
+      };
+      if (!found_spp_array.includes(found_spp)) {
+        found_spp_array.push(found_spp)
+      }
+  //    console.log(found_spp_array);
+
+      // trigger to refresh site list
+      showSitesTimeout = setTimeout(showSites, 10);
+      // clear the search for next time
+      // dismiss the modal
+      console.log('About to hide the Species Search modal');
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+    } // end, if regular species
+    // TODO: process placeholders, and new placeholders, here
+    console.log("Target ID: " + target.id);
     if (target.id == "P_H") {
 
     }
-    let spp = target.textContent;
-    console.log(spp);
-    // for testing, use the code and description as one string "species"
-    let spp_entry_date = new Date();
-    let new_spp_item = {
-      "id": spp_entry_date.getTime().toString(),
-      "site_id": current_site_id,
-      "species": spp,
-      "date": spp_entry_date,
-      "latitude": sppItemLat,
-      "longitude": sppItemLon,
-      "accuracy": sppItemAcc
-    };
-    site_spp_array.unshift(new_spp_item);
-    // remember that this species has been found
-    let a = spp.split(":");
-    let found_spp = {
-      "item_code": a[0].trim(),
-      "item_description": a[1].trim()
-    };
-    if (!found_spp_array.includes(found_spp)) {
-      found_spp_array.push(found_spp)
-    }
-//    console.log(found_spp_array);
-
-    // trigger to refresh site list
-    showSitesTimeout = setTimeout(showSites, 10);
-    // clear the search for next time
-    // dismiss the modal
-    console.log('About to hide the Species Search modal');
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-  }
+  } // end of found the clicked list item 
 });
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
