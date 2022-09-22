@@ -130,9 +130,9 @@ function updateMatchList() {
 	// todo: deal with backspace removal of characters
 	match_list.innerHTML = ""; // clear any previous content
   // get the different kinds of matches, will concatenate as the html string
+  let found_spp_match_array = [];
   let local_spp_match_array = [];
   let nonlocal_spp_match_array = [];
-  let found_spp_match_array = [];
 
   if (search_term.length > 0) {
     found_spp_match_array = found_spp_array.filter(obj =>
@@ -195,6 +195,17 @@ function updateMatchList() {
     list_string += '<li class="nonlocal" id="' + obj.item_code + '">'
       + obj.item_code + ': ' + obj.item_description + '</li>';
   });
+  // only suggest a placeholder if no matches so far
+  if (list_string == "") {
+    console.log("No matches, checking for valid placeholder");
+    // assure only single internal spaces
+    // search_term = search_term.trim().replace(/\s+/g, ' ');
+    // if 4 to 10 characters
+    if (search_term.length > 3 && search_term.length < 11) {
+      list_string += '<li class="placeholder" id="P_H">'
+        + 'Use placeholder "' + search_term + '"?</li>';
+    }
+  }
   match_list.innerHTML = list_string;
 }
 
@@ -207,6 +218,11 @@ match_list.addEventListener('click', function (e) {
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
 //        alert(target.id);
+    // // TODO: catch the case of a placeholder here, or other error
+    console.log("Taget ID: " + target.id);
+    if (target.id == "P_H") {
+
+    }
     let spp = target.textContent;
     console.log(spp);
     // for testing, use the code and description as one string "species"
@@ -356,6 +372,7 @@ function checkSitePositionAccuracy() {
 function checkSppItemPositionAccuracy() {
   // called for a new species item, periocally, until position is accurate enough
   console.log("entered checkSppItemPositionAccuracy");
+  // // TODO: check if latestLocation undefined
   if (latestLocation.coords.accuracy <= sppItemLocationTargetAccuracy) {
     sppItemAccuracyAccepted = true;
   }
