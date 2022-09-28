@@ -67,6 +67,7 @@ var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
+var placeholders_array = [];
 
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
@@ -138,6 +139,9 @@ function updateMatchList() {
     found_spp_match_array = found_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
     found_spp_match_array.sort();
+    // treat placeholders as found species
+    let placeholder_codes_match_array = placeholders_array.filter(obj =>
+     obj.code.toLowerCase().startsWith(search_term));
   }
 	if (search_term.length > 1) {
 		// get the strict matches on item_code for local species
@@ -199,11 +203,15 @@ function updateMatchList() {
   if (list_string == "") {
     console.log("No matches, checking for valid placeholder");
     // assure only single internal spaces
-    // search_term = search_term.trim().replace(/\s+/g, ' ');
-    // if 4 to 10 characters
-    if (search_term.length > 3 && search_term.length < 11) {
-      list_string += '<li class="placeholder" id="P_H">'
-        + 'Use placeholder "' + search_term + '"?</li>';
+    let ph_code = search_term.trim().replace(/\s+/g, ' ');
+    // if has a space, and 4 to 10 characters
+    if (ph_code.includes(" ")
+        && ph_code.length > 3 && ph_code.length < 11) {
+      let encoded_code = encodeURIComponent(ph_code);
+      console.log("encoded code: " + encoded_code);
+      list_string += '<li class="placeholder" id="P_H_NEW_'
+        + encoded_code + '">'
+        + 'Use placeholder "' + ph_code + '"?</li>';
     }
   }
   match_list.innerHTML = list_string;
@@ -251,13 +259,28 @@ match_list.addEventListener('click', function (e) {
       // dismiss the modal
       console.log('About to hide the Species Search modal');
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-    } // end, if regular species
-    // TODO: process placeholders, and new placeholders, here
-    console.log("Target ID: " + target.id);
-    if (target.id == "P_H") {
+      // end, if regular species
+    } else { // not a regular species
+      console.log("Target ID: " + target.id);
+      if (target.id.startsWith("P_H_")) {
+        console.log("some kind of placeholder, new or existing");
+        if (target.id.startsWith("P_H_NEW_")) { // a new placeholer
+          // a placeholder code contains spaces, and thus was encoded to make a valid ID
+          console.log("target.id for new placeholder: " + target.id);
+          let new_placeholder_code = decodeURIComponent(target.id.slice(8));
+          console.log("new placeholder code: " + new_placeholder_code);
+          // end of processing a new placeholder
+        } else { // an existing placeholer
+          // a placeholder code will contain spaces, and thus was encoded to make a valid ID
+          console.log("target.id for existing placeholder: " + target.id);
+          let matched_placeholder_code = decodeURIComponent(target.id.slice(4));
+          console.log("parsed placeholder code: " + matched_placeholder_code);
+          // end of processing an existing placeholder
+        }
 
-    }
-  } // end of found the clicked list item 
+      } // end of processing placeholders
+    } // dropthrough if neither real species or placeholder
+  } // end of found the clicked list item
 });
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
