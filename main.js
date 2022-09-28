@@ -68,6 +68,8 @@ var local_spp_array = [];
 var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
 var placeholders_array = [];
+var placeholder_state = ""; // will be 'new' or 'edit'
+var current_placeholder_code = "";
 
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
@@ -267,9 +269,18 @@ match_list.addEventListener('click', function (e) {
         if (target.id.startsWith("P_H_NEW_")) { // a new placeholer
           // a placeholder code contains spaces, and thus was encoded to make a valid ID
           console.log("target.id for new placeholder: " + target.id);
-          let new_placeholder_code = decodeURIComponent(target.id.slice(8));
-          console.log("new placeholder code: " + new_placeholder_code);
-          // end of processing a new placeholder
+          placeholder_state = "new";
+          current_placeholder_code = decodeURIComponent(target.id.slice(8));
+          console.log("new placeholder code: " + current_placeholder_code);
+
+          console.log('About to hide the Species Search modal for a new placeholder');
+          bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+          var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
+            keyboard: false
+          });
+          vnPhInfoModal.show();
+          
+          // end of initiating a new placeholder
         } else { // an existing placeholer
           // a placeholder code will contain spaces, and thus was encoded to make a valid ID
           console.log("target.id for existing placeholder: " + target.id);
@@ -596,7 +607,7 @@ function showSites() {
           if(!target) { return; } // If element doesn't exist
       }
       if (target.tagName === 'LI') { // tagName returns uppercase
-        current_spp_item_id = target.id; // store in global, to track which item workd on
+        current_spp_item_id = target.id; // store in global, to track which item worked on
         console.log("list ID: " + e.currentTarget.id);
         console.log("item ID: " + current_spp_item_id);
         let spp = target.textContent;
