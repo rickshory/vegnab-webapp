@@ -70,6 +70,18 @@ var found_spp_array = []; // track which species have been previously found
 var placeholders_array = [];
 var placeholder_state = ""; // will be 'new' or 'edit'
 var current_placeholder_code = "";
+var current_placeholder;
+//  = {
+//   "id": numeric from timestamp,
+//   "site_id": current_site_id,
+//   "code": the code,
+//   "keywords": [empty until filled in],
+//   "photos": [photo uris and or urls],
+//   "date": creation _date,
+//   "latitude": first found at Lat,
+//   "longitude": first found at Lon,
+//   "accuracy": lat lon Accuracy
+// };
 
 var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
@@ -272,6 +284,18 @@ match_list.addEventListener('click', function (e) {
           placeholder_state = "new";
           current_placeholder_code = decodeURIComponent(target.id.slice(8));
           console.log("new placeholder code: " + current_placeholder_code);
+          let ph_create_date = new Date();
+          current_placeholder = {
+            "id": ph_create_date.getTime().toString(),
+            "site_id": current_site_id,
+            "code": current_placeholder_code,
+            "keywords": [], // empty until filled in
+            "photos": [], // photo uris and urls
+            "date": ph_create_date,
+            "latitude": sppItemLat,
+            "longitude": sppItemLon,
+            "accuracy": sppItemAcc
+          };
 
           console.log('About to hide the Species Search modal for a new placeholder');
           bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
@@ -279,7 +303,7 @@ match_list.addEventListener('click', function (e) {
             keyboard: false
           });
           vnPhInfoModal.show();
-          
+
           // end of initiating a new placeholder
         } else { // an existing placeholer
           // a placeholder code will contain spaces, and thus was encoded to make a valid ID
@@ -293,6 +317,49 @@ match_list.addEventListener('click', function (e) {
     } // dropthrough if neither real species or placeholder
   } // end of found the clicked list item
 });
+
+// Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
+vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
+//  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
+  if (current_placeholder_code === "") {
+    return;
+  }
+  if (placeholder_state === "new") {
+    document.getElementById('placeholder_code_label').innerHTML
+        = 'New placeholder "' + current_placeholder.code + '"';
+    document.getElementById('placeholder_location').innerHTML
+         = '(' + current_placeholder.latitude
+         + ', ' + current_placeholder.longitude
+         + '), accuracy ' + current_placeholder.accuracy + ' m';
+     document.getElementById('placeholder_date').innerHTML
+         = current_placeholder.date;
+   // TODO: finish this
+   /*
+   current_placeholder = {
+     "id": ph_create_date.getTime().toString(),
+     "site_id": current_site_id,
+     "code": current_placeholder_code,
+     "keywords": [], // empty until filled in
+     "photos": [], // photo uris and urls
+     "date": ph_create_date,
+     "latitude": sppItemLat,
+     "longitude": sppItemLon,
+     "accuracy": sppItemAcc
+   };
+   */
+  }
+  if (placeholder_state === "edit") {
+//    current_placeholder = placeholders_array.find(itm => itm.code === current_placeholder_code);
+   // TODO: finish this
+  // document.getElementById('placeholder_location').innerHTML
+   //     = '(' + current_placeholder.latitude
+   //     + ', ' + current_placeholder.longitude
+   //     + '), accuracy ' + current_placeholder.accuracy + ' m';
+   // document.getElementById('placeholder_date').innerHTML
+   //     = current_placeholder.date;
+  }
+});
+
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
