@@ -197,6 +197,45 @@
     </div>
     <!-- end of modal, species details-->
 
+    <!-- begin modal, placeholder info -->
+    <div id="vnPlaceholderInfoScreen" class="modal placeholder_info_screen">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>placeholder info</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="placeholder_info_div">
+              <form  id="placeholder_info_form" autocomplete="off">
+
+                <div class="form-floating mb-3 mt-3">
+                  <p>placeholder name</p>
+                  <input type="text" class="form-control form-control-lg"
+                    id="placeholder_name">
+                </div>
+                <div class="form-group">
+                  <p>Notes</p>
+                  <textarea style="font-size:22px;" class="form-control form-control-lg"
+                    id="placeholder_notes" rows="4"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary  btn-xl"
+                  name="btn-save-placeholder-info" id="btn-save-placeholder-info">
+                  Save</button>
+                <div id="placeholder_date">placeholder date should appear here</div>
+                <div id="placeholder_location">placeholder location should appear here</div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, placeholder info -->
+
     <!-- begin modal, send data -->
     <div id="vnSendDataScreen" class="modal send_data_screen" role="dialog">
       <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
