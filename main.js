@@ -313,7 +313,7 @@ match_list.addEventListener('click', function (e) {
           // end of processing an existing placeholder
         }
 
-      } // end of processing placeholders
+      } // end of processing placeholders, new or existing
     } // dropthrough if neither real species or placeholder
   } // end of found the clicked list item
 });
@@ -327,6 +327,8 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   if (placeholder_state === "new") {
     document.getElementById('placeholder_code_label').innerHTML
         = 'New placeholder "' + current_placeholder.code + '"';
+    document.getElementById('placeholder_keywords').innerHTML
+        = current_placeholder.keywords.join(" ");
     document.getElementById('placeholder_location').innerHTML
          = '(' + current_placeholder.latitude
          + ', ' + current_placeholder.longitude
@@ -359,7 +361,6 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
    //     = current_placeholder.date;
   }
 });
-
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
@@ -521,8 +522,8 @@ vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
 });
 
 // // following will not work without a Google API key
-// // all similar reverse geocoding I have found also requires an API key, easy to
-// //  steal because will be visible in downloaded files
+// // all similar reverse geocoding I have found also requires an API key, easy
+// // for hackers to steal because will be visible in downloaded files
 // // // TODO: see if there us a way aroubd this
 // //  meanwhile, user can manually set Region in Settings
 //
@@ -784,7 +785,45 @@ sites_available_to_send_list.addEventListener('click', function (e) {
   }
 });
 
-document.getElementById('btn-send-data').addEventListener('click', sendData);
+document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
+  if (placeholder_state === "new") {
+    let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
+    let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 2);
+    if (phKeywordsArray.length < 2) {
+      alert("Need a few keywords, to find this placeholder later");
+      document.getElementById('placeholder_keywords').focus();
+      return;
+    }
+    current_placeholder.keywords = phKeywordsArray;
+    // TODO: take photos
+    // accept this placeholder into the placeholders array
+    placeholders_array.unshift(current_placeholder);
+    // add it to the site items
+    //
+    let ph_entry_date = new Date();
+    let new_ph_item = {
+      "id": ph_entry_date.getTime().toString(),
+      "site_id": current_site_id,
+      "code": current_placeholder.code,
+      "keywords": current_placeholder.keywords,
+      "date": ph_entry_date,
+      "latitude": sppItemLat,
+      "longitude": sppItemLon,
+      "accuracy": sppItemAcc
+    };
+    site_spp_array.unshift(new_ph_item);
+    console.log(site_spp_array);
+    // flag that work is finished
+    current_placeholder = undefined;
+    current_placeholder_code = "";
+    // trigger to refresh site list
+    showSitesTimeout = setTimeout(showSites, 10);
+
+    // dismiss the modal
+    console.log('About to hide the Save Placeholder modal');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+  } // end of placeholder_state === "new"
+});
 
 function sendData() {
 //  alert("in sendData function");
