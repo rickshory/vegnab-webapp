@@ -662,8 +662,14 @@ function showSites() {
     let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
     let spp_listitems_string = "";
     this_site_spp_array.forEach((spp_obj, spp_index) => {
-      spp_listitems_string += '<li id="' + spp_obj.id + '">' +
-      spp_obj.species + '</li>';
+      if (spp_obj.species === undefined) { // a placeholder
+        spp_listitems_string += '<li id="' + spp_obj.id + '">' +
+        spp_obj.code + ': ' + spp_obj.keywords.join(" ") + '</li>';
+      } else { // a real species
+        spp_listitems_string += '<li id="' + spp_obj.id + '">' +
+        spp_obj.species + '</li>';
+      }
+
     })
     this_site_spp_list.innerHTML = spp_listitems_string;
     // add a listener to the species list
@@ -699,8 +705,13 @@ vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
   if (current_spp_item_id === "undefined") {
     return;
   }
-  document.getElementById('spp-for-details').innerHTML
-      = detailed_spp_item.species;
+  if (detailed_spp_item.species === undefined) { // a placeholder
+    document.getElementById('spp-for-details').innerHTML
+        = detailed_spp_item.code + ': ' + detailed_spp_item.keywords.join(" ");
+  } else { // a real species
+    document.getElementById('spp-for-details').innerHTML
+        = detailed_spp_item.species;
+  }
   document.getElementById('spp-detail-location').innerHTML
       = '(' + detailed_spp_item.latitude
       + ', ' + detailed_spp_item.longitude
