@@ -155,8 +155,17 @@ function updateMatchList() {
     found_spp_match_array.sort();
     // treat placeholders as found species
     let placeholder_codes_match_array = placeholders_array.filter(obj =>
-     obj.code.toLowerCase().startsWith(search_term));
-  }
+       obj.code.toLowerCase().startsWith(search_term));
+    console.log(placeholder_codes_match_array);
+    let ph_match_array = placeholder_codes_match_array.map(ph => {
+      let ph_show = {
+        "item_code": ph.code,
+        "item_description": ph.keywords.join(" ")
+      };
+      return ph_show;
+    });
+    found_spp_match_array = found_spp_match_array.concat(ph_match_array);
+    found_spp_match_array.sort();  }
 	if (search_term.length > 1) {
 		// get the strict matches on item_code for local species
 		local_spp_match_array = local_spp_array.filter(obj =>
