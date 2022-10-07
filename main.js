@@ -152,19 +152,18 @@ function updateMatchList() {
   if (search_term.length > 0) {
     found_spp_match_array = found_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
-    found_spp_match_array.sort();
     // treat placeholders as found species
-    let placeholder_codes_match_array = placeholders_array.filter(obj =>
+    let placeholder_code_match_array = placeholders_array.filter(obj =>
        obj.code.toLowerCase().startsWith(search_term));
-    console.log(placeholder_codes_match_array);
-    let ph_match_array = placeholder_codes_match_array.map(ph => {
+    console.log(placeholder_code_match_array);
+    let ph_show_array = placeholder_code_match_array.map(ph => {
       let ph_show = {
         "item_code": ph.code,
         "item_description": ph.keywords.join(" ")
       };
       return ph_show;
     });
-    found_spp_match_array = found_spp_match_array.concat(ph_match_array);
+    found_spp_match_array = found_spp_match_array.concat(ph_show_array);
     found_spp_match_array.sort();  }
 	if (search_term.length > 1) {
 		// get the strict matches on item_code for local species
@@ -209,8 +208,12 @@ function updateMatchList() {
 	}
   // build list contents, if any, then assign innerHTML all at once
   let list_string = "";
+  // ' + (obj.item_code.includes(" ")) ?  'placeholder' : 'prevfound' + '
   found_spp_match_array.forEach(obj => {
-    list_string += '<li class="prevfound" id="' + obj.item_code + '">'
+    list_string += '<li class="'
+      + ((obj.item_code.includes(" ")) ?  'placeholder' : 'prevfound')
+      + '" id="' + ((obj.item_code.includes(" ")) ?
+      ("P_H_" + encodeURIComponent(obj.item_code)) : obj.item_code) + '">'
       + obj.item_code + ': ' + obj.item_description + '</li>';
   });
   local_spp_match_array.forEach(obj => {
@@ -319,9 +322,32 @@ match_list.addEventListener('click', function (e) {
           console.log("target.id for existing placeholder: " + target.id);
           let matched_placeholder_code = decodeURIComponent(target.id.slice(4));
           console.log("parsed placeholder code: " + matched_placeholder_code);
+          // at this point the placeholder information is all in the list item
+          // textContent, and can be processed the same as a regular species,
+          // but detecting a placeholder will allow specialized processing in
+          // the future, such as displaying photos, or checking if the placeholder
+          // has been identified
+          let ph = target.textContent;
+          console.log(ph);
+          // for testing, use the code and description as one string "species"
+          let ph_entry_date = new Date();
+          let new_ph_item = {
+            "id": ph_entry_date.getTime().toString(),
+            "site_id": current_site_id,
+            "species": ph,
+            "date": ph_entry_date,
+            "latitude": sppItemLat,
+            "longitude": sppItemLon,
+            "accuracy": sppItemAcc
+          };
+          site_spp_array.unshift(new_ph_item);
+          // trigger to refresh site list
+          showSitesTimeout = setTimeout(showSites, 10);
+          // dismiss the modal
+          console.log('About to hide the Species Search modal');
+          bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
           // end of processing an existing placeholder
         }
-
       } // end of processing placeholders, new or existing
     } // dropthrough if neither real species or placeholder
   } // end of found the clicked list item
