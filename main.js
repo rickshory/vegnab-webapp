@@ -882,6 +882,8 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   } // end of placeholder_state === "new"
 });
 
+document.getElementById('btn-send-data').addEventListener('click', sendData);
+
 function sendData() {
 //  alert("in sendData function");
   let emailAddrString = document.getElementById('email_address_box').value.toString().trim();
@@ -920,6 +922,7 @@ function sendData() {
   if (this_site_spp_array.length == 0) {
     emailBodyStr += '\n(No species yet)';
   } else {
+    console.log(this_site_spp_array);
     this_site_spp_array.forEach((spp_obj, spp_index) => {
       emailBodyStr += '\n' + spp_obj.species
           + '; ' + spp_obj.date.toISOString()
