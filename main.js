@@ -153,10 +153,21 @@ function updateMatchList() {
     found_spp_match_array = found_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
     // treat placeholders as found species
-    let placeholder_code_match_array = placeholders_array.filter(obj =>
+    // frst, get code matches
+    let placeholder_match_array = placeholders_array.filter(obj =>
        obj.code.toLowerCase().startsWith(search_term));
-    console.log(placeholder_code_match_array);
-    let ph_show_array = placeholder_code_match_array.map(ph => {
+    if (search_term.length > 2) { // get placeholder keyword matches
+      let placeholder_keyword_match_array = placeholders_array.filter(obj =>
+         obj.keywords.join(" ").toLowerCase().includes(search_term));
+      // remove any code repeats
+      placeholder_keyword_match_array = placeholder_keyword_match_array.filter(ar =>
+        !placeholder_match_array.find(rm => (rm.code === ar.code)));
+      // put keyword matches with code matches
+      placeholder_match_array = placeholder_match_array
+        .concat(placeholder_keyword_match_array);
+    } // end of search_term.length > 2
+    console.log(placeholder_match_array);
+    let ph_show_array = placeholder_match_array.map(ph => {
       let ph_show = {
         "item_code": ph.code,
         "item_description": ph.keywords.join(" ")
@@ -164,7 +175,8 @@ function updateMatchList() {
       return ph_show;
     });
     found_spp_match_array = found_spp_match_array.concat(ph_show_array);
-    found_spp_match_array.sort();  }
+    found_spp_match_array.sort();
+  }
 	if (search_term.length > 1) {
 		// get the strict matches on item_code for local species
 		local_spp_match_array = local_spp_array.filter(obj =>
@@ -208,7 +220,6 @@ function updateMatchList() {
 	}
   // build list contents, if any, then assign innerHTML all at once
   let list_string = "";
-  // ' + (obj.item_code.includes(" ")) ?  'placeholder' : 'prevfound' + '
   found_spp_match_array.forEach(obj => {
     list_string += '<li class="'
       + ((obj.item_code.includes(" ")) ?  'placeholder' : 'prevfound')
