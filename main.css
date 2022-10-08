@@ -1,3 +1,7 @@
+body {
+    overscroll-behavior: contain;
+}
+
 $font-family-sans-serif:
   // Cross-platform generic font family (default user interface font)
   system-ui,
