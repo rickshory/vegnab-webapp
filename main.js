@@ -923,12 +923,19 @@ function sendData() {
     emailBodyStr += '\n(No species yet)';
   } else {
     console.log(this_site_spp_array);
-    this_site_spp_array.forEach((spp_obj, spp_index) => {
-      emailBodyStr += '\n' + spp_obj.species
-          + '; ' + spp_obj.date.toISOString()
-          + '; ' + '(' + spp_obj.latitude + ', ' + spp_obj.longitude
-              + ') accuracy ' + spp_obj.accuracy + ' meters';
+    let descr_string = "";
+    this_site_spp_array.forEach((itm, spp_index) => {
+      if (itm.species === undefined) { // a placeholder
+        descr_string = itm.code + ": " + itm.keywords.join(" ");
+      } else { // a real species
+        descr_string = itm.species;
+      }
+      emailBodyStr += '\n' + descr_string
+          + '; ' + itm.date.toISOString()
+          + '; ' + '(' + itm.latitude + ', ' + itm.longitude
+              + ') accuracy ' + itm.accuracy + ' meters';
     })
+    console.log(emailBodyStr);
   }
     //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
   // spaces, linebreaks and tabs get correctly encoded
