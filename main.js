@@ -882,6 +882,20 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   } // end of placeholder_state === "new"
 });
 
+/*
+const fileInput = document.getElementById('ph-img-file-input');
+
+
+
+*/
+document.getElementById('ph-img-file-input').addEventListener('change', (e) => {
+  console.log('ph-img-file-input file input change');
+  
+}
+
+//  doSomethingWithFiles(e.target.files),
+);
+
 document.getElementById('btn-send-data').addEventListener('click', sendData);
 
 function sendData() {
