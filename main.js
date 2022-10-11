@@ -890,7 +890,23 @@ const fileInput = document.getElementById('ph-img-file-input');
 */
 document.getElementById('ph-img-file-input').addEventListener('change', (e) => {
   console.log('ph-img-file-input file input change');
-  
+  console.log(e.target.files.length + ' files chosen');
+//  let file = null;
+  for (let i = 0; i < e.target.files.length; i++) {
+    console.log('file ' + i + " = " + e.target.files[i].name);
+    console.log('type ' + e.target.files[i].type);
+    if (e.target.files[i].type.match(/^image\//)) {
+      console.log('file is an image: ' + e.target.files[i].name + '');
+      console.log('URL: ' + URL.createObjectURL(e.target.files[i]));
+      //URL.createObjectURL(file)
+//      file = e.target.files[i];
+//      break;
+    }
+  }
+  //
+  // if (file !== null) {
+  //   output.src = URL.createObjectURL(file);
+  // }
 }
 
 //  doSomethingWithFiles(e.target.files),
