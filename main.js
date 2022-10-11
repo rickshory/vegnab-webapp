@@ -888,29 +888,18 @@ const fileInput = document.getElementById('ph-img-file-input');
 
 
 */
-document.getElementById('ph-img-file-input').addEventListener('change', (e) => {
+document.getElementById('ph-img-file-input').addEventListener('change', () => {
   console.log('ph-img-file-input file input change');
-  console.log(e.target.files.length + ' files chosen');
-//  let file = null;
-  for (let i = 0; i < e.target.files.length; i++) {
-    console.log('file ' + i + " = " + e.target.files[i].name);
-    console.log('type ' + e.target.files[i].type);
-    if (e.target.files[i].type.match(/^image\//)) {
-      console.log('file is an image: ' + e.target.files[i].name + '');
-      console.log('URL: ' + URL.createObjectURL(e.target.files[i]));
-      //URL.createObjectURL(file)
-//      file = e.target.files[i];
-//      break;
+  console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
+  for (const ph_file of document.getElementById('ph-img-file-input').files) {
+    console.log('' + ph_file.name);
+    console.log('type ' + ph_file.type);
+    if (ph_file.type.match(/^image\//)) {
+      console.log('file is an image: ' + ph_file.name + '');
+      console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
-  //
-  // if (file !== null) {
-  //   output.src = URL.createObjectURL(file);
-  // }
-}
-
-//  doSomethingWithFiles(e.target.files),
-);
+});
 
 document.getElementById('btn-send-data').addEventListener('click', sendData);
 
