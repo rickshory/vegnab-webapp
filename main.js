@@ -367,10 +367,16 @@ match_list.addEventListener('click', function (e) {
 // Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
-  if (current_placeholder_code === "") {
+  if (current_placeholder_code === "" || current_placeholder === undefined) {
+    document.getElementById('placeholder_code_label').innerHTML = "(no code)";
+    document.getElementById('placeholder_keywords').innerHTML = "";
+    document.getElementById('placeholder_location').innerHTML = "(no location)";
+    document.getElementById('placeholder_date').innerHTML = "(no date)";
+    document.getElementById('placeholder_pix').innerHTML = "(no pix)";
     return;
   }
   if (placeholder_state === "new") {
+
     document.getElementById('placeholder_code_label').innerHTML
         = 'New placeholder "' + current_placeholder.code + '"';
     document.getElementById('placeholder_keywords').innerHTML
@@ -381,6 +387,16 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
          + '), accuracy ' + current_placeholder.accuracy + ' m';
      document.getElementById('placeholder_date').innerHTML
          = current_placeholder.date;
+     let ph_pix_html = "";
+     current_placeholder.photos.forEach(itm => {
+       ph_pix_html += '<div><img src="' + itm.url + '" alt="a picture"></div>';
+//       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
+     });
+     if (ph_pix_html == "") {
+       ph_pix_html = "no photos yet"
+     }
+     console.log(ph_pix_html);
+     document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
    // TODO: finish this
    /*
    current_placeholder = {
