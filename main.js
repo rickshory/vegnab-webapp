@@ -137,7 +137,7 @@ function makeLocalAndNonlocalSppArrays() {
 		return new_properties;
 	});
 //	console.log(nonlocal_spp_array);
-}
+};
 
 function updateMatchList() {
 	console.log("updateMatchList");
@@ -252,7 +252,7 @@ function updateMatchList() {
     }
   }
   match_list.innerHTML = list_string;
-}
+};
 
 match_list.addEventListener('click', function (e) {
   // match_list is parent of all the list items
@@ -658,7 +658,7 @@ function storeSiteInfo() {
   // dismiss the modal
   console.log('About to hide the Site Info modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-}
+};
 
 var sites_accordion = document.getElementById("sites-accordion");
 
@@ -668,7 +668,7 @@ function showSites() {
     sites_accordion.innerHTML = '<h2>No sites yet</h2>';
     current_site_id = "";
     return;
-  }
+  };
 
   let sites_accordion_listitems = "";
   site_info_array.forEach((obj, index) => {
@@ -676,35 +676,35 @@ function showSites() {
       current_site_id = obj.id;
     }
     sites_accordion_listitems += '<div class="card">' +
-'  <div class="card-header" id="heading' + (index + 1) + '">' +
-'    <a class="' + (index == 0 ? '' : 'collapsed ') +
-'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
-'" aria-expanded="' + (index == 0 ? 'true' : 'false') +
-'" aria-controls="collapse' + (index + 1) + '">' +
-'    <h3>' +  obj.name + '</h3>' +
-'    </a>' +
-'  </div>' +
-'  <div id="collapse' + (index + 1) + '" class="collapse' +
-(index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
-'    <div class="card-body">' +
-'      <button type="button" id="' + obj.id +
-'" class="btn btn-primary  btn-xl" data-bs-toggle="modal"' +
-'        data-bs-target="#vnSppSearchScreen">' +
-'        Add species' +
-'      </button>' +
-'      <ul id="spp-list-for-' + obj.id + '" class="list-unstyled">' +
-'      </ul>' +
-'    </div>' +
-'  </div>' +
-'</div>';
-  });
+      '  <div class="card-header" id="heading' + (index + 1) + '">' +
+      '    <a class="' + (index == 0 ? '' : 'collapsed ') +
+      'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
+      '" aria-expanded="' + (index == 0 ? 'true' : 'false') +
+      '" aria-controls="collapse' + (index + 1) + '">' +
+      '    <h3>' +  obj.name + '</h3>' +
+      '    </a>' +
+      '  </div>' +
+      '  <div id="collapse' + (index + 1) + '" class="collapse' +
+      (index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
+      '    <div class="card-body">' +
+      '      <button type="button" id="' + obj.id +
+      '" class="btn btn-primary  btn-xl" data-bs-toggle="modal"' +
+      '        data-bs-target="#vnSppSearchScreen">' +
+      '        Add species' +
+      '      </button>' +
+      '      <ul id="spp-list-for-' + obj.id + '" class="list-unstyled">' +
+      '      </ul>' +
+      '    </div>' +
+      '  </div>' +
+      '</div>';
+    });
   sites_accordion.innerHTML = sites_accordion_listitems;
 
-   // fill in species lists for sites
-   site_info_array.forEach((obj, index) => {
-     let this_site_spp_array = site_spp_array.filter(spp_obj =>
-       spp_obj.site_id === obj.id)
-       .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
+  // fill in species lists for sites
+  site_info_array.forEach((obj, index) => {
+    let this_site_spp_array = site_spp_array.filter(spp_obj =>
+        spp_obj.site_id === obj.id)
+        .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
     let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
     let spp_listitems_string = "";
     this_site_spp_array.forEach((spp_obj, spp_index) => {
@@ -714,17 +714,19 @@ function showSites() {
       } else { // a real species
         spp_listitems_string += '<li id="' + spp_obj.id + '">' +
         spp_obj.species + '</li>';
-      }
-
-    })
+      };
+    });
     this_site_spp_list.innerHTML = spp_listitems_string;
     // add a listener to the species list
+    // From what I have been able to find out, event listeners are deleted with the
+    // element if there are no refernces to that element, so re-creating them each
+    // time like this should work.
     this_site_spp_list.addEventListener('click', function (e) {
-    // spp list is parent of all the list items
+      // spp list is parent of all the list items
       var target = e.target; // Clicked element
       while (target && target.parentNode !== this_site_spp_list) {
-          target = target.parentNode; // If the clicked element isn't a direct child
-          if(!target) { return; } // If element doesn't exist
+        target = target.parentNode; // If the clicked element isn't a direct child
+        if(!target) { return; } // If element doesn't exist
       }
       if (target.tagName === 'LI') { // tagName returns uppercase
         current_spp_item_id = target.id; // store in global, to track which item worked on
@@ -736,13 +738,10 @@ function showSites() {
           keyboard: false
         });
         vnSppDtlModal.show();
-      }
+      };
     });
-  }) // end of filling in species lists for sites
-} // end of fn showSites
-// From what I have been able to find out, event listeners are deleted with the
-// element if there are no refernces to that element, so re-creating them each
-// time like this should work.
+  }); // end of filling in species lists for sites
+}; // end of fn showSites
 
 // Why does the following work? Is 'vnSppDetailScreen' and object readable by its ID?
 vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
