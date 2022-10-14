@@ -701,19 +701,19 @@ function showSites() {
   sites_accordion.innerHTML = sites_accordion_listitems;
 
   // fill in species lists for sites
-  site_info_array.forEach((obj, index) => {
+  site_info_array.forEach(ste => {
     let this_site_spp_array = site_spp_array.filter(spp_obj =>
-        spp_obj.site_id === obj.id)
-        .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
-    let this_site_spp_list = document.getElementById("spp-list-for-" + obj.id);
+        spp_obj.site_id === ste.id)
+        .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
+    let this_site_spp_list = document.getElementById("spp-list-for-" + ste.id);
     let spp_listitems_string = "";
-    this_site_spp_array.forEach((spp_obj, spp_index) => {
+    this_site_spp_array.forEach(spp_obj => {
       if (spp_obj.species === undefined) { // a placeholder
-        spp_listitems_string += '<li id="' + spp_obj.id + '">' +
-        spp_obj.code + ': ' + spp_obj.keywords.join(" ") + '</li>';
+        spp_listitems_string += '<li id="' + spp_obj.id + '">'
+          + spp_obj.code + ': ' + spp_obj.keywords.join(" ") + '</li>';
       } else { // a real species
-        spp_listitems_string += '<li id="' + spp_obj.id + '">' +
-        spp_obj.species + '</li>';
+        spp_listitems_string += '<li id="' + spp_obj.id + '">'
+          + spp_obj.species + '</li>';
       };
     });
     this_site_spp_list.innerHTML = spp_listitems_string;
