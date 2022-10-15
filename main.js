@@ -783,26 +783,34 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
   console.log('ph-img-file-input file input change');
   console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
   let img_files = [];
+  let ph_pix_html = "";
   for (const ph_file of document.getElementById('ph-img-file-input').files) {
     console.log('' + ph_file.name);
     console.log('type ' + ph_file.type);
     if (ph_file.type.match(/^image\//)) {
       console.log('file is an image: ' + ph_file.name + '');
+      ph_pix_html += '<div><img src="' + URL.createObjectURL(ph_file) + '" alt="a picture"></div>';
       img_files.unshift(ph_file);
       console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
-  if (img_files.length > 0) {
-    current_placeholder.photos.unshift(img_files);
-    // re-display placeholder screen
-    console.log('About to re-display the Save Placeholder modal');
-    ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
-    console.log('About to temprarily hide the Save Placeholder modal');
-    ph_mdl.hide();
-    console.log('About to re-show the Save Placeholder modal');
-    ph_mdl.show();
-//    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+  if (ph_pix_html == "") {
+    ph_pix_html = "no photos yet"
   }
+  console.log(ph_pix_html);
+  document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
+//   if (img_files.length > 0) {
+//
+//     current_placeholder.photos.unshift(img_files);
+//     // re-display placeholder screen
+//     console.log('About to re-display the Save Placeholder modal');
+//     ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
+//     console.log('About to temprarily hide the Save Placeholder modal');
+//     ph_mdl.hide();
+//     console.log('About to re-show the Save Placeholder modal');
+//     ph_mdl.show();
+// //    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+//   }
 });
 
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
