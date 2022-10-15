@@ -782,19 +782,18 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 document.getElementById('ph-img-file-input').addEventListener('change', () => {
   console.log('ph-img-file-input file input change');
   console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
-  let img_files = [];
   for (const ph_file of document.getElementById('ph-img-file-input').files) {
     console.log('' + ph_file.name);
     console.log('type ' + ph_file.type);
     if (ph_file.type.match(/^image\//)) {
       console.log('file is an image: ' + ph_file.name + '');
 //      ph_pix_html += '<div><img src="' + URL.createObjectURL(ph_file) + '" alt="a picture"></div>';
-      img_files.unshift(ph_file);
+      current_placeholder.photos.unshift(ph_file);
       console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
   let ph_pix_html = "";
-  img_files.forEach(itm => {
+  current_placeholder.photos.forEach(itm => {
     ph_pix_html += '<div><img src="' + URL.createObjectURL(itm) + '" alt="a picture"></div>';
 //       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
   });
