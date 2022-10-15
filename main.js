@@ -364,65 +364,7 @@ match_list.addEventListener('click', function (e) {
   } // end of found the clicked list item
 });
 
-// Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
-vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
-//  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
-  if (current_placeholder_code === "" || current_placeholder === undefined) {
-    document.getElementById('placeholder_code_label').innerHTML = "(no code)";
-    document.getElementById('placeholder_keywords').innerHTML = "";
-    document.getElementById('placeholder_location').innerHTML = "(no location)";
-    document.getElementById('placeholder_date').innerHTML = "(no date)";
-    document.getElementById('placeholder_pix').innerHTML = "(no pix)";
-    return;
-  }
-  if (placeholder_state === "new") {
 
-    document.getElementById('placeholder_code_label').innerHTML
-        = 'New placeholder "' + current_placeholder.code + '"';
-    document.getElementById('placeholder_keywords').innerHTML
-        = current_placeholder.keywords.join(" ");
-    document.getElementById('placeholder_location').innerHTML
-         = '(' + current_placeholder.latitude
-         + ', ' + current_placeholder.longitude
-         + '), accuracy ' + current_placeholder.accuracy + ' m';
-     document.getElementById('placeholder_date').innerHTML
-         = current_placeholder.date;
-     let ph_pix_html = "";
-     current_placeholder.photos.forEach(itm => {
-       ph_pix_html += '<div><img src="' + itm.url + '" alt="a picture"></div>';
-//       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
-     });
-     if (ph_pix_html == "") {
-       ph_pix_html = "no photos yet"
-     }
-     console.log(ph_pix_html);
-     document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
-   // TODO: finish this
-   /*
-   current_placeholder = {
-     "id": ph_create_date.getTime().toString(),
-     "site_id": current_site_id,
-     "code": current_placeholder_code,
-     "keywords": [], // empty until filled in
-     "photos": [], // photo uris and urls
-     "date": ph_create_date,
-     "latitude": sppItemLat,
-     "longitude": sppItemLon,
-     "accuracy": sppItemAcc
-   };
-   */
-  }
-  if (placeholder_state === "edit") {
-//    current_placeholder = placeholders_array.find(itm => itm.code === current_placeholder_code);
-   // TODO: finish this
-  // document.getElementById('placeholder_location').innerHTML
-   //     = '(' + current_placeholder.latitude
-   //     + ', ' + current_placeholder.longitude
-   //     + '), accuracy ' + current_placeholder.accuracy + ' m';
-   // document.getElementById('placeholder_date').innerHTML
-   //     = current_placeholder.date;
-  }
-});
 
 var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
@@ -777,40 +719,76 @@ document.getElementById('btn-mark-not-uncertain').addEventListener('click', func
  ucModal.show();
 });
 
-vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
-//  alert("in vnSendDataScreen 'shown.bs.modal'");
-	if (site_info_array.length == 0) {
-    sites_available_to_send_list.innerHTML = '';
-    site_chosen_to_send = -1;
-    document.getElementById('siteChosenToSend').innerHTML =
-        '<h3>No sites yet. Nothing to send.</h3>';
+// Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
+vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
+//  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
+  if (current_placeholder_code === "" || current_placeholder === undefined) {
+    document.getElementById('placeholder_code_label').innerHTML = "(no code)";
+    document.getElementById('placeholder_keywords').innerHTML = "";
+    document.getElementById('placeholder_location').innerHTML = "(no location)";
+    document.getElementById('placeholder_date').innerHTML = "(no date)";
+    document.getElementById('placeholder_pix').innerHTML = "(no pix)";
     return;
   }
+  if (placeholder_state === "new") {
 
-  let strSitesAvaiableList = '';
-  site_info_array.forEach((obj, index) => {
-    strSitesAvaiableList += '<li class="dropdown-item" id = "siteToSend_'
-        + index + '"><h3>' +  obj.name + '</h3></li>';
-  })
-  sites_available_to_send_list.innerHTML = strSitesAvaiableList;
-  document.getElementById('siteChosenToSend').innerHTML = '';
+    document.getElementById('placeholder_code_label').innerHTML
+        = 'New placeholder "' + current_placeholder.code + '"';
+    document.getElementById('placeholder_keywords').innerHTML
+        = current_placeholder.keywords.join(" ");
+    document.getElementById('placeholder_location').innerHTML
+         = '(' + current_placeholder.latitude
+         + ', ' + current_placeholder.longitude
+         + '), accuracy ' + current_placeholder.accuracy + ' m';
+     document.getElementById('placeholder_date').innerHTML
+         = current_placeholder.date;
+     let ph_pix_html = "";
+     current_placeholder.photos.forEach(itm => {
+       ph_pix_html += '<div><img src="' + itm.url + '" alt="a picture"></div>';
+//       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
+     });
+     if (ph_pix_html == "") {
+       ph_pix_html = "no photos yet"
+     }
+     console.log(ph_pix_html);
+     document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
+   // TODO: finish this
+   /*
+   current_placeholder = {
+     "id": ph_create_date.getTime().toString(),
+     "site_id": current_site_id,
+     "code": current_placeholder_code,
+     "keywords": [], // empty until filled in
+     "photos": [], // photo uris and urls
+     "date": ph_create_date,
+     "latitude": sppItemLat,
+     "longitude": sppItemLon,
+     "accuracy": sppItemAcc
+   };
+   */
+  }
+  if (placeholder_state === "edit") {
+//    current_placeholder = placeholders_array.find(itm => itm.code === current_placeholder_code);
+   // TODO: finish this
+  // document.getElementById('placeholder_location').innerHTML
+   //     = '(' + current_placeholder.latitude
+   //     + ', ' + current_placeholder.longitude
+   //     + '), accuracy ' + current_placeholder.accuracy + ' m';
+   // document.getElementById('placeholder_date').innerHTML
+   //     = current_placeholder.date;
+  }
 });
 
-sites_available_to_send_list.addEventListener('click', function (e) {
-  // list is parent of all the list items
-  var target = e.target; // Clicked element
-  while (target && target.parentNode !== sites_available_to_send_list) {
-      target = target.parentNode; // If the clicked element isn't a direct child
-      if(!target) { return; } // If element doesn't exist
-  }
-  if (target.tagName === 'LI') { // tagName returns uppercase
-    // the element id is the string "siteToSend_" (to avoic confusion with
-    // any other elements) followed by the index number in the Sites array
-    //
-    site_chosen_to_send = parseInt((target.id).split("_")[1]);
-//      console.log("site_chosen_to_send = " + site_chosen_to_send);
-    document.getElementById('siteChosenToSend').innerHTML =
-        '<h3>' + target.textContent + '</h3>'
+document.getElementById('ph-img-file-input').addEventListener('change', () => {
+  console.log('ph-img-file-input file input change');
+  console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
+  for (const ph_file of document.getElementById('ph-img-file-input').files) {
+    console.log('' + ph_file.name);
+    console.log('type ' + ph_file.type);
+    if (ph_file.type.match(/^image\//)) {
+      console.log('file is an image: ' + ph_file.name + '');
+      console.log('URL: ' + URL.createObjectURL(ph_file));
+    }
   }
 });
 
@@ -854,22 +832,40 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   } // end of placeholder_state === "new"
 });
 
-/*
-const fileInput = document.getElementById('ph-img-file-input');
+vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
+//  alert("in vnSendDataScreen 'shown.bs.modal'");
+	if (site_info_array.length == 0) {
+    sites_available_to_send_list.innerHTML = '';
+    site_chosen_to_send = -1;
+    document.getElementById('siteChosenToSend').innerHTML =
+        '<h3>No sites yet. Nothing to send.</h3>';
+    return;
+  }
 
+  let strSitesAvaiableList = '';
+  site_info_array.forEach((obj, index) => {
+    strSitesAvaiableList += '<li class="dropdown-item" id = "siteToSend_'
+        + index + '"><h3>' +  obj.name + '</h3></li>';
+  })
+  sites_available_to_send_list.innerHTML = strSitesAvaiableList;
+  document.getElementById('siteChosenToSend').innerHTML = '';
+});
 
-
-*/
-document.getElementById('ph-img-file-input').addEventListener('change', () => {
-  console.log('ph-img-file-input file input change');
-  console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
-  for (const ph_file of document.getElementById('ph-img-file-input').files) {
-    console.log('' + ph_file.name);
-    console.log('type ' + ph_file.type);
-    if (ph_file.type.match(/^image\//)) {
-      console.log('file is an image: ' + ph_file.name + '');
-      console.log('URL: ' + URL.createObjectURL(ph_file));
-    }
+sites_available_to_send_list.addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== sites_available_to_send_list) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    // the element id is the string "siteToSend_" (to avoic confusion with
+    // any other elements) followed by the index number in the Sites array
+    //
+    site_chosen_to_send = parseInt((target.id).split("_")[1]);
+//      console.log("site_chosen_to_send = " + site_chosen_to_send);
+    document.getElementById('siteChosenToSend').innerHTML =
+        '<h3>' + target.textContent + '</h3>'
   }
 });
 
