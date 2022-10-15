@@ -792,28 +792,29 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
       console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
-  let ph_pix_html = "";
-  current_placeholder.photos.forEach(itm => {
-    ph_pix_html += '<div><img src="' + URL.createObjectURL(itm) + '" alt="a picture"></div>';
-//       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
-  });
-  if (ph_pix_html == "") {
-    ph_pix_html = "no photos yet"
-  }
-  console.log(ph_pix_html);
-  document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
-//   if (img_files.length > 0) {
-//
-//     current_placeholder.photos.unshift(img_files);
-//     // re-display placeholder screen
-//     console.log('About to re-display the Save Placeholder modal');
-//     ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
-//     console.log('About to temprarily hide the Save Placeholder modal');
-//     ph_mdl.hide();
-//     console.log('About to re-show the Save Placeholder modal');
-//     ph_mdl.show();
-// //    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+//   let ph_pix_html = "";
+//   current_placeholder.photos.forEach(itm => {
+//     ph_pix_html += '<div><img src="' + URL.createObjectURL(itm) + '" alt="a picture"></div>';
+// //       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
+//   });
+//   if (ph_pix_html == "") {
+//     ph_pix_html = "no photos yet"
 //   }
+//   console.log(ph_pix_html);
+//   document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
+
+  if (current_placeholder.photos.length > 0) {
+
+//    current_placeholder.photos.unshift(img_files);
+    // re-display placeholder screen
+    console.log('About to re-display the Save Placeholder modal');
+    ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
+    console.log('About to temprarily hide the Save Placeholder modal');
+    ph_mdl.hide();
+    console.log('About to re-show the Save Placeholder modal');
+    ph_mdl.show();
+//    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+  }
 });
 
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
