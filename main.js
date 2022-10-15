@@ -782,16 +782,18 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 document.getElementById('ph-img-file-input').addEventListener('change', () => {
   console.log('ph-img-file-input file input change');
   console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
+  img_files = [];
   for (const ph_file of document.getElementById('ph-img-file-input').files) {
     console.log('' + ph_file.name);
     console.log('type ' + ph_file.type);
     if (ph_file.type.match(/^image\//)) {
       console.log('file is an image: ' + ph_file.name + '');
 //      ph_pix_html += '<div><img src="' + URL.createObjectURL(ph_file) + '" alt="a picture"></div>';
-      current_placeholder.photos.unshift(ph_file);
+      img_files.unshift(ph_file);
       console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
+
 //   let ph_pix_html = "";
 //   current_placeholder.photos.forEach(itm => {
 //     ph_pix_html += '<div><img src="' + URL.createObjectURL(itm) + '" alt="a picture"></div>';
@@ -803,9 +805,8 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
 //   console.log(ph_pix_html);
 //   document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
 
-  if (current_placeholder.photos.length > 0) {
-
-//    current_placeholder.photos.unshift(img_files);
+  if (img_files.length > 0) {
+    current_placeholder.photos = img_files.concat(current_placeholder.photos);
     // re-display placeholder screen
     console.log('About to re-display the Save Placeholder modal');
     ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
