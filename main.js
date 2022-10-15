@@ -782,13 +782,26 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 document.getElementById('ph-img-file-input').addEventListener('change', () => {
   console.log('ph-img-file-input file input change');
   console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
+  let img_urls = [];
   for (const ph_file of document.getElementById('ph-img-file-input').files) {
     console.log('' + ph_file.name);
     console.log('type ' + ph_file.type);
     if (ph_file.type.match(/^image\//)) {
       console.log('file is an image: ' + ph_file.name + '');
+      img_urls.unshift(URL.createObjectURL(ph_file));
       console.log('URL: ' + URL.createObjectURL(ph_file));
     }
+  }
+  if (img_urls.length > 0) {
+    current_placeholder.photos.unshift(img_urls);
+    // re-display placeholder screen
+    console.log('About to re-display the Save Placeholder modal');
+    ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
+    console.log('About to temprarily hide the Save Placeholder modal');
+    ph_mdl.hide();
+    console.log('About to re-show the Save Placeholder modal');
+    ph_mdl.show();
+//    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
   }
 });
 
