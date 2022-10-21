@@ -744,7 +744,12 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
          = current_placeholder.date;
      let ph_pix_html = "";
      current_placeholder.photos.forEach(itm => {
-       ph_pix_html += '<div><img src="' + URL.createObjectURL(itm) + '" alt="a picture"></div>';
+       ph_pix_html += '<div><img src="' + URL.createObjectURL(itm)
+        + '" alt="a picture" height="48"></div>'
+        + '<div>Name: ' + itm.name + '</div>'
+        + '<div>Type: ' + itm.type + '</div>'
+        + '<div>lastModified: ' + itm.lastModified + '</div>'
+        + '<div>Size: ' + itm.size + '</div>';
 //       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
      });
      if (ph_pix_html == "") {
@@ -793,18 +798,6 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
       console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
-
-//   let ph_pix_html = "";
-//   current_placeholder.photos.forEach(itm => {
-//     ph_pix_html += '<div><img src="' + URL.createObjectURL(itm) + '" alt="a picture"></div>';
-// //       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
-//   });
-//   if (ph_pix_html == "") {
-//     ph_pix_html = "no photos yet"
-//   }
-//   console.log(ph_pix_html);
-//   document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
-
   if (img_files.length > 0) {
     current_placeholder.photos = img_files.concat(current_placeholder.photos);
     // re-display placeholder screen
