@@ -818,6 +818,26 @@ document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
   }
 }, false);
 
+
+    /* programmatically create an image grid similar to this:
+    <div class="container">
+        <div class="row imagetiles">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src=https://i.scdn.co/image/137fb70b1fd6951d3ab08ae2e86c64e47dc7593b class="img-responsive">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src=https://i.scdn.co/image/3cadde181dccf3c94fa600e5865469f23d762c8c class="img-responsive">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src=https://i.scdn.co/image/1cb78817cd9d4a80757677e87a99ad701cfdebc0 class="img-responsive">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                <img src=https://i.scdn.co/image/fb6904c95e11574dce891699ae335f9f5295857a class="img-responsive">
+            </div>
+        </div>
+    </div>
+    */
+
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
   if (placeholder_state === "new") {
     let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
