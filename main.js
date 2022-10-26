@@ -744,11 +744,12 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
          = current_placeholder.date;
      let ph_pix_html = "";
      current_placeholder.photos.forEach(itm => {
+       let modifDt = new Date(itm.lastModified);
        ph_pix_html += '<div><img src="' + URL.createObjectURL(itm)
         + '" alt="a picture" height="48"></div>'
         + '<div>Name: ' + itm.name + '</div>'
         + '<div>Type: ' + itm.type + '</div>'
-        + '<div>lastModified: ' + itm.lastModified + '</div>'
+        + '<div>lastModified: ' + modifDt + '</div>'
         + '<div>Size: ' + itm.size + '</div>';
 //       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
      });
