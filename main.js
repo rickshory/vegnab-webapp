@@ -69,7 +69,7 @@ var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
 var placeholders_array = [];
 var placeholder_state = ""; // will be 'new' or 'edit'
-var current_placeholder_code = "";
+var current_ph_code = "";
 var current_placeholder;
 //  = {
 //   "id": numeric from timestamp,
@@ -305,13 +305,13 @@ match_list.addEventListener('click', function (e) {
           // a placeholder code contains spaces, and thus was encoded to make a valid ID
           console.log("target.id for new placeholder: " + target.id);
           placeholder_state = "new";
-          current_placeholder_code = decodeURIComponent(target.id.slice(8));
-          console.log("new placeholder code: " + current_placeholder_code);
+          current_ph_code = decodeURIComponent(target.id.slice(8));
+          console.log("new placeholder code: " + current_ph_code);
           let ph_create_date = new Date();
           current_placeholder = {
             "id": ph_create_date.getTime().toString(),
             "site_id": current_site_id,
-            "code": current_placeholder_code,
+            "code": current_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
             "date": ph_create_date,
@@ -722,7 +722,7 @@ document.getElementById('btn-mark-not-uncertain').addEventListener('click', func
 // Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
-  if (current_placeholder_code === "" || current_placeholder === undefined) {
+  if (current_ph_code === "" || current_placeholder === undefined) {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').innerHTML = "";
     document.getElementById('placeholder_location').innerHTML = "(no location)";
@@ -763,7 +763,7 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
    current_placeholder = {
      "id": ph_create_date.getTime().toString(),
      "site_id": current_site_id,
-     "code": current_placeholder_code,
+     "code": current_ph_code,
      "keywords": [], // empty until filled in
      "photos": [], // photo uris and urls
      "date": ph_create_date,
@@ -774,7 +774,7 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
    */
   }
   if (placeholder_state === "edit") {
-//    current_placeholder = placeholders_array.find(itm => itm.code === current_placeholder_code);
+//    current_placeholder = placeholders_array.find(itm => itm.code === current_ph_code);
    // TODO: finish this
   // document.getElementById('placeholder_location').innerHTML
    //     = '(' + current_placeholder.latitude
@@ -853,7 +853,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     console.log(site_spp_array);
     // flag that work is finished
     current_placeholder = undefined;
-    current_placeholder_code = "";
+    current_ph_code = "";
     // trigger to refresh site list
     showSitesTimeout = setTimeout(showSites, 10);
 
@@ -968,7 +968,70 @@ function sendData() {
           + '; ' + itm.date.toISOString()
           + '; ' + '(' + itm.latitude + ', ' + itm.longitude
               + ') accuracy ' + itm.accuracy + ' meters';
-    })
+    });
+    // done with species items, add the info for any placeholders used
+    let this_site_ph_array = placeholders_array.filter(ph_obj =>
+      this_site_spp_array.find(itm => (itm.code === ph_obj.code)));
+    if (this_site_ph_array.length > 0) {
+      console.log(this_site_ph_array);
+      emailBodyStr += '\n\n Placeholders used:';
+      this_site_ph_array.forEach(ph_obj => {
+        emailBodyStr += '\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
+        emailBodyStr += '\nRecorded ' + ph_obj.date.toISOString();
+        emailBodyStr += '\nAt site ID: ' + ph_obj.site_id.toString();
+        emailBodyStr += '\n(' + ph_obj.latitude + ', ' + ph_obj.longitude
+                + ') accuracy ' + ph_obj.accuracy + ' meters';
+        // reference any photos
+        if (ph_obj.photos.length > 0) {
+          emailBodyStr += '\n  photos:'
+          ph_obj.photos.forEach(img => {
+            emailBodyStr += '\nFilename: ' + img.name
+              + '\n    lastModified: ' + img.lastModified
+              + '\n    bytes: ' + img.size;
+              // test if a photo requested from the camera, not already stored,
+              // and therefore exists only as a blob in the browser
+              if (img.name.length > 30) {
+                // TODO find a more reliable test than length of filename
+                emailBodyStr += '\n      This photo cannot be saved on your phone ';
+                // TODO try to find a way to upload it, and make it available
+              }
+          }); // end of referencing this photo
+        }; // end of referencing this placeholder's photos
+      }); // end of inserting this placeholder
+    }; // end of inserting placeholders
+/*
+"id": ph_create_date.getTime().toString(),
+"site_id": current_site_id,
+"code": current_ph_code,
+"keywords": [], // empty until filled in
+"photos": [], // photo uris and urls
+"date": ph_create_date,
+"latitude": sppItemLat,
+"longitude": sppItemLon,
+"accuracy": sppItemAcc
+descr_string = itm.code + ": " + itm.keywords.join(" ");
+if (itm.photos.length > 0) {
+  descr_string += '\n  photos:'
+  itm.photos.forEach(ph => {
+    descr_string += '\n    name: ' + ph.name
+      + '\n    lastModified: ' + ph.lastModified
+      + '\n    bytes: ' + ph.size;
+      // test if a photo requested from the camera, not already stored,
+      // and therefore exists only as a blob in the browser
+      if (ph.name.length > 30) {
+        // TODO find a more reliable test than length of filename
+        descr_string += '\n      This photo cannot be saved on your phone ';
+        // TODO try to find a way to upload it, and make it available
+      }
+      descr_string += '\n';
+  });
+}
+emailBodyStr += '\n' + descr_string
+    + '; ' + itm.date.toISOString()
+    + '; ' + '(' + itm.latitude + ', ' + itm.longitude
+        + ') accuracy ' + itm.accuracy + ' meters';
+
+*/
     console.log(emailBodyStr);
   }
     //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
