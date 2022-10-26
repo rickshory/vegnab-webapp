@@ -743,19 +743,32 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
      document.getElementById('placeholder_date').innerHTML
          = current_placeholder.date;
      let ph_pix_html = "";
-     current_placeholder.photos.forEach(itm => {
-       let modifDt = new Date(itm.lastModified);
-       ph_pix_html += '<div><img src="' + URL.createObjectURL(itm)
-        + '" alt="a picture" height="48"></div>'
-        + '<div>Name: ' + itm.name + '</div>'
-        + '<div>Type: ' + itm.type + '</div>'
-        + '<div>lastModified: ' + modifDt + '</div>'
-        + '<div>Size: ' + itm.size + '</div>';
-//       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
-     });
-     if (ph_pix_html == "") {
+     if (current_placeholder.photos.length == 0) {
        ph_pix_html = "no photos yet"
+     } else {
+       ph_pix_html += '    <div class="container">'
+          + '\n               <div class="row imagetiles">';
+       current_placeholder.photos.forEach(itm => {
+         ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
+            + '<img src=' + URL.createObjectURL(itm)
+            + ' class="img-responsive">'
+            + '</div>';
+       });
+       ph_pix_html += '    </div>\n               </div>';
      }
+//      current_placeholder.photos.forEach(itm => {
+//        let modifDt = new Date(itm.lastModified);
+//        ph_pix_html += '<div><img src="' + URL.createObjectURL(itm)
+//         + '" alt="a picture" height="48"></div>'
+//         + '<div>Name: ' + itm.name + '</div>'
+//         + '<div>Type: ' + itm.type + '</div>'
+//         + '<div>lastModified: ' + modifDt + '</div>'
+//         + '<div>Size: ' + itm.size + '</div>';
+// //       ph_pix_html += '<div><img src="' + itm.url + '" alt="" width="500" height="600"></div>';
+//      });
+//      if (ph_pix_html == "") {
+//        ph_pix_html = "no photos yet";
+//      }
      console.log(ph_pix_html);
      document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
    // TODO: finish this
