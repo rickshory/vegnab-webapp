@@ -828,7 +828,6 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       return;
     }
     current_placeholder.keywords = phKeywordsArray;
-    // TODO: take photos
     // accept this placeholder into the placeholders array
     placeholders_array.unshift(current_placeholder);
     // add it to the site items
@@ -839,16 +838,11 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       "site_id": current_site_id,
       "code": current_placeholder.code,
       "keywords": current_placeholder.keywords,
-      "photos": current_placeholder.photos, // for testing here
       "date": ph_entry_date,
       "latitude": sppItemLat,
       "longitude": sppItemLon,
       "accuracy": sppItemAcc
     };
-    // for testing sent data, copy all the photos into each item here
-    // in the working version, it will make no sense to do this
-    // it would be redundant, and the set of photos could change as a
-    // placeholder is edited
     site_spp_array.unshift(new_ph_item);
     console.log(site_spp_array);
     // flag that work is finished
@@ -945,22 +939,6 @@ function sendData() {
     this_site_spp_array.forEach((itm, spp_index) => {
       if (itm.species === undefined) { // a placeholder
         descr_string = itm.code + ": " + itm.keywords.join(" ");
-        if (itm.photos.length > 0) {
-          descr_string += '\n  photos:'
-          itm.photos.forEach(ph => {
-            descr_string += '\n    name: ' + ph.name
-              + '\n    lastModified: ' + ph.lastModified
-              + '\n    bytes: ' + ph.size;
-              // test if a photo requested from the camera, not already stored,
-              // and therefore exists only as a blob in the browser
-              if (ph.name.length > 30) {
-                // TODO find a more reliable test than length of filename
-                descr_string += '\n      This photo cannot be saved on your phone ';
-                // TODO try to find a way to upload it, and make it available
-              }
-              descr_string += '\n';
-          });
-        }
       } else { // a real species
         descr_string = itm.species;
       }
