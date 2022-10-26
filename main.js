@@ -812,6 +812,12 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
   }
 });
 
+document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
+  if (document.getElementById('ph-img-file-input')) {
+    document.getElementById('ph-img-file-input').click();
+  }
+}, false);
+
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
   if (placeholder_state === "new") {
     let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
