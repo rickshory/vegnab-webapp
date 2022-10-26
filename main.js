@@ -833,11 +833,16 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       "site_id": current_site_id,
       "code": current_placeholder.code,
       "keywords": current_placeholder.keywords,
+      "photos": current_placeholder.photos, // for testing here
       "date": ph_entry_date,
       "latitude": sppItemLat,
       "longitude": sppItemLon,
       "accuracy": sppItemAcc
     };
+    // for testing sent data, copy all the photos into each item here
+    // in the working version, it will make no sense to do this
+    // it would be redundant, and the set of photos could change as a
+    // placeholder is edited
     site_spp_array.unshift(new_ph_item);
     console.log(site_spp_array);
     // flag that work is finished
@@ -939,7 +944,7 @@ function sendData() {
           itm.photos.forEach(ph => {
             descr_string += '\n    name: ' + ph.name
               + '\n    lastModified: ' + ph.lastModified
-              + '\n    bytes: ' + ph.size; 
+              + '\n    bytes: ' + ph.size;
               // test if a photo requested from the camera, not already stored,
               // and therefore exists only as a blob in the browser
               if (ph.name.length > 30) {
