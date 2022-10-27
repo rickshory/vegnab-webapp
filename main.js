@@ -977,39 +977,6 @@ function sendData() {
         }; // end of referencing this placeholder's photos
       }); // end of inserting this placeholder
     }; // end of inserting placeholders
-/*
-"id": ph_create_date.getTime().toString(),
-"site_id": current_site_id,
-"code": current_ph_code,
-"keywords": [], // empty until filled in
-"photos": [], // photo uris and urls
-"date": ph_create_date,
-"latitude": sppItemLat,
-"longitude": sppItemLon,
-"accuracy": sppItemAcc
-descr_string = itm.code + ": " + itm.keywords.join(" ");
-if (itm.photos.length > 0) {
-  descr_string += '\n  photos:'
-  itm.photos.forEach(ph => {
-    descr_string += '\n    name: ' + ph.name
-      + '\n    lastModified: ' + ph.lastModified
-      + '\n    bytes: ' + ph.size;
-      // test if a photo requested from the camera, not already stored,
-      // and therefore exists only as a blob in the browser
-      if (ph.name.length > 30) {
-        // TODO find a more reliable test than length of filename
-        descr_string += '\n      This photo cannot be saved on your phone ';
-        // TODO try to find a way to upload it, and make it available
-      }
-      descr_string += '\n';
-  });
-}
-emailBodyStr += '\n' + descr_string
-    + '; ' + itm.date.toISOString()
-    + '; ' + '(' + itm.latitude + ', ' + itm.longitude
-        + ') accuracy ' + itm.accuracy + ' meters';
-
-*/
     console.log(emailBodyStr);
   }
     //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
