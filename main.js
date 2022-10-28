@@ -953,10 +953,10 @@ function sendData() {
       } else { // a real species
         let sst = itm.species;
         if (itm.uncertainty == "species") {
-          sst = "Probably " + itm.species + ", but can't determine species."
+          sst = "Probably " + itm.species + ", but can't determine species"
         }
         if (itm.uncertainty == "genus") {
-          sst = "Most likely " + itm.species + ", but unsure at genus level."
+          sst = "Most likely " + itm.species + ", but unsure at genus level"
         }
         descr_string = sst;
       }
@@ -974,13 +974,13 @@ function sendData() {
       this_site_ph_array.forEach(ph_obj => {
         emailBodyStr += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
         emailBodyStr += '\nRecorded ' + ph_obj.date.toISOString();
-        emailBodyStr += '\nOn site: ""'
+        emailBodyStr += '\nOn site: "'
           + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
         emailBodyStr += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
                 + ') accuracy ' + ph_obj.accuracy + ' meters';
         // reference any photos
         if (ph_obj.photos.length > 0) {
-          emailBodyStr += '\n  photos:'
+          emailBodyStr += '\nPhotos:'
           ph_obj.photos.forEach(img => {
             emailBodyStr += '\nFilename: ' + img.name
               + '\n    lastModified: ' + img.lastModified
