@@ -972,10 +972,11 @@ function sendData() {
       console.log(this_site_ph_array);
       emailBodyStr += '\n\n Placeholders used:';
       this_site_ph_array.forEach(ph_obj => {
-        emailBodyStr += '\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
+        emailBodyStr += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
         emailBodyStr += '\nRecorded ' + ph_obj.date.toISOString();
-        emailBodyStr += '\nAt site ID: ' + ph_obj.site_id.toString();
-        emailBodyStr += '\n(' + ph_obj.latitude + ', ' + ph_obj.longitude
+        emailBodyStr += '\nOn site: ""'
+          + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
+        emailBodyStr += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
                 + ') accuracy ' + ph_obj.accuracy + ' meters';
         // reference any photos
         if (ph_obj.photos.length > 0) {
