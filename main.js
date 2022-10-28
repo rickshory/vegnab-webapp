@@ -67,6 +67,18 @@ var nrcs_spp_array = [];
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
+/*
+let new_spp_item = {
+  "id": spp_entry_date.getTime().toString(),
+  "site_id": current_site_id,
+  "species": spp,
+  "uncertainty": "",
+  "date": spp_entry_date,
+  "latitude": sppItemLat,
+  "longitude": sppItemLon,
+  "accuracy": sppItemAcc
+};
+*/
 var placeholders_array = [];
 var placeholder_state = ""; // will be 'new' or 'edit'
 var current_ph_code = "";
@@ -273,6 +285,7 @@ match_list.addEventListener('click', function (e) {
         "id": spp_entry_date.getTime().toString(),
         "site_id": current_site_id,
         "species": spp,
+        "uncertainty": "",
         "date": spp_entry_date,
         "latitude": sppItemLat,
         "longitude": sppItemLon,
@@ -692,31 +705,28 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
 document.getElementById('btn-mark-uncertain-spp').addEventListener('click', function (e) {
 //  var target = e.target; // Clicked element
  console.log("in click event for 'btn-mark-uncertain-spp'");
+ let spp_itm = site_spp_array.find(itm => itm.id === current_spp_item_id);
+ spp_itm.uncertainty = "species";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
- let ucModal = new bootstrap.Modal(document.getElementById('vnUnderConstructionScreen'), {
-   keyboard: false
- });
- ucModal.show();
+ showSites();
 });
 
 document.getElementById('btn-mark-uncertain-genus').addEventListener('click', function (e) {
 //  var target = e.target; // Clicked element
  console.log("in click event for 'btn-mark-uncertain-genus'");
+ let spp_itm = site_spp_array.find(itm => itm.id === current_spp_item_id);
+ spp_itm.uncertainty = "genus";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
- let ucModal = new bootstrap.Modal(document.getElementById('vnUnderConstructionScreen'), {
-   keyboard: false
- });
- ucModal.show();
+ showSites();
 });
 
 document.getElementById('btn-mark-not-uncertain').addEventListener('click', function (e) {
 //  var target = e.target; // Clicked element
  console.log("in click event for 'btn-mark-not-uncertain'");
+ let spp_itm = site_spp_array.find(itm => itm.id === current_spp_item_id);
+ spp_itm.uncertainty = "";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
- let ucModal = new bootstrap.Modal(document.getElementById('vnUnderConstructionScreen'), {
-   keyboard: false
- });
- ucModal.show();
+ showSites();
 });
 
 // Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
