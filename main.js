@@ -710,28 +710,22 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
 });
 
 document.getElementById('btn-mark-uncertain-spp').addEventListener('click', function (e) {
-//  var target = e.target; // Clicked element
  console.log("in click event for 'btn-mark-uncertain-spp'");
- let spp_itm = site_spp_array.find(itm => itm.id === current_spp_item_id);
- spp_itm.uncertainty = "species";
+ site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "species";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
 
 document.getElementById('btn-mark-uncertain-genus').addEventListener('click', function (e) {
-//  var target = e.target; // Clicked element
  console.log("in click event for 'btn-mark-uncertain-genus'");
- let spp_itm = site_spp_array.find(itm => itm.id === current_spp_item_id);
- spp_itm.uncertainty = "genus";
+ site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "genus";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
 
 document.getElementById('btn-mark-not-uncertain').addEventListener('click', function (e) {
-//  var target = e.target; // Clicked element
  console.log("in click event for 'btn-mark-not-uncertain'");
- let spp_itm = site_spp_array.find(itm => itm.id === current_spp_item_id);
- spp_itm.uncertainty = "";
+ site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
