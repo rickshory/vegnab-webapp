@@ -973,8 +973,8 @@ function sendData() {
       emailBodyStr += '\n\n Placeholders used:';
       this_site_ph_array.forEach(ph_obj => {
         emailBodyStr += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
-        emailBodyStr += '\nRecorded ' + ph_obj.date.toISOString();
-        emailBodyStr += '\nOn site: "'
+        emailBodyStr += '; recorded ' + ph_obj.date.toISOString();
+        emailBodyStr += ' on site "'
           + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
         emailBodyStr += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
                 + ') accuracy ' + ph_obj.accuracy + ' meters';
