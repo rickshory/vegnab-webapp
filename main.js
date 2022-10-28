@@ -95,7 +95,7 @@ var current_placeholder;
 //   "accuracy": lat lon Accuracy
 // };
 
-var showSitesTimeout = setTimeout(showSites, 10); // first time, there are no
+var shwSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
 var match_list = document.getElementById("match-list");
 var sites_available_to_send_list = document.getElementById("sendFormSitesList");
@@ -304,7 +304,7 @@ match_list.addEventListener('click', function (e) {
   //    console.log(found_spp_array);
 
       // trigger to refresh site list
-      showSitesTimeout = setTimeout(showSites, 10);
+      shwSitesTimeout = setTimeout(showSites, 10);
       // clear the search for next time
       // dismiss the modal
       console.log('About to hide the Species Search modal');
@@ -366,7 +366,7 @@ match_list.addEventListener('click', function (e) {
           };
           site_spp_array.unshift(new_ph_item);
           // trigger to refresh site list
-          showSitesTimeout = setTimeout(showSites, 10);
+          shwSitesTimeout = setTimeout(showSites, 10);
           // dismiss the modal
           console.log('About to hide the Species Search modal');
           bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
@@ -582,7 +582,7 @@ function storeSiteInfo() {
   vnSiteName.value = "";
   vnSiteNotes.value = "";
   // trigger to refresh site list
-  showSitesTimeout = setTimeout(showSites, 10);
+  shwSitesTimeout = setTimeout(showSites, 10);
   // dismiss the modal
   console.log('About to hide the Site Info modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
@@ -640,8 +640,15 @@ function showSites() {
         spp_listitems_string += '<li id="' + spp_obj.id + '">'
           + spp_obj.code + ': ' + spp_obj.keywords.join(" ") + '</li>';
       } else { // a real species
+        let sst = spp_obj.species;
+        if (spp_obj.uncertainty == "species") {
+          sst = "Probably " + spp_obj.species + ", but can't determine species."
+        }
+        if (spp_obj.uncertainty == "genus") {
+          sst = "Most likely " + spp_obj.species + ", but unsure at genus level."
+        }
         spp_listitems_string += '<li id="' + spp_obj.id + '">'
-          + spp_obj.species + '</li>';
+          + sst + '</li>';
       };
     });
     this_site_spp_list.innerHTML = spp_listitems_string;
@@ -859,7 +866,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     current_placeholder = undefined;
     current_ph_code = "";
     // trigger to refresh site list
-    showSitesTimeout = setTimeout(showSites, 10);
+    shwSitesTimeout = setTimeout(showSites, 10);
 
     // dismiss the modal
     console.log('About to hide the Save Placeholder modal');
@@ -950,7 +957,14 @@ function sendData() {
       if (itm.species === undefined) { // a placeholder
         descr_string = itm.code + ": " + itm.keywords.join(" ");
       } else { // a real species
-        descr_string = itm.species;
+        let sst = itm.species;
+        if (itm.uncertainty == "species") {
+          sst = "Probably " + itm.species + ", but can't determine species."
+        }
+        if (itm.uncertainty == "genus") {
+          "Most likely " + itm.species + ", but unsure at genus level."
+        }
+        descr_string = sst;
       }
       emailBodyStr += '\n' + descr_string
           + '; ' + itm.date.toISOString()
