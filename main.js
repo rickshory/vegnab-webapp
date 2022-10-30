@@ -63,7 +63,7 @@ var latest_site_date = new Date();
 var site_spp_array = []; // the species items for all the sites, internally
 // indexed by which site each one belongs to.
 var current_spp_item_id = ""; // tracks which item, for working on details
-var nrcs_spp_array = [];
+// const nrcs_spp_array = []; // now in separate file
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
@@ -100,25 +100,7 @@ var shwSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 var match_list = document.getElementById("match-list");
 var sites_available_to_send_list = document.getElementById("sendFormSitesList");
 
-fetch('nrcs_spp.txt')
-  .then(response => response.text())
-  .then(data => {
-		let tmp_array = data.split("\n");
-		nrcs_spp_array = tmp_array.map(str => {
-			spp_flds = str.split("\t");
-			let spp_obj = {
-				"nrcs_code": spp_flds[0],
-				"genus": spp_flds[1],
-				"species": (spp_flds[2] == null ? "" : spp_flds[2]),
-        "subspp_var": (spp_flds[3] == null ? "" : spp_flds[3]),
-        "common_names": (spp_flds[4] == null ? "" : spp_flds[4]),
-				"distribution": (spp_flds[5] == null ? "" : spp_flds[5])
-			};
-			return spp_obj;
-		});
-//	  console.log(nrcs_spp_array);
-		makeLocalAndNonlocalSppArrays();
-  });
+makeLocalAndNonlocalSppArrays();
 
 function makeLocalAndNonlocalSppArrays() {
 	// for performance, create these two smaller arrays, each seldom updated,

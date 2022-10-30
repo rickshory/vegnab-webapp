@@ -1,7 +1,8 @@
-const cacheName = 'VegNab-v0.04';
+const cacheName = 'VegNab-v0.06';
 const appShellFiles = [
 //  '/vegnab-webapp/',
   '../index.html',
+  '../nrcs_spp.js',
   '../main.js',
   '../regions.js',
   '../bootstrap.bundle.min.js',
@@ -10,7 +11,6 @@ const appShellFiles = [
   '../bootstrap.min.css',
   '../bootstrap.min.css.map',
   '../bootstrap-glyphicons.css',
-  '../nrcs_spp.txt',
   '../favicon_io/android-chrome-192x192.png',
   '../favicon_io/android-chrome-512x512.png',
   '../favicon_io/apple-touch-icon.png',
