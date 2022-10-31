@@ -113,8 +113,10 @@ function makeLocalAndNonlocalSppArrays() {
 	local_spp_array = tmp_local_array.map(orig_obj => {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
-			"item_description": orig_obj.genus + orig_obj.species
-          + orig_obj.subspp_var + orig_obj.common_names
+      "item_description": orig_obj.genus
+          + ((orig_obj.species == "") ? "" : " " + orig_obj.species)
+          + ((orig_obj.subspp_var == "") ? "" : " " + orig_obj.subspp_var)
+          + orig_obj.common_names
 		};
 		return new_properties;
 	});
@@ -125,8 +127,10 @@ function makeLocalAndNonlocalSppArrays() {
 	nonlocal_spp_array = tmp_nonlocal_array.map(orig_obj => {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
-      "item_description": orig_obj.genus + orig_obj.species
-          + orig_obj.subspp_var + orig_obj.common_names
+      "item_description": orig_obj.genus
+          + ((orig_obj.species == "") ? "" : " " + orig_obj.species)
+          + ((orig_obj.subspp_var == "") ? "" : " " + orig_obj.subspp_var)
+          + orig_obj.common_names
 		};
 		return new_properties;
 	});
