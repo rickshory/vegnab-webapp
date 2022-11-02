@@ -51,7 +51,7 @@ locationOptions = {
 
 // keep acquiring site location until accuracy is <= this
 // user can manually accept greater inaccuracty
-var defaultSiteLocationAcceptableAccuracy = 7;
+var siteLocTargetAccuracy = 7;
 var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accepted
 var sppItemLocationTargetAccuracy = 7;
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
@@ -455,7 +455,7 @@ function checkSitePositionAccuracy() {
     console.log("latestLocation not yet defined");
     return;
   }
-  if (latestLocation.coords.accuracy <= defaultSiteLocationAcceptableAccuracy) {
+  if (latestLocation.coords.accuracy <= siteLocTargetAccuracy) {
     siteAccuracyAccepted = true;
     siteLocation = latestLocation; // remember, and no longer null
   }
@@ -465,7 +465,7 @@ function checkSitePositionAccuracy() {
   let stLoc = "Latitude: " + latestLocation.coords.latitude +
       "<br>Longitude: " + latestLocation.coords.longitude;
   if (!siteAccuracyAccepted) {
-    stLoc += "<br>Target accuracy: " + defaultSiteLocationAcceptableAccuracy + " meters";
+    stLoc += "<br>Target accuracy: " + siteLocTargetAccuracy + " meters";
   }
   stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
   vnSiteLocation.innerHTML = stLoc;
@@ -847,6 +847,8 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     current_ph_code = "";
     // trigger to refresh site list
     shwSitesTimeout = setTimeout(showSites, 10);
+    // clear the keywords
+    document.getElementById('placeholder_keywords').innerHTML = "";
 
     // dismiss the modal
     console.log('About to hide the Save Placeholder modal');
