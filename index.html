@@ -198,7 +198,31 @@
     </div>
     <!-- end of modal, species details-->
 
-    <!-- begin modal, placeholder info -->
+    <!-- begin modal, placeholders list -->
+    <div id="vnPhListScreen" class="modal ph_list_screen">
+      <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Placeholders</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="placeholders_list">
+              <!-- list will be filled on-the-fly -->
+              <ul id="ph-list" class="list-unstyled">
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, placeholders list -->
+
+    <!-- begin modal, placeholder detail -->
     <div id="vnPlaceholderInfoScreen" class="modal placeholder_info_screen">
       <div class="modal-dialog modal-fullscreen-sm-down">
         <div class="modal-content">
@@ -239,7 +263,7 @@
         </div>
       </div>
     </div>
-    <!-- end of modal, placeholder info -->
+    <!-- end of modal, placeholder detail -->
 
     <!-- begin modal, send data -->
     <div id="vnSendDataScreen" class="modal send_data_screen" role="dialog">
