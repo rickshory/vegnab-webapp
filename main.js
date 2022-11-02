@@ -716,6 +716,22 @@ document.getElementById('btn-mark-not-uncertain').addEventListener('click', func
  showSites();
 });
 
+
+// Why does the following work? Is 'vnPhListScreen' and object readable by its ID?
+vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
+  let ph_list_html = "";
+  if (placeholders_array.length == 0) {
+    ph_list_html = '<li>(No placeholders yet)</li>';
+  } else {
+    placeholders_array.forEach(ph => {
+      ph_list_html += '\n<li class="ph_title" id="'
+        + encodeURIComponent(ph.code)+ '">\n'
+        + ph.code + ': ' + ph.keywords.join(" ")  + '</li>';
+    });
+  };
+  document.getElementById("ph_list").innerHTML = ph_list_html;
+});
+
 // Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
