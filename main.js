@@ -743,58 +743,51 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
     return;
   }
   if (placeholder_state === "new") {
-
     document.getElementById('placeholder_code_label').innerHTML
         = 'New placeholder "' + current_placeholder.code + '"';
-    document.getElementById('placeholder_keywords').innerHTML
-        = current_placeholder.keywords.join(" ");
-    document.getElementById('placeholder_location').innerHTML
-         = '(' + current_placeholder.latitude
-         + ', ' + current_placeholder.longitude
-         + '), accuracy ' + current_placeholder.accuracy + ' m';
-     document.getElementById('placeholder_date').innerHTML
-         = current_placeholder.date;
-     let ph_pix_html = "";
-     if (current_placeholder.photos.length == 0) {
-       ph_pix_html = "no photos yet"
-     } else {
-       ph_pix_html += '    <div class="container">'
-          + '\n               <div class="row imagetiles">';
-       current_placeholder.photos.forEach(itm => {
-         ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
-            + '<img src=' + URL.createObjectURL(itm)
-            + ' class="img-responsive">'
-            + '</div>';
-       });
-       ph_pix_html += '    </div>\n               </div>';
-     }
-     console.log(ph_pix_html);
-     document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
-   // TODO: finish this
-   /*
-   current_placeholder = {
-     "id": ph_create_date.getTime().toString(),
-     "site_id": current_site_id,
-     "code": current_ph_code,
-     "keywords": [], // empty until filled in
-     "photos": [], // photo uris and urls
-     "date": ph_create_date,
-     "latitude": sppItemLat,
-     "longitude": sppItemLon,
-     "accuracy": sppItemAcc
-   };
-   */
   }
   if (placeholder_state === "edit") {
-//    current_placeholder = placeholders_array.find(itm => itm.code === current_ph_code);
-   // TODO: finish this
-  // document.getElementById('placeholder_location').innerHTML
-   //     = '(' + current_placeholder.latitude
-   //     + ', ' + current_placeholder.longitude
-   //     + '), accuracy ' + current_placeholder.accuracy + ' m';
-   // document.getElementById('placeholder_date').innerHTML
-   //     = current_placeholder.date;
+    document.getElementById('placeholder_code_label').innerHTML
+        = 'Editing placeholder "' + current_placeholder.code + '"';
   }
+  document.getElementById('placeholder_keywords').innerHTML
+      = current_placeholder.keywords.join(" ");
+  document.getElementById('placeholder_location').innerHTML
+       = '(' + current_placeholder.latitude
+       + ', ' + current_placeholder.longitude
+       + '), accuracy ' + current_placeholder.accuracy + ' m';
+   document.getElementById('placeholder_date').innerHTML
+       = current_placeholder.date;
+   let ph_pix_html = "";
+   if (current_placeholder.photos.length == 0) {
+     ph_pix_html = "no photos yet"
+   } else {
+     ph_pix_html += '    <div class="container">'
+        + '\n               <div class="row imagetiles">';
+     current_placeholder.photos.forEach(itm => {
+       ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
+          + '<img src=' + URL.createObjectURL(itm)
+          + ' class="img-responsive">'
+          + '</div>';
+     });
+     ph_pix_html += '    </div>\n               </div>';
+   }
+   console.log(ph_pix_html);
+   document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
+ // TODO: finish this
+ /*
+ current_placeholder = {
+   "id": ph_create_date.getTime().toString(),
+   "site_id": current_site_id,
+   "code": current_ph_code,
+   "keywords": [], // empty until filled in
+   "photos": [], // photo uris and urls
+   "date": ph_create_date,
+   "latitude": sppItemLat,
+   "longitude": sppItemLon,
+   "accuracy": sppItemAcc
+ };
+ */
 });
 
 document.getElementById('ph_list').addEventListener('click', function (e) {
@@ -808,8 +801,17 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
     // the element id is encodeURIComponent(ph.code), to assure no spaces
     //
     current_ph_code = decodeURIComponent(target.id);
-      console.log("current_ph_code = " + current_ph_code);
-
+    console.log("current_ph_code = " + current_ph_code);
+    // get ph record
+    current_placeholder = placeholders_array.find(ph => ph.code == current_ph_code);
+    placeholder_state = "edit";
+    // close this screen
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPhListScreen')).hide();
+    // open ph for editing
+    var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
+      keyboard: false
+    });
+    vnPhInfoModal.show()
   }
 });
 
@@ -847,19 +849,18 @@ document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
 }, false);
 
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
+  let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
+  let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 2);
+  if (phKeywordsArray.length < 2) {
+    alert("Need a few keywords, to find this placeholder later");
+    document.getElementById('placeholder_keywords').focus();
+    return;
+  }
+  current_placeholder.keywords = phKeywordsArray;
   if (placeholder_state === "new") {
-    let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
-    let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 2);
-    if (phKeywordsArray.length < 2) {
-      alert("Need a few keywords, to find this placeholder later");
-      document.getElementById('placeholder_keywords').focus();
-      return;
-    }
-    current_placeholder.keywords = phKeywordsArray;
     // accept this placeholder into the placeholders array
     placeholders_array.unshift(current_placeholder);
     // add it to the site items
-    //
     let ph_entry_date = new Date();
     let new_ph_item = {
       "id": ph_entry_date.getTime().toString(),
@@ -872,19 +873,28 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       "accuracy": sppItemAcc
     };
     site_spp_array.unshift(new_ph_item);
-    console.log(site_spp_array);
-    // flag that work is finished
-    current_placeholder = undefined;
-    current_ph_code = "";
-    // trigger to refresh site list
-    shwSitesTimeout = setTimeout(showSites, 10);
-    // clear the keywords
-    document.getElementById('placeholder_keywords').innerHTML = "";
-
-    // dismiss the modal
-    console.log('About to hide the Save Placeholder modal');
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
   } // end of placeholder_state === "new"
+  if (placeholder_state === "edit") {
+    let phIndex = placeholders_array.findIndex(ph => ph.code == current_ph_code);
+    if (phIndex === -1) {
+      console.log("placeholder to edit not found, not changed: " + current_placeholder);
+    } else {
+      placeholders_array.splice(phIndex, 1, current_placeholder);
+    }
+  }
+  placeholder_state = ""
+  console.log(site_spp_array);
+  // flag that work is finished
+  current_placeholder = undefined;
+  current_ph_code = "";
+  // trigger to refresh site list
+  shwSitesTimeout = setTimeout(showSites, 10);
+  // clear the keywords
+  document.getElementById('placeholder_keywords').innerHTML = "";
+
+  // dismiss the modal
+  console.log('About to hide the Save Placeholder modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
 });
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
