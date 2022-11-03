@@ -824,9 +824,15 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
     console.log('type ' + ph_file.type);
     if (ph_file.type.match(/^image\//)) {
       console.log('file is an image: ' + ph_file.name + '');
+      if (ph_file.name.length > 30) {
+        // find a better way to detect if the photo was taken by carmera from
+        //  within the file input browse
+        alert("Take photos with the camera, outside of this web app");
+      } else {
+        img_files.unshift(ph_file);
+        console.log('URL: ' + URL.createObjectURL(ph_file));
+      }
 //      ph_pix_html += '<div><img src="' + URL.createObjectURL(ph_file) + '" alt="a picture"></div>';
-      img_files.unshift(ph_file);
-      console.log('URL: ' + URL.createObjectURL(ph_file));
     }
   }
   if (img_files.length > 0) {
@@ -843,6 +849,8 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
 });
 
 document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
+  // allows clicking button, which fits in with page layout, to get pictures
+  // rather than using the file input
   if (document.getElementById('ph-img-file-input')) {
     document.getElementById('ph-img-file-input').click();
   }
