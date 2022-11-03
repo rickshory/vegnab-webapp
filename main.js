@@ -628,10 +628,10 @@ function showSites() {
       } else { // a real species
         let sst = spp_obj.species;
         if (spp_obj.uncertainty == "species") {
-          sst = "Probably " + spp_obj.species + ", but can't determine species."
+          sst = "Most likely " + spp_obj.species + ", but can't determine species."
         }
         if (spp_obj.uncertainty == "genus") {
-          sst = "Most likely " + spp_obj.species + ", but unsure at genus level."
+          sst = "Probably " + spp_obj.species + ", but unsure at genus level."
         }
         spp_listitems_string += '<li id="' + spp_obj.id + '">'
           + sst + '</li>';
@@ -716,7 +716,6 @@ document.getElementById('btn-mark-not-uncertain').addEventListener('click', func
  showSites();
 });
 
-
 // Why does the following work? Is 'vnPhListScreen' and object readable by its ID?
 vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
   let ph_list_html = "";
@@ -795,6 +794,22 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
    //     + '), accuracy ' + current_placeholder.accuracy + ' m';
    // document.getElementById('placeholder_date').innerHTML
    //     = current_placeholder.date;
+  }
+});
+
+document.getElementById('ph_list').addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== document.getElementById('ph_list')) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    // the element id is encodeURIComponent(ph.code), to assure no spaces
+    //
+    current_ph_code = decodeURIComponent(target.id);
+      console.log("current_ph_code = " + current_ph_code);
+
   }
 });
 
@@ -977,7 +992,7 @@ function sendData() {
       emailBodyStr += '\n\n Placeholders used:';
       this_site_ph_array.forEach(ph_obj => {
         emailBodyStr += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
-        emailBodyStr += '; recorded ' + ph_obj.date.toISOString();
+        emailBodyStr += '\nrecorded ' + ph_obj.date.toISOString();
         emailBodyStr += ' on site "'
           + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
         emailBodyStr += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
