@@ -736,7 +736,7 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
   if (current_ph_code === "" || current_placeholder === undefined) {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
-    document.getElementById('placeholder_keywords').innerHTML = "";
+    document.getElementById('placeholder_keywords').value = "";
     document.getElementById('placeholder_location').innerHTML = "(no location)";
     document.getElementById('placeholder_date').innerHTML = "(no date)";
     document.getElementById('placeholder_pix').innerHTML = "(no pix)";
@@ -750,7 +750,7 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
     document.getElementById('placeholder_code_label').innerHTML
         = 'Editing placeholder "' + current_placeholder.code + '"';
   }
-  document.getElementById('placeholder_keywords').innerHTML
+  document.getElementById('placeholder_keywords').value
       = current_placeholder.keywords.join(" ");
   document.getElementById('placeholder_location').innerHTML
        = '(' + current_placeholder.latitude
@@ -883,14 +883,14 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     }
   }
   placeholder_state = ""
-  console.log(site_spp_array);
+//  console.log(site_spp_array);
   // flag that work is finished
   current_placeholder = undefined;
   current_ph_code = "";
   // trigger to refresh site list
   shwSitesTimeout = setTimeout(showSites, 10);
   // clear the keywords
-  document.getElementById('placeholder_keywords').innerHTML = "";
+  document.getElementById('placeholder_keywords').value = "";
 
   // dismiss the modal
   console.log('About to hide the Save Placeholder modal');
