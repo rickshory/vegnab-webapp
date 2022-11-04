@@ -1,4 +1,4 @@
-var regions_array = [
+const regions_array = [
   {
     code: "AL",
     name: "Alabama",

@@ -100,9 +100,16 @@ var shwSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 var match_list = document.getElementById("match-list");
 var sites_available_to_send_list = document.getElementById("sendFormSitesList");
 
-makeLocalAndNonlocalSppArrays();
+function showAppStatus(info_msg) {
+  document.getElementById("info_footer").innerHTML = info_msg;
+}
 
-function makeLocalAndNonlocalSppArrays() {
+makeLocalAndNonlocalSppArrays().then(
+  function(value) {showAppStatus(value);},
+  function(error) {showAppStatus(error);}
+);
+
+async function makeLocalAndNonlocalSppArrays() {
 	// for performance, create these two smaller arrays, each seldom updated,
 	// that will be filtered for matches on each keystroke
   // retain separate fields in original array but concatenate in local and
@@ -135,7 +142,7 @@ function makeLocalAndNonlocalSppArrays() {
 		return new_properties;
 	});
 //	console.log(nonlocal_spp_array);
-  return "Region: " + regions_array.find(r => r.code == region_code).name;
+  return "Region: " + (regions_array.find(r => r.code == region_code).name);
 };
 
 function updateMatchList() {
@@ -1088,7 +1095,11 @@ settingsFormRegionsList.addEventListener('click', function (e) {
 //      console.log("region_code = " + region_code);
     document.getElementById('regionChosen').innerHTML =
         '<h3>' + target.textContent + '</h3>';
-    const updateRegionTimeout = setTimeout(makeLocalAndNonlocalSppArrays, 10);
+//    const updateRegionTimeout = setTimeout(makeLocalAndNonlocalSppArrays, 10);
+    makeLocalAndNonlocalSppArrays().then(
+      function(value) {showAppStatus(value);},
+      function(error) {showAppStatus(error);}
+    );
   }
 });
 
