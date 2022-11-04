@@ -135,6 +135,7 @@ function makeLocalAndNonlocalSppArrays() {
 		return new_properties;
 	});
 //	console.log(nonlocal_spp_array);
+  return "Region: " + regions_array.find(r => r.code == region_code).name;
 };
 
 function updateMatchList() {
