@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -19,7 +19,7 @@
     <script src="main.js" defer></script>
     <script src="regions.js" defer></script>
   </head>
-  <body>
+  <body class="d-flex flex-column h-100">
     <!-- begin bootstrap navbar, outside of main container -->
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="VegNab web app">
     <div class="container-fluid">
@@ -387,6 +387,14 @@
     </div>
     <!-- end of modal, under construction -->
 
+  </div>
+  <div id="footer_bar">
+    <footer class="footer mt-auto py-3 bg-dark">
+      <div class="container">
+        <!-- footer info will be filled in on hhe fly -->
+        <span id="info_footer" class="text-light"></span>
+      </div>
+    </footer>
   </div>
   <script src="bootstrap.bundle.min.js"  defer>
   </script>

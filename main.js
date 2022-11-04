@@ -827,7 +827,7 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
       if (ph_file.name.length > 30) {
         // find a better way to detect if the photo was taken by carmera from
         //  within the file input browse
-        alert("Take photos with the camera, outside of this web app");
+        alert("Photos taken here won't save. Use the camera seoarately.");
       } else {
         img_files.unshift(ph_file);
         console.log('URL: ' + URL.createObjectURL(ph_file));
