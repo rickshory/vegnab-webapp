@@ -45,7 +45,7 @@ var sppItemAcc = "";
 
 locationOptions = {
   enableHighAccuracy: true,
-  timeout: 50000,
+  timeout: 60000,
   maximumAge: 0
 };
 
@@ -786,18 +786,22 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 
 function showPhPix() {
   let ph_pix_html = "";
-  if (current_placeholder.photos.length == 0) {
-    ph_pix_html = "no photos yet"
-  } else {
-    ph_pix_html += '    <div class="container">'
-       + '\n               <div class="row imagetiles">';
-    current_placeholder.photos.forEach(itm => {
-      ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
-         + '<img src=' + URL.createObjectURL(itm)
-         + ' class="img-responsive">'
-         + '</div>';
-    });
-    ph_pix_html += '    </div>\n               </div>';
+  try {
+    if (current_placeholder.photos.length == 0) {
+      ph_pix_html = "no photos yet"
+    } else {
+      ph_pix_html += '    <div class="container">'
+         + '\n               <div class="row imagetiles">';
+      current_placeholder.photos.forEach(itm => {
+        ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
+           + '<img src=' + URL.createObjectURL(itm)
+           + ' class="img-responsive">'
+           + '</div>';
+      });
+      ph_pix_html += '    </div>\n               </div>';
+    }
+  } catch(err) {
+    ph_pix_html = err.message;
   }
   console.log(ph_pix_html);
   document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
