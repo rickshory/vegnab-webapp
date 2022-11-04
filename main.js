@@ -45,7 +45,7 @@ var sppItemAcc = "";
 
 locationOptions = {
   enableHighAccuracy: true,
-  timeout: 5000,
+  timeout: 50000,
   maximumAge: 0
 };
 
@@ -781,37 +781,27 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
        + '), accuracy ' + current_placeholder.accuracy + ' m';
    document.getElementById('placeholder_date').innerHTML
        = current_placeholder.date;
-   let ph_pix_html = "";
-   if (current_placeholder.photos.length == 0) {
-     ph_pix_html = "no photos yet"
-   } else {
-     ph_pix_html += '    <div class="container">'
-        + '\n               <div class="row imagetiles">';
-     current_placeholder.photos.forEach(itm => {
-       ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
-          + '<img src=' + URL.createObjectURL(itm)
-          + ' class="img-responsive">'
-          + '</div>';
-     });
-     ph_pix_html += '    </div>\n               </div>';
-   }
-   console.log(ph_pix_html);
-   document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
- // TODO: finish this
- /*
- current_placeholder = {
-   "id": ph_create_date.getTime().toString(),
-   "site_id": current_site_id,
-   "code": current_ph_code,
-   "keywords": [], // empty until filled in
-   "photos": [], // photo uris and urls
-   "date": ph_create_date,
-   "latitude": sppItemLat,
-   "longitude": sppItemLon,
-   "accuracy": sppItemAcc
- };
- */
+  showPhPix();
 });
+
+function showPhPix() {
+  let ph_pix_html = "";
+  if (current_placeholder.photos.length == 0) {
+    ph_pix_html = "no photos yet"
+  } else {
+    ph_pix_html += '    <div class="container">'
+       + '\n               <div class="row imagetiles">';
+    current_placeholder.photos.forEach(itm => {
+      ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
+         + '<img src=' + URL.createObjectURL(itm)
+         + ' class="img-responsive">'
+         + '</div>';
+    });
+    ph_pix_html += '    </div>\n               </div>';
+  }
+  console.log(ph_pix_html);
+  document.getElementById('placeholder_pix').innerHTML = ph_pix_html;
+}
 
 document.getElementById('ph_list').addEventListener('click', function (e) {
   // list is parent of all the list items
@@ -849,8 +839,9 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
       console.log('file is an image: ' + ph_file.name + '');
       if (ph_file.name.length > 30) {
         // find a better way to detect if the photo was taken by carmera from
-        //  within the file input browse
-        alert("Photos taken here won't save. Use the camera seoarately.");
+        //  within the file input browse, than just the long filename
+        alert("Take pictures outside this app.");
+        return;
       } else {
         img_files.unshift(ph_file);
         console.log('URL: ' + URL.createObjectURL(ph_file));
@@ -858,16 +849,10 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
 //      ph_pix_html += '<div><img src="' + URL.createObjectURL(ph_file) + '" alt="a picture"></div>';
     }
   }
+
   if (img_files.length > 0) {
     current_placeholder.photos = img_files.concat(current_placeholder.photos);
-    // re-display placeholder screen
-    console.log('About to re-display the Save Placeholder modal');
-    ph_mdl = bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen'));
-    console.log('About to temprarily hide the Save Placeholder modal');
-    ph_mdl.hide();
-    console.log('About to re-show the Save Placeholder modal');
-    ph_mdl.show();
-//    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+    showPhPix();
   }
 });
 
