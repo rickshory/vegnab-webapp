@@ -100,13 +100,17 @@ var shwSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 var match_list = document.getElementById("match-list");
 var sites_available_to_send_list = document.getElementById("sendFormSitesList");
 
-function showAppStatus(rtn_val) {
-  if (rtn_val) {
-    document.getElementById("info_footer").innerHTML =
-      "Region: " + (regions_array.find(r => r.code == region_code).name);
-    // more status later
+function showAppStatus(rtn_ok) {
+  if (rtn_ok) {
+    try {
+      document.getElementById("info_footer").innerHTML =
+        "Region: " + (regions_array.find(r => r.code == region_code).name);
+      // more status later
+    } catch(err) {
+      document.getElementById("info_footer").innerHTML = err.message;
+    }
   } else {
-    document.getElementById("info_footer").innerHTML = "List error";
+    document.getElementById("info_footer").innerHTML = "Could not build lists";
   }
 }
 
