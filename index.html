@@ -340,29 +340,31 @@
           <div class="modal-body">
             <form id="settings-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
-                <div class="row"> <!-- first row, dropdown and region chosen -->
-                  <div class="col"> <!-- first column, dropdown -->
-                    <div class="dropdown">
-                      <button class="btn btn-primary btn-xl dropdown-toggle"
-                          type="button" id="dropdownMenuChooseRegion"
-                          data-bs-toggle="dropdown" aria-expanded="false">
-                          Region
-                      </button>
-                      <ul id = "settingsFormRegionsList" class="dropdown-menu"
-                          aria-labelledby="dropdownMenuChooseRegion">
-                        <li class="dropdown-item" id = "region_OR"><h3>Oregon</h3></li>
-                        <li class="dropdown-item" id = "region_WA"><h3>Washington</h3></li>
-                        <li class="dropdown-item" id = "region_CA"><h3>California</h3></li>
-                      </ul>
-                    </div>
-                  </div> <!-- end of first column, dropdown -->
-                  <div class="col"> <!-- 2nd column, region chosen -->
-                    <div id = "regionChosen" class="form-text">
-                      <h3>Oregon</h3>
-                    </div>
-                  </div> <!-- end of 2nd column, region chosen -->
+                <div class="row gx-5  gy-5"> <!-- first row, dropdown and region chosen -->
+                  <div class="p-3 border bg-light"> <!-- wrap region settings -->
+                    <div class="col"> <!-- first column, dropdown -->
+                      <div class="dropdown">
+                        <button class="btn btn-primary btn-xl dropdown-toggle"
+                            type="button" id="dropdownMenuChooseRegion"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Region
+                        </button>
+                        <ul id = "settingsFormRegionsList" class="dropdown-menu"
+                            aria-labelledby="dropdownMenuChooseRegion">
+                          <li class="dropdown-item" id = "region_OR"><h3>Oregon</h3></li>
+                          <li class="dropdown-item" id = "region_WA"><h3>Washington</h3></li>
+                          <li class="dropdown-item" id = "region_CA"><h3>California</h3></li>
+                        </ul>
+                      </div>
+                    </div> <!-- end of first column, dropdown -->
+                    <div class="col"> <!-- 2nd column, region chosen -->
+                      <div id = "regionChosen" class="form-text">
+                        <h3>Oregon</h3>
+                      </div>
+                    </div> <!-- end of 2nd column, region chosen -->                    
+                  </div> <!-- end wrap region settings -->
                 </div> <!-- end of first row, dropdown and region chosen -->
-                <div class="row gx-5"> <!-- second row, radio buttons spp or subsppvar -->
+                <div class="row gx-5  gy-5"> <!-- second row, radio buttons spp or subsppvar -->
                   <div class="col">
                     <div class="p-3 border bg-light"> <!-- wrap radio buttons -->
                       <div class="form-check">
