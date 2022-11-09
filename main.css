@@ -21,11 +21,13 @@ $font-family-sans-serif:
   // Emoji fonts
   "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 
-body, textarea, input[type="text"], input[type="email"], button, select {
+body, textarea, input[type="text"], input[type="email"], input[type="number"],
+    h3, button, select {
 	font-size: 16px;
 }
 @media only screen and (max-width: 576px) {
-	body, textarea, input[type="text"], input[type="email"], button, select {
+	body, textarea, input[type="text"], input[type="email"], input[type="number"],
+      h3, button, select {
 		font-size: 22px;
 	}
 }
