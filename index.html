@@ -371,7 +371,7 @@
                     <div class="p-3 border bg-light"> <!-- wrap radio buttons -->
                       <div class="form-check">
                         <input class="form-check-input" type="radio"
-                          name="sppInclusionGroup" id="simpleSppOnly" checked>
+                          name="sppInclusionGroup" id="simpleSppOnly">
                         <label class="form-check-label" for="simpleSppOnly">
                           Show only simple species
                         </label>
@@ -389,7 +389,7 @@
                 </div> <!-- end of second row, radio buttons spp or subsppvar -->
                 <div class="row gx-5  gy-5"> <!-- 3rd row, site accuracy -->
                   <div class="col">
-                    <div class="p-3 border bg-light"> <!-- wrap contents -->
+                    <div class="p-3 border bg-light"> <!-- visual border -->
                       <div class="row">
                         <div class="col">
                           Acquire site location until accuracy is
@@ -405,7 +405,7 @@
                       </div>
                       <div class="form-check">
                         <input class="form-check-input" type="checkbox"
-                          id="ckWaitSiteAcc" name="opt_site_acc" value="" checked>
+                          id="ckWaitSiteAcc" name="opt_site_acc" value="">
                         <label class="form-check-label"  for="ckWaitSiteAcc">
                           Wait for this target accuracy
                         </label>
@@ -414,7 +414,32 @@
                   </div> <!-- end col -->
                 </div> <!-- end 3rd row -->
 
-
+                <div class="row gx-5  gy-5"> <!-- 4th row, species accuracy -->
+                  <div class="col">
+                    <div class="p-3 border bg-light"> <!-- visual border -->
+                      <div class="row">
+                        <div class="col">
+                          Acquire species location until accuracy is
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-2">
+                          <input type="number"  min="2" max="100" step="1"
+                            class="form-control"
+                            id="inputSppTargetAccuracy">
+                        </div>
+                        <div class="col">meters or better</div>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                          id="ckWaitSppAcc" name="opt_spp_acc" value="">
+                        <label class="form-check-label"  for="ckWaitSppAcc">
+                          Wait for this target accuracy
+                        </label>
+                      </div>
+                    </div> <!--end visual block -->
+                  </div> <!-- end col -->
+                </div> <!-- end 4th row -->
 
               </div>
             </form> <!-- end of form-floating -->
