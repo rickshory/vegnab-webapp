@@ -341,8 +341,8 @@
             <form id="settings-form" autocomplete="off">
               <div class="form-floating mb-3 mt-3">
                 <div class="row gx-5  gy-5"> <!-- first row, dropdown and region chosen -->
-                  <div class="p-3 border bg-light"> <!-- wrap region settings -->
-                    <div class="col"> <!-- first column, dropdown -->
+                  <div class="col"> <!-- first column, dropdown -->
+                    <div class="p-3 border bg-light"> <!-- wrap col contents -->
                       <div class="dropdown">
                         <button class="btn btn-primary btn-xl dropdown-toggle"
                             type="button" id="dropdownMenuChooseRegion"
@@ -356,13 +356,15 @@
                           <li class="dropdown-item" id = "region_CA"><h3>California</h3></li>
                         </ul>
                       </div>
-                    </div> <!-- end of first column, dropdown -->
-                    <div class="col"> <!-- 2nd column, region chosen -->
+                    </div> <!-- end wrap col contents -->
+                  </div> <!-- end of first column, dropdown -->
+                  <div class="col"> <!-- 2nd column, region chosen -->
+                    <div class="p-3 border bg-light"> <!-- wrap col contents -->
                       <div id = "regionChosen" class="form-text">
                         <h3>Oregon</h3>
                       </div>
-                    </div> <!-- end of 2nd column, region chosen -->                    
-                  </div> <!-- end wrap region settings -->
+                    </div> <!-- end wrap col contents -->
+                  </div> <!-- end of 2nd column, region chosen -->
                 </div> <!-- end of first row, dropdown and region chosen -->
                 <div class="row gx-5  gy-5"> <!-- second row, radio buttons spp or subsppvar -->
                   <div class="col">
@@ -385,6 +387,33 @@
                   </div> <!-- end of column -->
 
                 </div> <!-- end of second row, radio buttons spp or subsppvar -->
+                <div class="row gx-5  gy-5"> <!-- 3rd row, site accuracy -->
+                  <div class="col">
+                    <div class="p-3 border bg-light"> <!-- wrap contents -->
+                      <div class="form-group row">
+                        <label for="inputSiteTargetAccuracy" class="col-sm-2 col-form-label">
+                          Target accuracy for sites (in meters)
+                        </label>
+                        <div class="col-sm-10">
+                          <input type="number"  min="2" max="100" step="1"
+                            class="form-control"
+                            id="inputSiteTargetAccuracy" placeholder="Target">
+                        </div>
+                      </div>
+
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                          id="ckWaitSiteAcc" name="opt_site_acc" value="" checked>
+                        <label class="form-check-label"  for="ckWaitSiteAcc">
+                          Wait for this target accuraccy
+                        </label>
+                      </div>
+                    </div> <!--end wrap contents -->
+                  </div> <!-- end col -->
+                </div> <!-- end 3rd row -->
+
+
+
               </div>
             </form> <!-- end of form-floating -->
           </div> <!-- end of modal body -->
