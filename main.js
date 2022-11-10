@@ -21,7 +21,6 @@ var region_code = "OR";
 // for testing, ignore subspecies and varieties
 // todo: make this an option
 var include_subspp_var = false;
-
 // value returned by setInterval, for periocally checking the location for a
 // site; used to clear the ticker using clearInterval
 var sitePeriodcLocationCheckFlag;
@@ -52,8 +51,10 @@ locationOptions = {
 // keep acquiring site location until accuracy is <= this
 // user can manually accept greater inaccuracty
 var siteLocTargetAccuracy = 7;
+var waitForSiteLocTarget = true; // 'true' for testing, default will be 'false'
 var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accepted
-var sppItemLocationTargetAccuracy = 7;
+var sppLocTargetAccuracy = 7;
+var waitForSppLocTarget = true; // 'true' for testing, default will be 'false'
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
 var site_info_array = [];
@@ -514,7 +515,7 @@ function checkSppItemPositionAccuracy() {
   // called for a new species item, periocally, until position is accurate enough
   console.log("entered checkSppItemPositionAccuracy");
   // // TODO: check if latestLocation undefined
-  if (latestLocation.coords.accuracy <= sppItemLocationTargetAccuracy) {
+  if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
     sppItemAccuracyAccepted = true;
   }
   sppItemLat = "" + latestLocation.coords.latitude;
@@ -1074,6 +1075,7 @@ function sendData() {
 // Why does the following work? Is 'vnSettingsScreen' and object readable by its ID?
 vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSettingsScreen 'shown.bs.modal'");
+  // set up Regions section
   let region_item = regions_array.find(itm => itm.code === region_code);
   if (region_item === "undefined") {
     document.getElementById('regionChosen').innerHTML
@@ -1092,6 +1094,21 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
     })
     settingsFormRegionsList.innerHTML = strRegionsAvaiableList;
   }
+  // Regions section done
+  // set up "simple spp" vs "all subspp and varieties" section
+  // evidently, button group is held together by them all having the same "name"
+  if (include_subspp_var) {
+    document.getElementById('allSubsppVars').checked = true;
+  } else {
+    document.getElementById('simpleSppOnly').checked = true;
+  }
+  // set up Site accuracy section
+  // set input value as string, even if numeric
+  document.getElementById("inputSiteTargetAccuracy").value = "" + siteLocTargetAccuracy;
+  document.getElementById("ckWaitSiteAcc").checked = waitForSiteLocTarget;
+  // set up Species accurady section
+  document.getElementById("inputSppTargetAccuracy").value = "" + sppLocTargetAccuracy;
+  document.getElementById("ckWaitSppAcc").checked = waitForSppLocTarget;
 });
 
 settingsFormRegionsList.addEventListener('click', function (e) {
