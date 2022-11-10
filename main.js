@@ -1111,8 +1111,16 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
   document.getElementById("ckWaitSppAcc").checked = waitForSppLocTarget;
 });
 
+document.getElementById("inputSiteTargetAccuracy").addEventListener("change", function (e) {
+  siteLocTargetAccuracy = e.target.value;
+});
+
 document.getElementById("ckWaitSiteAcc").addEventListener('click', function (e) {
   waitForSiteLocTarget = e.target.checked;
+});
+
+document.getElementById("inputSppTargetAccuracy").addEventListener("change", function (e) {
+  sppLocTargetAccuracy = e.target.value;
 });
 
 document.getElementById("ckWaitSppAcc").addEventListener('click', function (e) {
