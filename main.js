@@ -57,6 +57,8 @@ var sppLocTargetAccuracy = 7;
 var waitForSppLocTarget = true; // 'true' for testing, default will be 'false'
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
+var sentDataFormat = "fmtHumanReadable"; // default until changed
+
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
@@ -1150,6 +1152,15 @@ document.getElementById("ckWaitSppAcc").addEventListener('click', function (e) {
   waitForSppLocTarget = e.target.checked;
 });
 
+// klunky, separate listeners for each radio button
+document.getElementById("sendDataHumanReadable").addEventListener('change', function (e) {
+  if (this.checked) { sentDataFormat = this.value; }});
+
+document.getElementById("sendDataAsXML").addEventListener('change', function (e) {
+  if (this.checked) { sentDataFormat = this.value; }});
+
+document.getElementById("sendDataAsJSON").addEventListener('change', function (e) {
+  if (this.checked) { sentDataFormat = this.value; }});
 
 settingsFormRegionsList.addEventListener('click', function (e) {
   // list is parent of all the list items

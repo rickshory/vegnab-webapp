@@ -370,7 +370,7 @@
                 </div> <!-- end of first row, dropdown and region chosen -->
                 <div class="row gx-5  gy-5"> <!-- second row, radio buttons spp or subsppvar -->
                   <div class="col">
-                    <div class="p-3 border bg-light"> <!-- wrap radio buttons -->
+                    <div class="p-3 border bg-light"> <!-- visually set off radio buttons -->
                       <div class="form-check">
                         <input class="form-check-input" type="radio"
                           name="sppInclusionGroup" id="simpleSppOnly">
@@ -387,7 +387,6 @@
                       </div>
                     </div>  <!-- end of wrap radio buttons -->
                   </div> <!-- end of column -->
-
                 </div> <!-- end of second row, radio buttons spp or subsppvar -->
                 <div class="row gx-5  gy-5"> <!-- 3rd row, site accuracy -->
                   <div class="col">
@@ -443,6 +442,47 @@
                   </div> <!-- end col -->
                 </div> <!-- end 4th row -->
 
+                <div class="row gx-5  gy-5"> <!-- 5th row, radio buttons data format -->
+                  <div class="col">
+                    <div class="p-3 border bg-light"> <!-- visually set off this section -->
+                      <div class="row">
+                        <div class="col">
+                          Send data as (this capability is not enabled yet, defaults to Human Readable):
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                              name="sentDataFormat" id="sendDataHumanReadable"
+                              value="fmtHumanReadable">
+                            <label class="form-check-label"
+                              for="sendDataHumanReadable">
+                              Human readable text
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                              name="sentDataFormat" id="sendDataAsXML"
+                              value="fmtXml">
+                            <label class="form-check-label" for="sendDataAsXML">
+                              XML
+                            </label>
+                          </div>
+
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                              name="sentDataFormat" id="sendDataAsJSON"
+                              value="fmtJson">
+                            <label class="form-check-label" for="sendDataAsXML">
+                              JSON
+                            </label>
+                          </div>
+                        </div> <!-- end the single columm that holds the radio buttons -->
+                      </div>  <!-- end the single columm that holds the radio buttons -->
+                    </div>  <!-- end the visual data-format block -->
+                  </div> <!-- end of column -->
+                </div> <!-- end of 5th row, data format block holding radio buttons -->
               </div>
             </form> <!-- end of form-floating -->
           </div> <!-- end of modal body -->
