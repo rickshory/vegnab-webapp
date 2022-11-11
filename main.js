@@ -1111,6 +1111,29 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
   document.getElementById("ckWaitSppAcc").checked = waitForSppLocTarget;
 });
 
+// klunky, separate listeners for each radio button
+document.getElementById("simpleSppOnly").addEventListener('change', function (e) {
+  if (this.checked) {
+    include_subspp_var = false;
+    // see if the following takes too long
+    makeLocalAndNonlocalSppArrays().then(
+      function(value) {showAppStatus(value);},
+      function(error) {showListsError(error);}
+    );
+  }
+});
+
+document.getElementById("allSubsppVars").addEventListener('change', function (e) {
+  if (this.checked) {
+    include_subspp_var = true;
+    // see if the following takes too long
+    makeLocalAndNonlocalSppArrays().then(
+      function(value) {showAppStatus(value);},
+      function(error) {showListsError(error);}
+    );
+  }
+});
+
 document.getElementById("inputSiteTargetAccuracy").addEventListener("change", function (e) {
   siteLocTargetAccuracy = e.target.value;
 });
