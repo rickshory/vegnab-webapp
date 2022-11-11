@@ -1111,6 +1111,20 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
   // set up Species accurady section
   document.getElementById("inputSppTargetAccuracy").value = "" + sppLocTargetAccuracy;
   document.getElementById("ckWaitSppAcc").checked = waitForSppLocTarget;
+  // set up 'data format' section
+  switch(sentDataFormat) {
+    case "fmtHumanReadable":
+      document.getElementById('sendDataHumanReadable').checked = true;
+      break;
+    case "fmtXml":
+      document.getElementById('sendDataAsXML').checked = true;
+      break;
+    case "fmtJson":
+      document.getElementById('sendDataAsJSON').checked = true;
+      break;
+    default:
+      // code block
+    }
 });
 
 // klunky, separate listeners for each radio button
