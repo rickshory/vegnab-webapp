@@ -265,6 +265,43 @@
     </div>
     <!-- end of modal, placeholder detail -->
 
+    <!-- begin modal, wait for accuracy -->
+    <div id="vnWaitForAccuracyScreen" class="modal wait_accuracy_screen" role="dialog">
+      <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Waiting for target accuracy</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form id="send-form" autocomplete="off">
+              <div class="form-floating mb-3 mt-3">
+                <div class="row"> <!-- first row -->
+                  <div class="col"> <!-- first column, location info -->
+                    <div id="waiting_location_accuracy_info">
+                      Latitude, Longitude, and Accuracy
+                    </div>
+                  </div> <!-- end of first column, location info -->
+                </div> <!-- end of first row, dropdown and site chosen -->
+
+                <div class="row"> <!-- 2nd row, 'Send' button -->
+                  <button type="button" class="btn btn-primary btn-xl"
+                      name="btn_accept_accuracy"
+                      id="btn_accept_accuracy">Accept accuracy
+                  </button>
+                </div> <!-- end of 2nd row, 'Accept accuracy' button -->
+              </div> <!-- end of form-floating -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end modal, wait for accuracy -->
+
     <!-- begin modal, send data -->
     <div id="vnSendDataScreen" class="modal send_data_screen" role="dialog">
       <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
@@ -469,7 +506,6 @@
                               XML
                             </label>
                           </div>
-
                           <div class="form-check">
                             <input class="form-check-input" type="radio"
                               name="sentDataFormat" id="sendDataAsJSON"
@@ -486,11 +522,10 @@
               </div>
             </form> <!-- end of form-floating -->
           </div> <!-- end of modal body -->
-
         </div>
       </div>
     </div>
-    <!-- end of modal, under construction -->
+    <!-- end of modal, Settings -->
 
     <!-- begin modal, under construction -->
     <div id="vnUnderConstructionScreen" class="modal">

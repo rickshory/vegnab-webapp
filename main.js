@@ -57,6 +57,9 @@ var sppLocTargetAccuracy = 7;
 var waitForSppLocTarget = true; // 'true' for testing, default will be 'false'
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
+// flag for treating deferred locations from "wait for target accuracy"
+var whatIsAwaitingAccuracy = ""; // 'site', 'species', or ''
+
 var sentDataFormat = "fmtHumanReadable"; // default until changed
 
 var site_info_array = [];
@@ -505,10 +508,27 @@ function checkSitePositionAccuracy() {
   }
   stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
   vnSiteLocation.innerHTML = stLoc;
+  // if 'waiting for target accuracy' is up, update it
+  document.getElementById('waiting_location_accuracy_info').innerHTML = stLoc;
   if (siteAccuracyAccepted) {
     // stop the ticker that periocally calls this function
     console.log("echeckSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
     clearInterval(sitePeriodcLocationCheckFlag);
+    stopTrackingPosition(); //  needed?
+    if (whatIsAwaitingAccuracy == "site") {
+      // accuracy was not good enough when site info originaly entered,
+      // popped up the 'wait for target accuracy' screen
+      // now, update the location for the last-entered site
+      let lastest_site = site_info_array.find(s => s.id == current_site_id);
+      lastest_site.latitude = siteLat;
+      lastest_site.longitude = siteLon;
+      lastest_site.accuracy = siteAcc;
+      // trigger to refresh site list
+      shwSitesTimeout = setTimeout(showSites, 10);
+      // dismiss the 'wait for target accuracy' screen
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
+      whatIsAwaitingAccuracy = ""; // flag done
+    }
     return;
   }
 }
@@ -552,19 +572,10 @@ vnSiteInfoModal.addEventListener('shown.bs.modal', function (event) {
 });
 
 vnSiteInfoModal.addEventListener('hide.bs.modal', function (event) {
-//	event.preventDefault();
 	console.log("In modal Hide event");
-  siteAccuracyAccepted = true;
-  clearInterval(sitePeriodcLocationCheckFlag);
-  stopTrackingPosition();
-//  autoSetRegionCode();
 });
 
-document.getElementById('btn-save-site-info').addEventListener('click', storeSiteInfo);
-
-function storeSiteInfo() {
-//	console.log("In storeSiteInfo fn");
-//	console.log('self element : ' + self.id);
+document.getElementById('btn-save-site-info').addEventListener('click', function () {
 	let SiteNameString = vnSiteName.value.toString().trim();
 //	console.log('site_name : '+ SiteNameString);
 	// do verification
@@ -582,6 +593,7 @@ function storeSiteInfo() {
     vnSiteNotes.focus();
     return;
   }
+
   // // TODO: check that location is within tolerance
   // for now, just use latest location
 
@@ -603,12 +615,27 @@ function storeSiteInfo() {
   // clear form for next time
   vnSiteName.value = "";
   vnSiteNotes.value = "";
-  // trigger to refresh site list
-  shwSitesTimeout = setTimeout(showSites, 10);
-  // dismiss the modal
-  console.log('About to hide the Site Info modal');
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-};
+  // if flagged, check that target accuracy was met
+  if (waitForSiteLocTarget && (!siteAccuracyAccepted)) {
+    whatIsAwaitingAccuracy = "site";
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+    var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
+      keyboard: false
+    });
+    vnAwaitAcc.show();
+
+  } else { // finish up
+    // trigger to refresh site list
+    shwSitesTimeout = setTimeout(showSites, 10);
+    clearInterval(sitePeriodcLocationCheckFlag);
+    stopTrackingPosition();
+    siteAccuracyAccepted = true;
+    // dismiss this modal
+    console.log('About to hide the Site Info modal');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+
+  }
+});
 
 var sites_accordion = document.getElementById("sites-accordion");
 
