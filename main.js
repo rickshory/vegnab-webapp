@@ -323,8 +323,8 @@ match_list.addEventListener('click', function (e) {
         "item_code": a[0].trim(),
         "item_description": a[1].trim()
       };
-      if (!found_spp_array.includes(found_spp)) {
-        found_spp_array.push(found_spp)
+      if ((found_spp_array.find(itm => itm.item_code == found_spp.item_code)) == undefined) {
+        found_spp_array.push(found_spp);
       }
   //    console.log(found_spp_array);
 
