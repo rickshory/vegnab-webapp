@@ -637,6 +637,28 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   }
 });
 
+vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
+  switch(whatIsAwaitingAccuracy) {
+    case "site":
+      siteAccuracyAccepted = true;
+      clearInterval(sitePeriodcLocationCheckFlag);
+
+      break;
+    case "species":
+      sppItemAccuracyAccepted = true;
+      clearInterval(sppItemPeriodcLocationCheckFlag);
+      break;
+    default:
+      // do nothing
+  }
+  whatIsAwaitingAccuracy = "";
+
+
+  stopTrackingPosition();
+  // refresh data, no matter what
+  shwSitesTimeout = setTimeout(showSites, 10);
+})
+
 var sites_accordion = document.getElementById("sites-accordion");
 
 function showSites() {
