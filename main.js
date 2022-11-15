@@ -25,6 +25,10 @@ var include_subspp_var = false;
 // site; used to clear the ticker using clearInterval
 var sitePeriodcLocationCheckFlag;
 var sppItemPeriodcLocationCheckFlag; // same for species item
+
+// value returned by setInterval, for periocally checking the location
+// used to clear the ticker using clearInterval
+var periodicLocationCheckFlag;
 var browser_supports_geolocation = false; // until determined true
 // return value used to halt position tracking
 // by calling clearWatch on this id
@@ -57,7 +61,10 @@ var sppLocTargetAccuracy = 7;
 var waitForSppLocTarget = true; // 'true' for testing, default will be 'false'
 var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
-// flag for treating deferred locations from "wait for target accuracy"
+var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enough
+var accuracyAccepted = true; // 'false' = waiting for manual acceptance
+// flags for treating deferred locations from "wait for target accuracy"
+var locationDeferred = false; // new item has been saved, but will update location when acc OK
 var whatIsAwaitingAccuracy = ""; // 'site', 'species', or ''
 
 var sentDataFormat = "fmtHumanReadable"; // default until changed
@@ -487,6 +494,8 @@ function showPosition(position) {
   "<br>Accuracy: " + position.coords.accuracy.toFixed(1) + " meters";
 }
 
+function checkPositionAccuracy() {}
+
 function checkSitePositionAccuracy() {
   // called for a new site, periocally, until position is accurate enough
   console.log("entered checkSitePositionAccuracy");
@@ -579,23 +588,20 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
 	let SiteNameString = vnSiteName.value.toString().trim();
 //	console.log('site_name : '+ SiteNameString);
 	// do verification
-  if (SiteNameString === "") {
-    alert("Need a site name");
-    vnSiteName.value = ""; // in case some whitespace was there
+  if (SiteNameString.length < 3) {
+    alert("Need a site name at least 3 characters long");
+    vnSiteName.value = SiteNameString; // in case some whitespace was there
     vnSiteName.focus();
     return;
   }
   let SiteNotesString = vnSiteNotes.value.toString().trim();
 //  console.log('site_notes : '+ SiteNotesString);
-  if (SiteNotesString === "") {
-    alert("Need some site notes");
-    vnSiteNotes.value = ""; // in case some whitespace was there
+  if (SiteNotesString.length < 3) {
+    alert("Need some site notes, at least 3 characters");
+    vnSiteNotes.value = SiteNotesString; // in case some whitespace was there
     vnSiteNotes.focus();
     return;
   }
-
-  // // TODO: check that location is within tolerance
-  // for now, just use latest location
 
   // store data
   let site_obj = {
@@ -605,9 +611,9 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": latest_site_date,
-    "latitude": siteLat,
-    "longitude": siteLon,
-    "accuracy": siteAcc
+    "latitude": (latestLocation === undefined) ? "" : ("" + latestLocation.coords.latitude),
+    "longitude": (latestLocation === undefined) ? "" : ("" + latestLocation.coords.longitude),
+    "accuracy": (latestLocation === undefined) ? "" : ("" + latestLocation.coords.accuracy.toFixed(1))
   };
   current_site_id = site_obj.id;
   // new item at the beginning
@@ -616,24 +622,29 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   vnSiteName.value = "";
   vnSiteNotes.value = "";
   // if flagged, check that target accuracy was met
-  if (waitForSiteLocTarget && (!siteAccuracyAccepted)) {
+  if (waitForSiteLocTarget && !targetAccuracyOK) {
+    accuracyAccepted = false; // can be manually accepted
+    locationDeferred = true;
     whatIsAwaitingAccuracy = "site";
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
     var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
       keyboard: false
     });
     vnAwaitAcc.show();
-
   } else { // finish up
-    // trigger to refresh site list
-    shwSitesTimeout = setTimeout(showSites, 10);
-    clearInterval(sitePeriodcLocationCheckFlag);
+    shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
+    clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
-    siteAccuracyAccepted = true;
+    accuracyAccepted = true;
+    locationDeferred = false;
+    whatIsAwaitingAccuracy = "";
+    // alert that we got no location
+    if (latestLocation === undefined) {
+      alert("Never got a location for this site");
+    }
     // dismiss this modal
     console.log('About to hide the Site Info modal');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-
   }
 });
 
