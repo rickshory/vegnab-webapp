@@ -505,8 +505,6 @@ function checkPositionAccuracy() {
       targetAcc = siteLocTargetAccuracy;
       if (latestLocation.coords.accuracy <= siteLocTargetAccuracy) {
         targetAccuracyOK = true;
-        clearInterval(periodicLocationCheckFlag);
-        stopTrackingPosition();
       }
       if (!locationDeferred) {
         let stLoc = "Latitude: " + latestLocation.coords.latitude +
@@ -522,50 +520,35 @@ function checkPositionAccuracy() {
       targetAcc = sppLocTargetAccuracy;
       if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
         targetAccuracyOK = true;
-        clearInterval(periodicLocationCheckFlag);
-        stopTrackingPosition();
       }
+      // don't display anything for species
       break;
     default:
       // do nothing
   }
-  // if 'waiting for target accuracy' is up, update it
-  if (locationDeferred) {
-    let stLocInfo = "Latitude: " + latestLocation.coords.latitude +
-        "<br>Longitude: " + latestLocation.coords.longitude;
-    if (!targetAccuracyOK) {
-      stLocInfo += "<br>Target accuracy: " + targetAcc + " meters";
-    }
-    stLocInfo += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
-    document.getElementById('waiting_location_accuracy_info').innerHTML = stLocInfo;
-    let stAcceptAcc = "Accept " + latestLocation.coords.accuracy.toFixed(1) + " meters?";
-    document.getElementById('btn_accept_accuracy').innerHTML = stAcceptAcc;
-  }
-
-/*
-
-  if (siteAccuracyAccepted) {
-    // stop the ticker that periocally calls this function
-    console.log("echeckSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
-    clearInterval(sitePeriodcLocationCheckFlag);
-    stopTrackingPosition(); //  needed?
-    if (whatIsAwaitingAccuracy == "site") {
-      // accuracy was not good enough when site info originaly entered,
-      // popped up the 'wait for target accuracy' screen
-      // now, update the location for the last-entered site
-      let lastest_site = site_info_array.find(s => s.id == current_site_id);
-      lastest_site.latitude = siteLat;
-      lastest_site.longitude = siteLon;
-      lastest_site.accuracy = siteAcc;
-      // trigger to refresh site list
-      shwSitesTimeout = setTimeout(showSites, 10);
-      // dismiss the 'wait for target accuracy' screen
+  if (targetAccuracyOK) { // done getting location
+    clearInterval(periodicLocationCheckFlag);
+    stopTrackingPosition();
+    if (locationDeferred) {
+      // 'waiting for target accuracy' has been up, hide it
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
-      whatIsAwaitingAccuracy = ""; // flag done
+      // that screen's 'hidden' event will update the appropriate item
     }
-    */
-    return;
+  } else { // keep on acquring location
+    if (locationDeferred) {
+        // if 'waiting for target accuracy' is up, update the display
+      let stLocInfo = "Latitude: " + latestLocation.coords.latitude +
+          "<br>Longitude: " + latestLocation.coords.longitude;
+      if (!targetAccuracyOK) {
+        stLocInfo += "<br>Target accuracy: " + targetAcc + " meters";
+      }
+      stLocInfo += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
+      document.getElementById('waiting_location_accuracy_info').innerHTML = stLocInfo;
+      let stAcceptAcc = "Accept " + latestLocation.coords.accuracy.toFixed(1) + " meters?";
+      document.getElementById('btn_accept_accuracy').innerHTML = stAcceptAcc;
+    }
   }
+  return;
 }
 
 function checkSitePositionAccuracy() {
@@ -593,7 +576,7 @@ function checkSitePositionAccuracy() {
   document.getElementById('waiting_location_accuracy_info').innerHTML = stLoc;
   if (siteAccuracyAccepted) {
     // stop the ticker that periocally calls this function
-    console.log("echeckSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
+    console.log("checkSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
     clearInterval(sitePeriodcLocationCheckFlag);
     stopTrackingPosition(); //  needed?
     if (whatIsAwaitingAccuracy == "site") {
@@ -648,7 +631,7 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   sitePeriodcLocationCheckFlag = setInterval(checkSitePositionAccuracy, 2000);
 });
 
-document.getElementById('vnSiteInfoScreen').addEventListener('hide.bs.modal', function (event) {
+document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', function (event) {
 	console.log("In modal Hide event");
   // clear form for next time
   vnSiteName.value = "";
@@ -718,48 +701,44 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   }
 });
 
+vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {}
+
 vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
-  targetAccuracyOK = true;
+  if (locationDeferred && accuracyAccepted) {
+     // locationDeferred should always be true at this point, or this screen would not be shown
+     // accuracyAccepted true if "accept" button clicked
+    let itmToUpdate = undefined;
+    switch(whatIsAwaitingAccuracy) {
+      case "site":
+        itmToUpdate = site_info_array.find(i => i.id == current_site_id);
+        break;
+      case "species":
+        itmToUpdate = site_spp_array.find(i => i.id == current_spp_item_id);
+        break;
+      default:
+        // do nothing
+    }
+    if (itmToUpdate !== undefined) {
+      itmToUpdate.latitude = "" + latestLocation.coords.latitude;
+      itmToUpdate.longitude = "" + latestLocation.coords.longitude;
+      itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
+      console.log("Updated latest " + whatIsAwaitingAccuracy + ", id=" + itmToUpdate.id);
+    }
+  }
   clearInterval(periodicLocationCheckFlag);
   stopTrackingPosition();
+  locationDeferred = false;
+  accuracyAccepted = false;
+  targetAccuracyOK = false;
   whatIsAwaitingAccuracy = "";
-
-  // switch(whatIsAwaitingAccuracy) {
-  //   case "site":
-  //     siteAccuracyAccepted = true;
-  //     clearInterval(sitePeriodcLocationCheckFlag);
-  //     break;
-  //   case "species":
-  //     sppItemAccuracyAccepted = true;
-  //     clearInterval(sppItemPeriodcLocationCheckFlag);
-  //     break;
-  //   default:
-  //     // do nothing
-  // }
-
   // refresh data, no matter what
   shwSitesTimeout = setTimeout(showSites, 10);
-})
+});
 
 document.getElementById('btn_accept_accuracy').addEventListener('click', function () {
   accuracyAccepted = true;
-  let itmToUpdate = undefined;
-  switch(whatIsAwaitingAccuracy) {
-    case "site":
-      itmToUpdate = site_info_array.find(i => i.id == current_site_id);
-      break;
-    case "species":
-      itmToUpdate = site_spp_array.find(i => i.id == current_spp_item_id);
-      break;
-    default:
-      // do nothing
-  }
-  itmToUpdate.latitude = "" + latestLocation.coords.latitude;
-  itmToUpdate.longitude = "" + latestLocation.coords.longitude;
-  itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
 
-  // refresh data, no matter what
-  shwSitesTimeout = setTimeout(showSites, 10);
 }
 
 var sites_accordion = document.getElementById("sites-accordion");
