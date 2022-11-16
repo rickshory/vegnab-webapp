@@ -29,18 +29,7 @@ var browser_supports_geolocation = false; // until determined true
 // return value used to halt position tracking
 // by calling clearWatch on this id
 var position_tracker_id = 0;
-
 var latestLocation; // latest location acquired
-var siteLocation; // site location to use
-// numeric, but will only be inserted as text into sent data
-var siteLat = "";
-var siteLon = "";
-var siteAcc = "";
-
-// numeric, but will only be inserted as text into sent data
-var sppItemLat = "";
-var sppItemLon = "";
-var sppItemAcc = "";
 
 locationOptions = {
   enableHighAccuracy: true,
@@ -313,9 +302,9 @@ match_list.addEventListener('click', function (e) {
         "species": spp,
         "uncertainty": "",
         "date": spp_entry_date,
-        "latitude": sppItemLat,
-        "longitude": sppItemLon,
-        "accuracy": sppItemAcc
+        "latitude": "" + latestLocation.coords.latitude,
+        "longitude": "" + latestLocation.coords.longitude,
+        "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
       };
       site_spp_array.unshift(new_spp_item);
       // remember that this species has been found
@@ -354,9 +343,9 @@ match_list.addEventListener('click', function (e) {
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
             "date": ph_create_date,
-            "latitude": sppItemLat,
-            "longitude": sppItemLon,
-            "accuracy": sppItemAcc
+            "latitude": "" + latestLocation.coords.latitude,
+            "longitude": "" + latestLocation.coords.longitude,
+            "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
           };
 
           console.log('About to hide the Species Search modal for a new placeholder');
@@ -386,9 +375,9 @@ match_list.addEventListener('click', function (e) {
             "site_id": current_site_id,
             "species": ph,
             "date": ph_entry_date,
-            "latitude": sppItemLat,
-            "longitude": sppItemLon,
-            "accuracy": sppItemAcc
+            "latitude": "" + latestLocation.coords.latitude,
+            "longitude": "" + latestLocation.coords.longitude,
+            "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
           };
           site_spp_array.unshift(new_ph_item);
           // trigger to refresh site list
@@ -553,7 +542,6 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   whatIsAwaitingAccuracy = "site";
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
-//  siteLocation = null; // null flags that it is not yet determined
   getLocation(); // redundant?
   accuracyAccepted = false;
   console.log("about to call startTrackingPosition");
@@ -945,6 +933,10 @@ document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
 }, false);
 
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
+  if (latestLocation === undefined) {
+    alert("Can't save without a location");
+    return;
+  }
   let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
   let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 2);
   if (phKeywordsArray.length < 2) {
@@ -964,9 +956,9 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       "code": current_placeholder.code,
       "keywords": current_placeholder.keywords,
       "date": ph_entry_date,
-      "latitude": sppItemLat,
-      "longitude": sppItemLon,
-      "accuracy": sppItemAcc
+      "latitude": "" + latestLocation.coords.latitude,
+      "longitude": "" + latestLocation.coords.longitude,
+      "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
     };
     site_spp_array.unshift(new_ph_item);
   } // end of placeholder_state === "new"
