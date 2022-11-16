@@ -21,10 +21,6 @@ var region_code = "OR";
 // for testing, ignore subspecies and varieties
 // todo: make this an option
 var include_subspp_var = false;
-// value returned by setInterval, for periocally checking the location for a
-// site; used to clear the ticker using clearInterval
-var sitePeriodcLocationCheckFlag;
-var sppItemPeriodcLocationCheckFlag; // same for species item
 
 // value returned by setInterval, for periocally checking the location
 // used to clear the ticker using clearInterval
@@ -56,10 +52,8 @@ locationOptions = {
 // user can manually accept greater inaccuracty
 var siteLocTargetAccuracy = 7;
 var waitForSiteLocTarget = true; // 'true' for testing, default will be 'false'
-var siteAccuracyAccepted = true; // 'false' flags new site, until accuracy accepted
 var sppLocTargetAccuracy = 7;
 var waitForSppLocTarget = true; // 'true' for testing, default will be 'false'
-var sppItemAccuracyAccepted = true; // 'false' flags new item, until accuracy accepted
 
 var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enough
 var accuracyAccepted = true; // 'false' = waiting for manual acceptance
@@ -417,19 +411,20 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   match_list.innerHTML = "";
   sppSearchInput.focus();
   // start acquiring location, in anticipation of the species
-  sppItemAccuracyAccepted = false;
+  accuracyAccepted = false;
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
   console.log("about to start spp location checking ticker");
-  sppItemPeriodcLocationCheckFlag = setInterval(checkSppItemPositionAccuracy, 500);
+  whatIsAwaitingAccuracy = "species";
+  periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 500);
 })
 
 sppSearchModal.addEventListener('hidden.bs.modal', function () {
 // TODO: option to pause here to wait for better accuracy
-  sppItemAccuracyAccepted = true; // flag OK, one way or the other
+  accuracyAccepted = true; // flag OK, one way or the other
   // stop acquiring location, use what we have at this point
   console.log("about to stop spp location checking ticker");
-  clearInterval(sppItemPeriodcLocationCheckFlag);
+  clearInterval(periodicLocationCheckFlag);
   console.log("about to call stopTrackingPosition");
   stopTrackingPosition();
 })
@@ -551,70 +546,6 @@ function checkPositionAccuracy() {
   return;
 }
 
-function checkSitePositionAccuracy() {
-  // called for a new site, periocally, until position is accurate enough
-  console.log("entered checkSitePositionAccuracy");
-  if (latestLocation === undefined) {
-    console.log("latestLocation not yet defined");
-    return;
-  }
-  if (latestLocation.coords.accuracy <= siteLocTargetAccuracy) {
-    siteAccuracyAccepted = true;
-    siteLocation = latestLocation; // remember, and no longer null
-  }
-  siteLat = "" + latestLocation.coords.latitude;
-  siteLon = "" + latestLocation.coords.longitude;
-  siteAcc = "" + latestLocation.coords.accuracy.toFixed(1);
-  let stLoc = "Latitude: " + latestLocation.coords.latitude +
-      "<br>Longitude: " + latestLocation.coords.longitude;
-  if (!siteAccuracyAccepted) {
-    stLoc += "<br>Target accuracy: " + siteLocTargetAccuracy + " meters";
-  }
-  stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
-  vnSiteLocation.innerHTML = stLoc;
-  // if 'waiting for target accuracy' is up, update it
-  document.getElementById('waiting_location_accuracy_info').innerHTML = stLoc;
-  if (siteAccuracyAccepted) {
-    // stop the ticker that periocally calls this function
-    console.log("checkSitePositionAccuracy found siteAccuracyAccepted, stopping ticker");
-    clearInterval(sitePeriodcLocationCheckFlag);
-    stopTrackingPosition(); //  needed?
-    if (whatIsAwaitingAccuracy == "site") {
-      // accuracy was not good enough when site info originaly entered,
-      // popped up the 'wait for target accuracy' screen
-      // now, update the location for the last-entered site
-      let lastest_site = site_info_array.find(s => s.id == current_site_id);
-      lastest_site.latitude = siteLat;
-      lastest_site.longitude = siteLon;
-      lastest_site.accuracy = siteAcc;
-      // trigger to refresh site list
-      shwSitesTimeout = setTimeout(showSites, 10);
-      // dismiss the 'wait for target accuracy' screen
-      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
-      whatIsAwaitingAccuracy = ""; // flag done
-    }
-    return;
-  }
-}
-
-function checkSppItemPositionAccuracy() {
-  // called for a new species item, periocally, until position is accurate enough
-  console.log("entered checkSppItemPositionAccuracy");
-  // // TODO: check if latestLocation undefined
-  if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
-    sppItemAccuracyAccepted = true;
-  }
-  sppItemLat = "" + latestLocation.coords.latitude;
-  sppItemLon = "" + latestLocation.coords.longitude;
-  sppItemAcc = "" + latestLocation.coords.accuracy.toFixed(1);
-  if (sppItemAccuracyAccepted) {
-    // stop the ticker that periocally calls this function
-    console.log("checkSppItemPositionAccuracy found sppItemAccuracyAccepted, stopping ticker");
-    clearInterval(sppItemPeriodcLocationCheckFlag);
-    return;
-  }
-}
-
 var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
@@ -624,11 +555,12 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
 	vnSiteDate.innerHTML = latest_site_date.toString();
 //  siteLocation = null; // null flags that it is not yet determined
   getLocation(); // redundant?
-  siteAccuracyAccepted = false;
+  accuracyAccepted = false;
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
-  console.log("about to start site location checking ticker");
-  sitePeriodcLocationCheckFlag = setInterval(checkSitePositionAccuracy, 2000);
+  console.log("about to start location checking ticker");
+  whatIsAwaitingAccuracy = "site";
+  periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 2000);
 });
 
 document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', function (event) {
