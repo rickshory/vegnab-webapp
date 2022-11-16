@@ -317,7 +317,32 @@ match_list.addEventListener('click', function (e) {
         found_spp_array.push(found_spp);
       }
   //    console.log(found_spp_array);
+/*
+// if flagged, check that target accuracy was met
+if (waitForSiteLocTarget && !targetAccuracyOK) {
+  accuracyAccepted = false; // can be manually accepted
+  locationDeferred = true;
+  whatIsAwaitingAccuracy = "site"; // redundant? set in Show event
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+  var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
+    keyboard: false
+  });
+  vnAwaitAcc.show();
+} else { // finish up
+  shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
+  clearInterval(periodicLocationCheckFlag);
+  stopTrackingPosition();
+  accuracyAccepted = true;
+  locationDeferred = false;
+  whatIsAwaitingAccuracy = "";
+  // dismiss this modal
+  console.log('About to hide the Site Info modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+}
+});
 
+
+*/
       // trigger to refresh site list
       shwSitesTimeout = setTimeout(showSites, 10);
       // clear the search for next time
@@ -357,6 +382,7 @@ match_list.addEventListener('click', function (e) {
 
           // end of initiating a new placeholder
         } else { // an existing placeholer
+          // insert it into the items for this site
           // a placeholder code will contain spaces, and thus was encoded to make a valid ID
           console.log("target.id for existing placeholder: " + target.id);
           let matched_placeholder_code = decodeURIComponent(target.id.slice(4));
@@ -400,13 +426,14 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   match_list.innerHTML = "";
   sppSearchInput.focus();
   // start acquiring location, in anticipation of the species
+  targetAccuracyOK = false;
   accuracyAccepted = false;
+  whatIsAwaitingAccuracy = "species";
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
   console.log("about to start spp location checking ticker");
-  whatIsAwaitingAccuracy = "species";
   periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 500);
-})
+});
 
 sppSearchModal.addEventListener('hidden.bs.modal', function () {
 // TODO: option to pause here to wait for better accuracy
@@ -483,6 +510,7 @@ function checkPositionAccuracy() {
     console.log("latestLocation not yet defined");
     return;
   }
+  console.log("Location accuracy " + latestLocation.coords.accuracy.toFixed(2) + " meters");
   let targetAcc = 0;
   switch(whatIsAwaitingAccuracy) {
     case "site":
@@ -511,6 +539,7 @@ function checkPositionAccuracy() {
       // do nothing
   }
   if (targetAccuracyOK) { // done getting location
+    console.log("Target accuracy of " + targetAcc + " meters achieved");
     clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
     if (locationDeferred) {
@@ -519,6 +548,7 @@ function checkPositionAccuracy() {
       // that screen's 'hidden' event will update the appropriate item
     }
   } else { // keep on acquring location
+    console.log("Not yet to target accuracy of " + targetAcc + " meters");
     if (locationDeferred) {
         // if 'waiting for target accuracy' is up, update the display
       let stLocInfo = "Latitude: " + latestLocation.coords.latitude +
@@ -542,12 +572,13 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   whatIsAwaitingAccuracy = "site";
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
-  getLocation(); // redundant?
+//  getLocation(); // redundant?
+  targetAccuracyOK = false;
   accuracyAccepted = false;
+  whatIsAwaitingAccuracy = "site";
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
   console.log("about to start location checking ticker");
-  whatIsAwaitingAccuracy = "site";
   periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 2000);
 });
 
@@ -621,7 +652,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   }
 });
 
-vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {}
+vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {});
 
 vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   if (locationDeferred && accuracyAccepted) {
@@ -659,7 +690,7 @@ document.getElementById('btn_accept_accuracy').addEventListener('click', functio
   accuracyAccepted = true;
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
 
-}
+});
 
 var sites_accordion = document.getElementById("sites-accordion");
 
