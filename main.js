@@ -48,7 +48,7 @@ var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enou
 var accuracyAccepted = true; // 'false' = waiting for manual acceptance
 // flags for treating deferred locations from "wait for target accuracy"
 var locationDeferred = false; // new item has been saved, but will update location when acc OK
-var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm',m 'new_plholder' or ''
+var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 
 var sentDataFormat = "fmtHumanReadable"; // default until changed
 
@@ -58,8 +58,8 @@ var site_chosen_to_send = -1;
 var latest_site_date = new Date();
 var site_spp_array = []; // the species items for all the sites, internally
 // indexed by which site each one belongs to.
-var current_spp_item_id = ""; // tracks which item, for working on details
-// const nrcs_spp_array = []; // now in separate file
+var current_spp_item_id = ""; // tracks which item, for working on details, or
+  // if location deferred
 var local_spp_array = [];
 var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
@@ -330,9 +330,10 @@ match_list.addEventListener('click', function (e) {
         });
         vnAwaitAcc.show();
       } else { // finish up
-        shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
+        // ticker may already be stopped if targetAccuracyOK
         clearInterval(periodicLocationCheckFlag);
         stopTrackingPosition();
+        latestLocation = undefined;
         accuracyAccepted = true;
         locationDeferred = false;
         whatIsAwaitingAccuracy = "";
@@ -378,6 +379,10 @@ match_list.addEventListener('click', function (e) {
             });
             vnPhInfoModal.show();
           } else { // finish up
+            // ticker may already be stopped if targetAccuracyOK
+            clearInterval(periodicLocationCheckFlag);
+            stopTrackingPosition();
+            latestLocation = undefined;
             accuracyAccepted = true;
             locationDeferred = false;
             whatIsAwaitingAccuracy = "";
@@ -416,28 +421,30 @@ match_list.addEventListener('click', function (e) {
           };
           site_spp_array.unshift(new_ph_item);
           // if flagged, check that target accuracy was met
-          if (targetAccuracyOK) { // finish up
-             accuracyAccepted = true;
-             locationDeferred = false;
-             whatIsAwaitingAccuracy = "";
-             // dismiss this modal
-             console.log('About to hide the Species Search modal');
-             bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-             // trigger to refresh site list
-             shwSitesTimeout = setTimeout(showSites, 10);
-          } else { // !targetAccuracyOK
-            if (waitForSppLocTarget) {
-               // for now the lat/lon/acc fields are the same as for a species
-              current_spp_item_id = new_ph_item.id;
-              accuracyAccepted = false; // can be manually accepted
-              locationDeferred = true;
-              whatIsAwaitingAccuracy = "spp_itm"; // for now, this works the same
-              bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-              var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
-                keyboard: false
-              });
-              vnAwaitAcc.show();
-            }
+          if (waitForSppLocTarget && (!targetAccuracyOK)) {
+            // for now the lat/lon/acc fields are the same as for a species
+            current_spp_item_id = new_ph_item.id;
+            accuracyAccepted = false; // can be manually accepted
+            locationDeferred = true;
+            whatIsAwaitingAccuracy = "spp_itm"; // for now, this works the same
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+            var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
+             keyboard: false
+            });
+            vnAwaitAcc.show();
+          } else { // finish up
+            // ticker may already be stopped if targetAccuracyOK
+            clearInterval(periodicLocationCheckFlag);
+            stopTrackingPosition();
+            latestLocation = undefined;
+            accuracyAccepted = true;
+            locationDeferred = false;
+            whatIsAwaitingAccuracy = "";
+            // dismiss this modal
+            console.log('About to hide the Species Search modal for a placeholder item');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+            // trigger to refresh site list
+            shwSitesTimeout = setTimeout(showSites, 10);
           }
           // end of processing an existing placeholder
         }
@@ -456,7 +463,9 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   // start acquiring location, in anticipation of the species
   targetAccuracyOK = false;
   accuracyAccepted = false;
-  whatIsAwaitingAccuracy = "spp_itm";
+  whatIsAwaitingAccuracy = "spp_itm"; // may be overridden if placeholder, but
+    // here makes screen update work correctly in checkPositionAccuracy loop
+  latestLocation = undefined; // start fresh
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
   console.log("about to start spp location checking ticker");
@@ -611,6 +620,7 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   targetAccuracyOK = false;
   accuracyAccepted = false;
   whatIsAwaitingAccuracy = "site";
+  latestLocation = undefined; // start fresh
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
   console.log("about to start location checking ticker");
@@ -675,10 +685,12 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     });
     vnAwaitAcc.show();
   } else { // finish up
+    // ticker may already be stopped if targetAccuracyOK
     clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
     accuracyAccepted = true;
     locationDeferred = false;
+    latestLocation = undefined;
     whatIsAwaitingAccuracy = "";
     // dismiss this modal
     console.log('About to hide the Site Info modal');
@@ -719,6 +731,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   locationDeferred = false;
   accuracyAccepted = false;
   targetAccuracyOK = false;
+  latestLocation = undefined;
   whatIsAwaitingAccuracy = "";
   // refresh data, no matter what
   shwSitesTimeout = setTimeout(showSites, 10);
