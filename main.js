@@ -569,12 +569,17 @@ function checkPositionAccuracy() {
       // don't display anything for species
       break;
     case "new_plholder":
-      // for now, treat the same as species
+      // use same target accuracy as for species
       targetAcc = sppLocTargetAccuracy;
       if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
         targetAccuracyOK = true;
       }
-      // don't display anything
+      if (placeholder_state === "new" && !locationDeferred) {
+        document.getElementById('placeholder_location').innerHTML
+             = '(' + current_placeholder.latitude
+             + ', ' + current_placeholder.longitude
+             + '), accuracy ' + current_placeholder.accuracy + ' m';
+      }
       break;
     default:
       // do nothing
@@ -1010,10 +1015,6 @@ document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
 }, false);
 
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
-  if (latestLocation === undefined) {
-    alert("Can't save without a location");
-    return;
-  }
   let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
   let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 2);
   if (phKeywordsArray.length < 2) {
@@ -1023,21 +1024,45 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   }
   current_placeholder.keywords = phKeywordsArray;
   if (placeholder_state === "new") {
+    if (latestLocation === undefined) {
+      alert("Can't save without a location");
+      return;
+    }
     // accept this placeholder into the placeholders array
     placeholders_array.unshift(current_placeholder);
-    // add it to the site items
-    let ph_entry_date = new Date();
-    let new_ph_item = {
-      "id": ph_entry_date.getTime().toString(),
-      "site_id": current_site_id,
-      "code": current_placeholder.code,
-      "keywords": current_placeholder.keywords,
-      "date": ph_entry_date,
-      "latitude": "" + latestLocation.coords.latitude,
-      "longitude": "" + latestLocation.coords.longitude,
-      "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
-    };
-    site_spp_array.unshift(new_ph_item);
+    if (waitForSppLocTarget && !targetAccuracyOK) {
+      current_ph_id = current_placeholder.id;
+      accuracyAccepted = false; // can be manually accepted
+      locationDeferred = true;
+      whatIsAwaitingAccuracy = "new_plholder";
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+      var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
+        keyboard: false
+      });
+      vnAwaitAcc.show();
+      return; // don't continue with defaults below
+    } else { // finish up
+      // ticker may already be stopped if targetAccuracyOK
+      clearInterval(periodicLocationCheckFlag);
+      stopTrackingPosition();
+      accuracyAccepted = true;
+      locationDeferred = false;
+      latestLocation = undefined;
+      whatIsAwaitingAccuracy = "";
+      // add this placeholder to the site items
+      let ph_entry_date = new Date();
+      let new_ph_item = {
+        "id": ph_entry_date.getTime().toString(),
+        "site_id": current_site_id,
+        "code": current_placeholder.code,
+        "keywords": current_placeholder.keywords,
+        "date": ph_entry_date,
+        "latitude": "" + latestLocation.coords.latitude,
+        "longitude": "" + latestLocation.coords.longitude,
+        "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+      };
+      site_spp_array.unshift(new_ph_item);
+    }
   } // end of placeholder_state === "new"
   if (placeholder_state === "edit") {
     let phIndex = placeholders_array.findIndex(ph => ph.code == current_ph_code);
