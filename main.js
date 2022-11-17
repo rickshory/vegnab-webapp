@@ -290,6 +290,10 @@ match_list.addEventListener('click', function (e) {
       if(!target) { return; } // If element doesn't exist
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
+    if (latestLocation === undefined) {
+      alert("Can't save without a location");
+      return;
+    }
 //        alert(target.id);
     // if a regular species code
     if (nrcs_spp_array.some(obj => obj.nrcs_code == target.id)) {
@@ -694,31 +698,30 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
 vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {});
 
 vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
-  if (locationDeferred && accuracyAccepted) {
-     // locationDeferred should always be true at this point, or this screen would not be shown
-     // accuracyAccepted true if "accept" button clicked
-    let itmToUpdate = undefined;
-    switch(whatIsAwaitingAccuracy) {
-      case "site":
-        itmToUpdate = site_info_array.find(i => i.id == current_site_id);
-        break;
-      case "spp_itm":
-        itmToUpdate = site_spp_array.find(i => i.id == current_spp_item_id);
-        break;
-      case "new_plholder":
-        itmToUpdate = placeholders_array.find(i => i.id == current_ph_id);
-        break;
-      default:
-        // do nothing
-    }
-    if (itmToUpdate !== undefined) {
-      itmToUpdate.latitude = "" + latestLocation.coords.latitude;
-      itmToUpdate.longitude = "" + latestLocation.coords.longitude;
-      itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
-      console.log("Updated latest " + whatIsAwaitingAccuracy + ", id=" + itmToUpdate.id);
-    }
+  console.log("In 'Wait for Accuracy' hidden fn, accuracyAccepted = " + accuracyAccepted);
+  let itmToUpdate = undefined;
+  switch(whatIsAwaitingAccuracy) {
+    case "site":
+      itmToUpdate = site_info_array.find(i => i.id == current_site_id);
+      break;
+    case "spp_itm":
+      itmToUpdate = site_spp_array.find(i => i.id == current_spp_item_id);
+      break;
+    case "new_plholder":
+      itmToUpdate = placeholders_array.find(i => i.id == current_ph_id);
+      break;
+    default:
+      // do nothing
   }
+  if (itmToUpdate !== undefined) {
+    itmToUpdate.latitude = "" + latestLocation.coords.latitude;
+    itmToUpdate.longitude = "" + latestLocation.coords.longitude;
+    itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
+    console.log("Updated latest " + whatIsAwaitingAccuracy + ", id=" + itmToUpdate.id);
+  }
+  console.log("About to clear 'periodicLocationCheckFlag' in 'Wait for Accuracy' hidden fn");
   clearInterval(periodicLocationCheckFlag);
+  console.log("In 'Wait for Accuracy' hidden fn, about to stopTrackingPosition");
   stopTrackingPosition();
   locationDeferred = false;
   accuracyAccepted = false;
