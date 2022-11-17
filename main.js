@@ -472,15 +472,7 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 500);
 });
 
-sppSearchModal.addEventListener('hidden.bs.modal', function () {
-// TODO: option to pause here to wait for better accuracy
-  accuracyAccepted = true; // flag OK, one way or the other
-  // stop acquiring location, use what we have at this point
-  console.log("about to stop spp location checking ticker");
-  clearInterval(periodicLocationCheckFlag);
-  console.log("about to call stopTrackingPosition");
-  stopTrackingPosition();
-})
+sppSearchModal.addEventListener('hidden.bs.modal', function () {});
 
 var vnAddSiteButton = document.getElementById('btn-add-site');
 var vnSiteDate = document.getElementById('site_date');
