@@ -48,7 +48,7 @@ var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enou
 var accuracyAccepted = true; // 'false' = waiting for manual acceptance
 // flags for treating deferred locations from "wait for target accuracy"
 var locationDeferred = false; // new item has been saved, but will update location when acc OK
-var whatIsAwaitingAccuracy = ""; // 'site', 'species', or ''
+var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm',m 'new_plholder' or ''
 
 var sentDataFormat = "fmtHumanReadable"; // default until changed
 
@@ -77,6 +77,7 @@ let new_spp_item = {
 */
 var placeholders_array = [];
 var placeholder_state = ""; // will be 'new' or 'edit'
+var current_ph_id = "";
 var current_ph_code = "";
 var current_placeholder;
 //  = {
@@ -316,39 +317,31 @@ match_list.addEventListener('click', function (e) {
       if ((found_spp_array.find(itm => itm.item_code == found_spp.item_code)) == undefined) {
         found_spp_array.push(found_spp);
       }
-  //    console.log(found_spp_array);
-/*
-// if flagged, check that target accuracy was met
-if (waitForSiteLocTarget && !targetAccuracyOK) {
-  accuracyAccepted = false; // can be manually accepted
-  locationDeferred = true;
-  whatIsAwaitingAccuracy = "site"; // redundant? set in Show event
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-  var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
-    keyboard: false
-  });
-  vnAwaitAcc.show();
-} else { // finish up
-  shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
-  clearInterval(periodicLocationCheckFlag);
-  stopTrackingPosition();
-  accuracyAccepted = true;
-  locationDeferred = false;
-  whatIsAwaitingAccuracy = "";
-  // dismiss this modal
-  console.log('About to hide the Site Info modal');
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-}
-});
-
-
-*/
-      // trigger to refresh site list
-      shwSitesTimeout = setTimeout(showSites, 10);
-      // clear the search for next time
-      // dismiss the modal
-      console.log('About to hide the Species Search modal');
-      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+      //    console.log(found_spp_array);
+      // if flagged, check that target accuracy was met
+      if (waitForSppLocTarget && !targetAccuracyOK) {
+        current_spp_item_id = new_spp_item.id;
+        accuracyAccepted = false; // can be manually accepted
+        locationDeferred = true;
+        whatIsAwaitingAccuracy = "spp_itm";
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+        var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
+          keyboard: false
+        });
+        vnAwaitAcc.show();
+      } else { // finish up
+        shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
+        clearInterval(periodicLocationCheckFlag);
+        stopTrackingPosition();
+        accuracyAccepted = true;
+        locationDeferred = false;
+        whatIsAwaitingAccuracy = "";
+        // dismiss this modal
+        console.log('About to hide the Species Search modal');
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+        // trigger to refresh site list
+        shwSitesTimeout = setTimeout(showSites, 10);
+      }
       // end, if regular species
     } else { // not a regular species
       console.log("Target ID: " + target.id);
@@ -373,16 +366,32 @@ if (waitForSiteLocTarget && !targetAccuracyOK) {
             "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
           };
 
-          console.log('About to hide the Species Search modal for a new placeholder');
-          bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-          var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
-            keyboard: false
-          });
-          vnPhInfoModal.show();
-
+          // if flagged, check that target accuracy was met
+          if (waitForSppLocTarget && !targetAccuracyOK) { // treat like a species
+            current_ph_id = current_placeholder.id;
+            accuracyAccepted = false; // can be manually accepted
+            locationDeferred = true;
+            whatIsAwaitingAccuracy = "new_plholder";
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+            var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
+              keyboard: false
+            });
+            vnPhInfoModal.show();
+          } else { // finish up
+            accuracyAccepted = true;
+            locationDeferred = false;
+            whatIsAwaitingAccuracy = "";
+            // dismiss this modal
+            console.log('About to hide the Species Search modal for a new placeholder');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+            var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
+              keyboard: false
+            });
+            vnPhInfoModal.show();
+          }
           // end of initiating a new placeholder
         } else { // an existing placeholer
-          // insert it into the items for this site
+          // insert it as item for this site, similar to a real species
           // a placeholder code will contain spaces, and thus was encoded to make a valid ID
           console.log("target.id for existing placeholder: " + target.id);
           let matched_placeholder_code = decodeURIComponent(target.id.slice(4));
@@ -406,11 +415,30 @@ if (waitForSiteLocTarget && !targetAccuracyOK) {
             "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
           };
           site_spp_array.unshift(new_ph_item);
-          // trigger to refresh site list
-          shwSitesTimeout = setTimeout(showSites, 10);
-          // dismiss the modal
-          console.log('About to hide the Species Search modal');
-          bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+          // if flagged, check that target accuracy was met
+          if (targetAccuracyOK) { // finish up
+             accuracyAccepted = true;
+             locationDeferred = false;
+             whatIsAwaitingAccuracy = "";
+             // dismiss this modal
+             console.log('About to hide the Species Search modal');
+             bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+             // trigger to refresh site list
+             shwSitesTimeout = setTimeout(showSites, 10);
+          } else { // !targetAccuracyOK
+            if (waitForSppLocTarget) {
+               // for now the lat/lon/acc fields are the same as for a species
+              current_spp_item_id = new_ph_item.id;
+              accuracyAccepted = false; // can be manually accepted
+              locationDeferred = true;
+              whatIsAwaitingAccuracy = "spp_itm"; // for now, this works the same
+              bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+              var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
+                keyboard: false
+              });
+              vnAwaitAcc.show();
+            }
+          }
           // end of processing an existing placeholder
         }
       } // end of processing placeholders, new or existing
@@ -428,7 +456,7 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   // start acquiring location, in anticipation of the species
   targetAccuracyOK = false;
   accuracyAccepted = false;
-  whatIsAwaitingAccuracy = "species";
+  whatIsAwaitingAccuracy = "spp_itm";
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
   console.log("about to start spp location checking ticker");
@@ -528,12 +556,20 @@ function checkPositionAccuracy() {
         vnSiteLocation.innerHTML = stLoc;
       }
       break;
-    case "species":
+    case "spp_itm":
       targetAcc = sppLocTargetAccuracy;
       if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
         targetAccuracyOK = true;
       }
       // don't display anything for species
+      break;
+    case "new_plholder":
+      // for now, treat the same as species
+      targetAcc = sppLocTargetAccuracy;
+      if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
+        targetAccuracyOK = true;
+      }
+      // don't display anything
       break;
     default:
       // do nothing
@@ -569,7 +605,6 @@ var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
 document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', function (event) {
-  whatIsAwaitingAccuracy = "site";
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
 //  getLocation(); // redundant?
@@ -640,7 +675,6 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     });
     vnAwaitAcc.show();
   } else { // finish up
-    shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
     clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
     accuracyAccepted = true;
@@ -649,6 +683,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     // dismiss this modal
     console.log('About to hide the Site Info modal');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+    shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
   }
 });
 
@@ -663,8 +698,11 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
       case "site":
         itmToUpdate = site_info_array.find(i => i.id == current_site_id);
         break;
-      case "species":
+      case "spp_itm":
         itmToUpdate = site_spp_array.find(i => i.id == current_spp_item_id);
+        break;
+      case "new_plholder":
+        itmToUpdate = placeholders_array.find(i => i.id == current_ph_id);
         break;
       default:
         // do nothing
