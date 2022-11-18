@@ -754,12 +754,16 @@ function showSites() {
   };
 
   let sites_accordion_listitems = "";
+  console.log("in 'showSites()', about to generate accordion");
   site_info_array.forEach((obj, index) => {
+    if (obj.id == current_site_id) {
+      console.log("current_site_id is " + current_site_id + ", for site " + obj.name);
+    }
     sites_accordion_listitems += '<div class="card">' +
       '  <div class="card-header" id="heading' + (index + 1) + '">' +
       '    <a class="' + ((obj.id == current_site_id) ? '' : 'collapsed ') +
       'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
-      '" aria-expanded="' + (index == 0 ? 'true' : 'false') +
+      '" aria-expanded="' + ((obj.id == current_site_id) ? 'true' : 'false') +
       '" aria-controls="collapse' + (index + 1) + '">' +
       '    <h3>' +  obj.name + '</h3>' +
       '    </a>' +
@@ -785,6 +789,8 @@ function showSites() {
     let this_site_button = document.getElementById("" + ste.id);
     this_site_button.addEventListener('click', function (e) {
       current_site_id = e.target.id;
+      console.log("current_site_id set to " + current_site_id + ", for "
+        + site_info_array.find(i => i.id == current_site_id).name);
     });
 
     let this_site_spp_array = site_spp_array.filter(spp_obj =>
