@@ -755,12 +755,9 @@ function showSites() {
 
   let sites_accordion_listitems = "";
   site_info_array.forEach((obj, index) => {
-    if (index === 0) {
-      current_site_id = obj.id;
-    }
     sites_accordion_listitems += '<div class="card">' +
       '  <div class="card-header" id="heading' + (index + 1) + '">' +
-      '    <a class="' + (index == 0 ? '' : 'collapsed ') +
+      '    <a class="' + ((obj.id == current_site_id) ? '' : 'collapsed ') +
       'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
       '" aria-expanded="' + (index == 0 ? 'true' : 'false') +
       '" aria-controls="collapse' + (index + 1) + '">' +
@@ -785,6 +782,11 @@ function showSites() {
 
   // fill in species lists for sites
   site_info_array.forEach(ste => {
+    let this_site_button = document.getElementById("" + ste.id);
+    this_site_button.addEventListener('click', function (e) {
+      current_site_id = e.target.id;
+    });
+
     let this_site_spp_array = site_spp_array.filter(spp_obj =>
         spp_obj.site_id === ste.id)
         .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
