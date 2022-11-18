@@ -769,7 +769,7 @@ function showSites() {
       '    </a>' +
       '  </div>' +
       '  <div id="collapse' + (index + 1) + '" class="collapse' +
-      (index == 0 ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
+      ((obj.id == current_site_id) ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
       '    <div class="card-body">' +
       '      <button type="button" id="' + obj.id +
       '" class="btn btn-primary  btn-xl" data-bs-toggle="modal"' +
