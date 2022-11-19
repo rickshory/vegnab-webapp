@@ -40,9 +40,9 @@ locationOptions = {
 // keep acquiring site location until accuracy is <= this
 // user can manually accept greater inaccuracty
 var siteLocTargetAccuracy = 7;
-var waitForSiteLocTarget = true; // 'true' for testing, default will be 'false'
+var waitForSiteLocTarget = true;
 var sppLocTargetAccuracy = 7;
-var waitForSppLocTarget = true; // 'true' for testing, default will be 'false'
+var waitForSppLocTarget = true;
 
 var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enough
 var accuracyAccepted = true; // 'false' = waiting for manual acceptance
@@ -372,16 +372,11 @@ match_list.addEventListener('click', function (e) {
           };
 
           // if flagged, check that target accuracy was met
-          if (waitForSppLocTarget && !targetAccuracyOK) { // treat like a species
+          if (waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
             current_ph_id = current_placeholder.id;
             accuracyAccepted = false; // can be manually accepted
             locationDeferred = true;
             whatIsAwaitingAccuracy = "new_plholder";
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-            var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
-              keyboard: false
-            });
-            vnPhInfoModal.show();
           } else { // finish up
             // ticker may already be stopped if targetAccuracyOK
             clearInterval(periodicLocationCheckFlag);
@@ -392,12 +387,13 @@ match_list.addEventListener('click', function (e) {
             whatIsAwaitingAccuracy = "";
             // dismiss this modal
             console.log('About to hide the Species Search modal for a new placeholder');
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
-            var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
-              keyboard: false
-            });
-            vnPhInfoModal.show();
           }
+          // whether accuracy OK or not, dismiss this modal and show the ph info one
+          bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+          var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
+            keyboard: false
+          });
+          vnPhInfoModal.show();
           // end of initiating a new placeholder
         } else { // an existing placeholer
           // insert it as item for this site, similar to a real species
@@ -575,6 +571,7 @@ function checkPositionAccuracy() {
         targetAccuracyOK = true;
       }
       if (placeholder_state === "new" && !locationDeferred) {
+        // display the updating location
         document.getElementById('placeholder_location').innerHTML
              = '(' + current_placeholder.latitude
              + ', ' + current_placeholder.longitude
@@ -714,6 +711,16 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
       break;
     case "new_plholder":
       itmToUpdate = placeholders_array.find(i => i.id == current_ph_id);
+      // For each new placeholder definition, deferred for target accuracy,
+      // a site instance of the placeholder has been "riding along", its accuracy
+      // also deferred. Update it now
+      let phItm = site_spp_array.find(i => i.id == current_spp_item_id);
+      if (phItm !== undefined) {
+        phItm.latitude = "" + latestLocation.coords.latitude;
+        phItm.longitude = "" + latestLocation.coords.longitude;
+        phItm.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
+        console.log("Updated deferred placeholder item, id=" + phItm.id);
+      }
       break;
     default:
       // do nothing
@@ -1038,8 +1045,24 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     }
     // accept this placeholder into the placeholders array
     placeholders_array.unshift(current_placeholder);
+    // may need to defer the location
+    // add an instance of this placeholder to the site items
+    // may need to defer its location too
+    let ph_entry_date = new Date();
+    let new_ph_item = {
+      "id": ph_entry_date.getTime().toString(),
+      "site_id": current_site_id,
+      "code": current_placeholder.code,
+      "keywords": current_placeholder.keywords,
+      "date": ph_entry_date,
+      "latitude": "" + latestLocation.coords.latitude,
+      "longitude": "" + latestLocation.coords.longitude,
+      "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+    };
+    site_spp_array.unshift(new_ph_item);
     if (waitForSppLocTarget && !targetAccuracyOK) {
-      current_ph_id = current_placeholder.id;
+      current_ph_id = current_placeholder.id; // this is the general placeholder
+      current_spp_item_id = new_ph_item.id; // this is the instance of the placeholder
       accuracyAccepted = false; // can be manually accepted
       locationDeferred = true;
       whatIsAwaitingAccuracy = "new_plholder";
@@ -1057,19 +1080,6 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       locationDeferred = false;
       latestLocation = undefined;
       whatIsAwaitingAccuracy = "";
-      // add this placeholder to the site items
-      let ph_entry_date = new Date();
-      let new_ph_item = {
-        "id": ph_entry_date.getTime().toString(),
-        "site_id": current_site_id,
-        "code": current_placeholder.code,
-        "keywords": current_placeholder.keywords,
-        "date": ph_entry_date,
-        "latitude": "" + latestLocation.coords.latitude,
-        "longitude": "" + latestLocation.coords.longitude,
-        "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
-      };
-      site_spp_array.unshift(new_ph_item);
     }
   } // end of placeholder_state === "new"
   if (placeholder_state === "edit") {
