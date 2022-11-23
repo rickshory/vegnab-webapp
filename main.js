@@ -1129,6 +1129,59 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
 });
 
+vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
+  let auxSpecsSites = "";
+  let auxSpecsSpp = "";
+  aux_specs_array.forEach(auxSpec => {
+      let auxSpecsItm =
+'<div class="row gx-5  gy-5">' +
+'  <div class="col">' +
+'    <div class="p-3 border bg-light"> <!--visual border -->' +
+'      <div class="row">' +
+'        <div class="col">' +
+'          Name' +
+'        </div>' +
+'      </div>' +
+'      <div class="form-group row">' +
+'        <div class="col">Default value (optional)</div>' +
+'        <div class="col-2">' +
+'          <input type="number"  min="2" max="100" step="1"' +
+'            class="form-control"' +
+'            id="inputDefaultValue">' +
+'        </div>' +
+'      </div> <!-- end internal row -->' +
+'      <div class="form-check">' +
+'        <input class="form-check-input" type="checkbox"' +
+'          id="ckIsRequired" name="opt_site_acc" value="">' +
+'        <label class="form-check-label"  for="ckIsRequired">' +
+'          Require for each item' +
+'' +
+'        </label>' +
+'      </div> <!--end of checkbox -->' +
+'    </div> <!--end visual border -->' +
+'  </div> <!-- end col -->' +
+'</div> <!-- end of row -->' +
+'';
+
+  });
+  if (aux_specs_array.filter(a => a.for == "sites").length == 0) {
+
+  } else {
+
+  }
+
+  if (aux_specs_array.filter(a => a.for == "spp_items").length == 0) {
+
+  } else {
+
+  }
+});
+
+document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {});
+
+document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', function (e) {});
+
+
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSendDataScreen 'shown.bs.modal'");
 	if (site_info_array.length == 0) {
