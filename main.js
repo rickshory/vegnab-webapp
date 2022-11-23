@@ -92,6 +92,30 @@ var current_placeholder;
 //   "accuracy": lat lon Accuracy
 // };
 
+var aux_specs_array = [];
+// specifications for auxiliary data items
+//  = {
+//   "id": numeric text from timestamp when created
+//   "for": 'sites' or 'spp_items'
+//   "name": what this item is labeled as
+//   "type": integer, decimal, yes/no, text, list
+//   "default": value if there is a default
+//   "min": vakue if there is a minumum
+//   "max": value if there is a maximum
+//   "required": true of false
+//   "order": listing order in the generated form
+// };
+var aux_data_array = [];
+// the auxiliary data items themselves
+//  = {
+//   "id": numeric text from timestamp when created
+//   "for": 'sites' or 'species_items'; may not be needed
+//   "parent_id": the id of the site or speecies item record
+//   "spec_id": for looking up the name, and for validation
+//   "name": maybe store here instead of lookup
+//   "value": the value
+// };
+
 var shwSitesTimeout = setTimeout(showSites, 10); // first time, there are no
 // sites, so nothing visible will happen
 var match_list = document.getElementById("match-list");
