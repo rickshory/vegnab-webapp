@@ -105,6 +105,9 @@ var aux_specs_array = [];
 //   "required": true of false
 //   "order": listing order in the generated form
 // };
+var aux_spec_state = ""; // will be 'new' or 'edit'
+var aux_spec_for = "";  // will be sites' or 'spp_items'
+var current_aux_spec_id = "";
 var aux_data_array = [];
 // the auxiliary data items themselves
 //  = {
@@ -1129,6 +1132,29 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
 });
 
+
+document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {
+  aux_spec_state = "new";
+  aux_spec_for = "sites";
+  console.log('About to hide the Aux Data List modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
+  var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
+    keyboard: false
+  });
+  vnAxSpcDtl.show();
+});
+
+document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', function (e) {
+  aux_spec_state = "new";
+  aux_spec_for = "spp_items";
+  console.log('About to hide the Aux Data List modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
+  var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
+    keyboard: false
+  });
+  vnAxSpcDtl.show();
+});
+
 vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
   let auxSpecsSites = "";
   let auxSpecsSpp = "";
@@ -1177,18 +1203,41 @@ vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
   }
 });
 
-vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {});
+vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
+  switch(aux_spec_for) {
+    case "sites":
+      document.getElementById("aux-spec-hdr-msg").innerHTML = "Auxilary Data item to collect for sites"
+      break;
+    case "spp_items":
+      document.getElementById("aux-spec-hdr-msg").innerHTML = "Auxilary Data to collect for species items"
+      break;
+    default:
+      // do nothing
+  }
 
-document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {
-  console.log('About to hide the Aux Data List modal');
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
-  var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
-    keyboard: false
-  });
-  vnAxSpcDtl.show();
+  switch(aux_spec_state) {
+    case "new":
+      document.getElementById("inputAuxSpecName").value = "";
+      document.getElementById("inputAuxSpecDefault").value = "";
+      document.getElementById("inputAuxSpecMin").value = "";
+      document.getElementById("inputAuxSpecMax").value = "";
+      document.getElementById("ckAuxSpecRequired").checked = false;
+      // no need to Delete a new item
+      document.getElementById("btn-delete-auxdata-spec").style.display = "none";
+
+      break;
+    case "edit":
+
+      // this is the option to delete an existing spec
+      document.getElementById("btn-delete-auxdata-spec").style.visibility = "visible";
+
+
+      break;
+    default:
+      // do nothing
+  }
+
 });
-
-document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', function (e) {});
 
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
