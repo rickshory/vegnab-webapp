@@ -1177,7 +1177,16 @@ vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
   }
 });
 
-document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {});
+vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {});
+
+document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {
+  console.log('About to hide the Aux Data List modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
+  var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
+    keyboard: false
+  });
+  vnAxSpcDtl.show();
+});
 
 document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', function (e) {});
 
