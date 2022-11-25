@@ -1154,6 +1154,44 @@ document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', fu
   vnAxSpcDtl.show();
 });
 
+document.getElementById('aux-specs-list-for-sites').addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== document.getElementById('aux-specs-list-for-sites')) {
+    target = target.parentNode; // If the clicked element isn't a direct child
+    if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    current_aux_spec_id = target.id;
+    aux_spec_state = "edit";
+    aux_spec_for = "sites";
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
+    var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
+      keyboard: false
+    });
+    vnAxSpcDtl.show();
+  }
+});
+
+document.getElementById('aux-specs-list-for-spp').addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== document.getElementById('aux-specs-list-for-spp')) {
+    target = target.parentNode; // If the clicked element isn't a direct child
+    if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    current_aux_spec_id = target.id;
+    aux_spec_state = "edit";
+    aux_spec_for = "spp_items";
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
+    var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
+      keyboard: false
+    });
+    vnAxSpcDtl.show();
+  }
+});
+
 vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
   let sitesAuxSpecs = "";
   let sppAuxSpecs = "";
