@@ -108,6 +108,7 @@ var aux_specs_array = [];
 var aux_spec_state = ""; // will be 'new' or 'edit'
 var aux_spec_for = "";  // will be sites' or 'spp_items'
 var current_aux_spec_id = "";
+var auxDataDone = false; // flag for processing each new site or spp
 var aux_data_array = [];
 // the auxiliary data items themselves
 //  = {
@@ -338,6 +339,7 @@ match_list.addEventListener('click', function (e) {
         "longitude": "" + latestLocation.coords.longitude,
         "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
       };
+      current_spp_item_id = new_spp_item.id;
       site_spp_array.unshift(new_spp_item);
       // remember that this species has been found
       let a = spp.split(":");
@@ -348,6 +350,8 @@ match_list.addEventListener('click', function (e) {
       if ((found_spp_array.find(itm => itm.item_code == found_spp.item_code)) == undefined) {
         found_spp_array.push(found_spp);
       }
+      // any AuxData to ask for?
+      auxDataDone = ((aux_specs_array.filter(a => a.for == "spp_items").length == 0) ? true : false);
       //    console.log(found_spp_array);
       // if flagged, check that target accuracy was met
       if (waitForSppLocTarget && !targetAccuracyOK) {
@@ -373,6 +377,10 @@ match_list.addEventListener('click', function (e) {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
         // trigger to refresh site list
         shwSitesTimeout = setTimeout(showSites, 10);
+        if (!auxDataDone) {
+          aux_spec_for = "spp_items";
+          enterAuxData();
+        }
       }
       // end, if regular species
     } else { // not a regular species
@@ -699,6 +707,8 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   current_site_id = site_obj.id;
   // new item at the beginning
   site_info_array.unshift(site_obj);
+  // any AuxData to ask for?
+  auxDataDone = ((aux_specs_array.filter(a => a.for == "sites").length == 0) ? true : false);
   // if flagged, check that target accuracy was met
   if (waitForSiteLocTarget && !targetAccuracyOK) {
     accuracyAccepted = false; // can be manually accepted
@@ -721,6 +731,10 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     console.log('About to hide the Site Info modal');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
     shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
+    if (!auxDataDone) {
+      aux_spec_for = "sites";
+      enterAuxData();
+    }
   }
 });
 
@@ -732,9 +746,11 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   switch(whatIsAwaitingAccuracy) {
     case "site":
       itmToUpdate = site_info_array.find(i => i.id == current_site_id);
+      aux_spec_for = "sites"; // in case we need this
       break;
     case "spp_itm":
       itmToUpdate = site_spp_array.find(i => i.id == current_spp_item_id);
+      aux_spec_for = "spp_items"; // in case we need this
       break;
     case "new_plholder":
       itmToUpdate = placeholders_array.find(i => i.id == current_ph_id);
@@ -748,6 +764,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
         phItm.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
         console.log("Updated deferred placeholder item, id=" + phItm.id);
       }
+      aux_spec_for = "spp_items"; // in case we need this
       break;
     default:
       // do nothing
@@ -769,6 +786,10 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   whatIsAwaitingAccuracy = "";
   // refresh data, no matter what
   shwSitesTimeout = setTimeout(showSites, 10);
+  // ask for AuxData, if any
+  if (!auxDataDone) {
+    enterAuxData();
+  }
 });
 
 document.getElementById('btn_accept_accuracy').addEventListener('click', function () {
@@ -1312,6 +1333,51 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
       // do nothing
   }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
+});
+
+function enterAuxData() {
+  var vnAxDat = new bootstrap.Modal(document.getElementById('vnAuxDataEntryScreen'), {
+    keyboard: false
+  });
+  vnAxDat.show();
+}
+
+vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
+  let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
+  // TODO sort by listing order
+  if (sArr.length == 0) {return;} // should not happen
+  switch (aux_spec_for) {
+    case "sites":
+      break;
+    case "spp_items":
+      break;
+    default:
+  };
+  var auxBlx = "";
+  sArr.forEach(s => {
+    auxBlx += ""
++ '<div class="input-group">'
++ '  <span class="input-group-text" id="auxspec-' + s.id + '">'
++ '    <h3>' + s.name + '</h3></span>'
++ '  <input type="number" class="form-control"'
++ '    id="' + s.id + '"'
++ '    aria-label="' + s.name + '"'
++ '    aria-describedby="auxspec-"' + s.id + '">'
++ '</div>'
++ '';
+  });
+  document.getElementById('auxdata_entry_inputs').innerHTML = auxBlx;
+});
+
+vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
+
+});
+
+document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {});
+
+document.getElementById('btn-cancel-auxdata').addEventListener('click', function (e) {
+  // for testing, use this as the exit point
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
 });
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
