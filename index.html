@@ -402,6 +402,50 @@
     </div>
     <!-- end of modal, AuxData spec detail -->
 
+
+    <!-- begin modal, AuxData entry -->
+    <div id="vnAuxDataEntryScreen" class="modal auxdata_entry_screen">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3 id="aux-entry-hdr-msg">Auxilary Data to collect</h3>
+            <!-- no 'dismiss' button -->
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="auxdata_entry_div">
+              <form  id="auxdata_entry_form" autocomplete="off">
+                <!-- following form sections will be generated on the fly -->
+                <div class="form-group" id="auxdata_entry_inputs">
+                  <!--
+                  <div class="input-group">
+                    <span class="input-group-text" id="auxspec-" + spec.name>
+                      <h3>Data name</h3></span>
+                    <input type="number" class="form-control"
+                      id="" + spec.id
+                      aria-label="" + spec.name
+                      aria-describedby=""auxspec-" + spec.id">
+                  </div>
+                 -->
+                </div>
+                <button type="button" class="btn btn-primary  btn-xl"
+                  name="btn-save-auxdata" id="btn-save-auxdata">
+                  OK</button>
+                <button type="button" class="btn btn-primary  btn-xl"
+                  name="btn-cancel-auxdata" id="btn-cancel-auxdata">
+                  Cancel</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, AuxData entry -->
+
     <!-- begin modal, wait for accuracy -->
     <div id="vnWaitForAccuracyScreen" class="modal wait_accuracy_screen" role="dialog">
       <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">

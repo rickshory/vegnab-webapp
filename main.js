@@ -727,7 +727,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
 vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {});
 
 vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
-  console.log("In 'Wait for Accuracy' hidden fn, accuracyAccepted = " + accuracyAccepted);
+  console.log("In 'Wait for Accuracy' accuracyAccepted = " + accuracyAccepted);
   let itmToUpdate = undefined;
   switch(whatIsAwaitingAccuracy) {
     case "site":
@@ -758,9 +758,9 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
     itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
     console.log("Updated latest " + whatIsAwaitingAccuracy + ", id=" + itmToUpdate.id);
   }
-  console.log("About to clear 'periodicLocationCheckFlag' in 'Wait for Accuracy' hidden fn");
+  console.log("About to clear 'periodicLocationCheckFlag' in 'Wait for Accuracy'");
   clearInterval(periodicLocationCheckFlag);
-  console.log("In 'Wait for Accuracy' hidden fn, about to stopTrackingPosition");
+  console.log("In 'Wait for Accuracy', about to stopTrackingPosition");
   stopTrackingPosition();
   locationDeferred = false;
   accuracyAccepted = false;
