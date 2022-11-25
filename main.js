@@ -1182,18 +1182,16 @@ vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
     document.getElementById("aux-specs-list-for-sites").innerHTML = '';
   } else {
     document.getElementById("none-yet-msg-aux-sites").innerHTML = '';
-    document.getElementById("aux-specs-list-for-sites").innerHTML = '<ul>'
-    + sitesAuxSpecs + '</ul>';
+    document.getElementById("aux-specs-list-for-sites").innerHTML = sitesAuxSpecs;
   }
   // for species items
   if (sppAuxSpecs == '') {
     document.getElementById("none-yet-msg-aux-spp").innerHTML
-      = '(not collecting any Auxiliary Date for Sites yet)';
+      = '(not collecting any Auxiliary Date for Species yet)';
     document.getElementById("aux-specs-list-for-spp").innerHTML = '';
   } else {
     document.getElementById("none-yet-msg-aux-spp").innerHTML = '';
-    document.getElementById("aux-specs-list-for-spp").innerHTML = '<ul>'
-    + sppAuxSpecs + '</ul>';
+    document.getElementById("aux-specs-list-for-spp").innerHTML = sppAuxSpecs;
   }
 
 
