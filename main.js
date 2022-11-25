@@ -1132,7 +1132,6 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
 });
 
-
 document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {
   aux_spec_state = "new";
   aux_spec_for = "sites";
@@ -1156,51 +1155,48 @@ document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', fu
 });
 
 vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
-  let auxSpecsSites = "";
-  let auxSpecsSpp = "";
+  let sitesAuxSpecs = "";
+  let sppAuxSpecs = "";
   aux_specs_array.forEach(auxSpec => {
-      let auxSpecsItm =
-'<div class="row gx-5  gy-5">' +
-'  <div class="col">' +
-'    <div class="p-3 border bg-light"> <!--visual border -->' +
-'      <div class="row">' +
-'        <div class="col">' +
-'          Name' +
-'        </div>' +
-'      </div>' +
-'      <div class="form-group row">' +
-'        <div class="col">Default value (optional)</div>' +
-'        <div class="col-2">' +
-'          <input type="number"  min="2" max="100" step="1"' +
-'            class="form-control"' +
-'            id="inputDefaultValue">' +
-'        </div>' +
-'      </div> <!-- end internal row -->' +
-'      <div class="form-check">' +
-'        <input class="form-check-input" type="checkbox"' +
-'          id="ckIsRequired" name="opt_site_acc" value="">' +
-'        <label class="form-check-label"  for="ckIsRequired">' +
-'          Require for each item' +
-'' +
-'        </label>' +
-'      </div> <!--end of checkbox -->' +
-'    </div> <!--end visual border -->' +
-'  </div> <!-- end col -->' +
-'</div> <!-- end of row -->' +
-'';
-
+    let auxSpecListItm = '<li id="' + auxSpec.id + '">'
+      + '&quot;' + auxSpec.name + '&quot;, '
+      + (auxSpec.default == "" ? 'no default, ' : 'default = ' + auxSpec.default + ', ')
+      + (auxSpec.min == "" ? 'no minimum, ' : 'minimum = ' + auxSpec.min + ', ')
+      + (auxSpec.max == "" ? 'no maximum, ' : 'maximum = ' + auxSpec.max + ', ')
+      + (auxSpec.required == "" ? 'optional' : 'required') + '</li>';
+    switch(auxSpec.for) {
+      case "sites":
+        sitesAuxSpecs += auxSpecListItm;
+        break;
+      case "spp_items":
+        sppAuxSpecs += auxSpecListItm;
+        break;
+      default:
+        // do nothing
+    }
   });
-  if (aux_specs_array.filter(a => a.for == "sites").length == 0) {
-
+  // for sites
+  if (sitesAuxSpecs == '') {
+    document.getElementById("none-yet-msg-aux-sites").innerHTML
+      = '(not collecting any Auxiliary Date for Sites yet)';
+    document.getElementById("aux-specs-list-for-sites").innerHTML = '';
   } else {
-
+    document.getElementById("none-yet-msg-aux-sites").innerHTML = '';
+    document.getElementById("aux-specs-list-for-sites").innerHTML = '<ul>'
+    + sitesAuxSpecs + '</ul>';
+  }
+  // for species items
+  if (sppAuxSpecs == '') {
+    document.getElementById("none-yet-msg-aux-spp").innerHTML
+      = '(not collecting any Auxiliary Date for Sites yet)';
+    document.getElementById("aux-specs-list-for-spp").innerHTML = '';
+  } else {
+    document.getElementById("none-yet-msg-aux-spp").innerHTML = '';
+    document.getElementById("aux-specs-list-for-spp").innerHTML = '<ul>'
+    + sppAuxSpecs + '</ul>';
   }
 
-  if (aux_specs_array.filter(a => a.for == "spp_items").length == 0) {
 
-  } else {
-
-  }
 });
 
 vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
@@ -1214,7 +1210,6 @@ vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
     default:
       // do nothing
   }
-
   switch(aux_spec_state) {
     case "new":
       document.getElementById("inputAuxSpecName").value = "";
@@ -1227,18 +1222,61 @@ vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
 
       break;
     case "edit":
-
+      let a = aux_specs_array.find(a => a.id = current_aux_spec_id);
+      document.getElementById("inputAuxSpecName").value = a.name;
+      document.getElementById("inputAuxSpecDefault").value = "" + a.default;
+      document.getElementById("inputAuxSpecMin").value = "" + a.min;
+      document.getElementById("inputAuxSpecMax").value = "" + a.max;
+      document.getElementById("ckAuxSpecRequired").checked = a.required;
       // this is the option to delete an existing spec
       document.getElementById("btn-delete-auxdata-spec").style.visibility = "visible";
-
-
       break;
     default:
       // do nothing
   }
-
 });
 
+document.getElementById('btn-save-auxdata-spec').addEventListener('click', function (e) {
+  // the only thing required is 'name'
+  let auxSpecNameString = document.getElementById("inputAuxSpecName").value.toString().trim();
+  if (auxSpecNameString.length < 2) {
+    alert("Need a name at least 2 characters long");
+    document.getElementById("inputAuxSpecName").value = auxSpecNameString;
+    document.getElementById("inputAuxSpecName").focus();
+    return;
+  }
+  // create or update item
+  switch(aux_spec_state) {
+    case "new":
+      let as_obj = {
+        // not using all fields yet
+        "id": new Date().getTime().toString(),
+        "for": aux_spec_for,
+        "name": auxSpecNameString,
+        "type": "number",
+        "default": "" + document.getElementById("inputAuxSpecDefault").value.toString().trim(),
+        "min": "" + document.getElementById("inputAuxSpecMin").value.toString().trim(),
+        "max": "" + document.getElementById("inputAuxSpecMax").value.toString().trim(),
+        "required": document.getElementById("ckAuxSpecRequired").checked,
+        "order": "0"
+      };
+      current_aux_spec_id = as_obj.id;
+      // new item at the beginning
+      aux_specs_array.unshift(as_obj);
+      break;
+    case "edit":
+      let a = aux_specs_array.find(a => a.id = current_aux_spec_id);
+      a.name = auxSpecNameString;
+      a.default = "" + document.getElementById("inputAuxSpecDefault").value.toString().trim();
+      a.min = "" + document.getElementById("inputAuxSpecMin").value.toString().trim();
+      a.max = "" + document.getElementById("inputAuxSpecMax").value.toString().trim();
+      a.required = document.getElementById("ckAuxSpecRequired").checked;
+      break;
+    default:
+      // do nothing
+  }
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
+});
 
 vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSendDataScreen 'shown.bs.modal'");
