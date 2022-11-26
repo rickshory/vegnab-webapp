@@ -856,7 +856,7 @@ function showSites() {
     this_site_spp_array.forEach(spp_obj => {
       if (spp_obj.species === undefined) { // a placeholder
         spp_listitems_string += '<li id="' + spp_obj.id + '">'
-          + spp_obj.code + ': ' + spp_obj.keywords.join(" ") + '</li>';
+          + spp_obj.code + ': ' + spp_obj.keywords.join(" ");
       } else { // a real species
         let sst = spp_obj.species;
         if (spp_obj.uncertainty == "species") {
@@ -866,8 +866,14 @@ function showSites() {
           sst = "Probably " + spp_obj.species + ", but unsure at genus level."
         }
         spp_listitems_string += '<li id="' + spp_obj.id + '">'
-          + sst + '</li>';
+          + sst ;
       };
+      // add any auxData
+      let aDArr = aux_data_array.filter(a => a.parent_id == spp_obj.id);
+      aDArr.forEach(a => {
+        spp_listitems_string += ', ' + a.name + ' = ' + a.value;
+      });
+      spp_listitems_string += '</li>'; // finish the list item
     });
     this_site_spp_list.innerHTML = spp_listitems_string;
     // add a listener to the species list
@@ -883,10 +889,10 @@ function showSites() {
       }
       if (target.tagName === 'LI') { // tagName returns uppercase
         current_spp_item_id = target.id; // store in global, to track which item worked on
-        console.log("list ID: " + e.currentTarget.id);
-        console.log("item ID: " + current_spp_item_id);
+//        console.log("list ID: " + e.currentTarget.id);
+//        console.log("item ID: " + current_spp_item_id);
         let spp = target.textContent;
-        console.log(spp);
+//        console.log(spp);
         var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
           keyboard: false
         });
@@ -920,7 +926,7 @@ vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
 
 document.getElementById('btn-delete-spp-item').addEventListener('click', function (e) {
 //  var target = e.target; // Clicked element
- console.log("in click event for 'btn-delete-spp-item'");
+// console.log("in click event for 'btn-delete-spp-item'");
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  let i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
  site_spp_array.splice(i, 1);
@@ -928,21 +934,21 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
 });
 
 document.getElementById('btn-mark-uncertain-spp').addEventListener('click', function (e) {
- console.log("in click event for 'btn-mark-uncertain-spp'");
+// console.log("in click event for 'btn-mark-uncertain-spp'");
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "species";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
 
 document.getElementById('btn-mark-uncertain-genus').addEventListener('click', function (e) {
- console.log("in click event for 'btn-mark-uncertain-genus'");
+// console.log("in click event for 'btn-mark-uncertain-genus'");
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "genus";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
 
 document.getElementById('btn-mark-not-uncertain').addEventListener('click', function (e) {
- console.log("in click event for 'btn-mark-not-uncertain'");
+// console.log("in click event for 'btn-mark-not-uncertain'");
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "";
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
@@ -1027,7 +1033,7 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
     // the element id is encodeURIComponent(ph.code), to assure no spaces
     //
     current_ph_code = decodeURIComponent(target.id);
-    console.log("current_ph_code = " + current_ph_code);
+//    console.log("current_ph_code = " + current_ph_code);
     // get ph record
     current_placeholder = placeholders_array.find(ph => ph.code == current_ph_code);
     placeholder_state = "edit";
@@ -1042,14 +1048,14 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
 });
 
 document.getElementById('ph-img-file-input').addEventListener('change', () => {
-  console.log('ph-img-file-input file input change');
-  console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
+//  console.log('ph-img-file-input file input change');
+//  console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
   img_files = [];
   for (const ph_file of document.getElementById('ph-img-file-input').files) {
-    console.log('' + ph_file.name);
-    console.log('type ' + ph_file.type);
+//    console.log('' + ph_file.name);
+//    console.log('type ' + ph_file.type);
     if (ph_file.type.match(/^image\//)) {
-      console.log('file is an image: ' + ph_file.name + '');
+//      console.log('file is an image: ' + ph_file.name + '');
       if (ph_file.name.length > 30) {
         // find a better way to detect if the photo was taken by carmera from
         //  within the file input browse, than just the long filename
@@ -1057,7 +1063,7 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
         return;
       } else {
         img_files.unshift(ph_file);
-        console.log('URL: ' + URL.createObjectURL(ph_file));
+//        console.log('URL: ' + URL.createObjectURL(ph_file));
       }
 //      ph_pix_html += '<div><img src="' + URL.createObjectURL(ph_file) + '" alt="a picture"></div>';
     }
@@ -1156,7 +1162,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
 document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {
   aux_spec_state = "new";
   aux_spec_for = "sites";
-  console.log('About to hide the Aux Data List modal');
+//  console.log('About to hide the Aux Data List modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
   var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
     keyboard: false
@@ -1167,7 +1173,7 @@ document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', f
 document.getElementById('btn-add-aux-spec-for-spp').addEventListener('click', function (e) {
   aux_spec_state = "new";
   aux_spec_for = "spp_items";
-  console.log('About to hide the Aux Data List modal');
+//  console.log('About to hide the Aux Data List modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
   var vnAxSpcDtl = new bootstrap.Modal(document.getElementById('vnAuxDataSpecInfoScreen'), {
     keyboard: false
@@ -1366,7 +1372,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + '  <input type="number" class="form-control"'
 + '    id="' + s.id + '"'
 + '    aria-label="' + s.name + '"'
-+ '    aria-describedby="auxspec-"' + s.id + '">'
++ '    aria-describedby="auxspec-' + s.id + '">'
 + '</div>'
 + '<span><h3>'
 + (s.min == "" ? 'no minimum, ' : 'minimum = ' + s.min + ', ')
@@ -1384,12 +1390,15 @@ vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
 
 document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
   let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
+  console.log("sArr");
+  console.log(sArr);
   var aOK = true; // default until some vital test fails
   sArr.forEach(a => {
     // the input's id is the id field of the corresponding aux spec
-    let stVal = document.getElementById('' + a.id).value.toString().trim();
-    console.log("stVal = " + stVal);
-    if ((a.required == true) && (stVal == "")) {
+//    let stCk = document.getElementById('' + a.id).value.toString().trim();
+    let stCk = ('' + document.getElementById('' + a.id).value).trim();
+    console.log("stCk = " + stCk);
+    if ((a.required == true) && (stCk == "")) {
       alert('"' + a.name + '" is required');
       document.getElementById('' + a.id).focus();
       aOK = false; // flag for when outside the current arrow fn
@@ -1402,6 +1411,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   sArr.forEach(a => {
     let stVal = document.getElementById('' + a.id).value.toString().trim();
     if (stVal != "") { // no need to save empties
+      console.log("stVal = " + stVal);
       var parID = "";
       switch (a.for) {
         case "sites":
@@ -1423,6 +1433,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         "value": stVal
       };
       aux_data_array.unshift(auxDObj);
+      console.log("auxDObj.value = " + auxDObj.value);
     } // end of if not empty
   }); // end of adding all aux data items
   console.log("aux_data_array");
