@@ -1258,8 +1258,6 @@ vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
     document.getElementById("none-yet-msg-aux-spp").innerHTML = '';
     document.getElementById("aux-specs-list-for-spp").innerHTML = sppAuxSpecs;
   }
-
-
 });
 
 vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
@@ -1282,7 +1280,6 @@ vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
       document.getElementById("ckAuxSpecRequired").checked = false;
       // no need to Delete a new item
       document.getElementById("btn-delete-auxdata-spec").style.display = "none";
-
       break;
     case "edit":
       let a = aux_specs_array.find(a => a.id = current_aux_spec_id);
@@ -1393,15 +1390,15 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log("sArr");
   console.log(sArr);
   var aOK = true; // default until some vital test fails
-  sArr.forEach(a => {
+  sArr.forEach(ck => {
     // the input's id is the id field of the corresponding aux spec
 //    let stCk = document.getElementById('' + a.id).value.toString().trim();
-    let stCk = ('' + document.getElementById('' + a.id).value).trim();
+    let stCk = ('' + document.getElementById('' + ck.id).value).trim();
     console.log("stCk = " + stCk);
-    console.log("value = " + document.getElementById('' + a.id).value);
-    if ((a.required == true) && (stCk == "")) {
-      alert('"' + a.name + '" is required');
-      document.getElementById('' + a.id).focus();
+    console.log("value = " + document.getElementById('' + ck.id).value);
+    if ((ck.required == true) && (stCk == "")) {
+      alert('"' + ck.name + '" is required');
+      document.getElementById('' + ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
     }
@@ -1409,13 +1406,13 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // maybe other tests?
   if (!aOK) {return;}
   // If all tests passed, save AuxData
-  sArr.forEach(a => {
-    console.log("id = " + a.id + ", value = " + document.getElementById('' + a.id).value);
-    let stVal = document.getElementById('' + a.id).value.toString().trim();
+  sArr.forEach(sp => {
+    console.log("id = " + sp.id + ", value = " + document.getElementById('' + sp.id).value);
+    let stVal = document.getElementById('' + sp.id).value.toString().trim();
     if (stVal != "") { // no need to save empties
       console.log("stVal = " + stVal);
       var parID = "";
-      switch (a.for) {
+      switch (sp.for) {
         case "sites":
           parID = current_site_id;
           break;
@@ -1428,10 +1425,10 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         // could there be dupicate ids? if created fast enough?
         // seems like no problem, will be fetched by parent_id
         "id": new Date().getTime().toString(),
-        "for": a.for, // may be redundant
+        "for": sp.for, // may be redundant
         "parent_id": parID, // id of the site or speecies item
-        "spec_id": a.id, // may be redundant
-        "name": a.name,
+        "spec_id": sp.id, // may be redundant
+        "name": sp.name,
         "value": stVal
       };
       aux_data_array.unshift(auxDObj);
