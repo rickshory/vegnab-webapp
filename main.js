@@ -1382,7 +1382,54 @@ vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
 
 });
 
-document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {});
+document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
+  let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
+  var aOK = true; // default until some vital test fails
+  sArr.forEach(a => {
+    // the input's id is the id field of the corresponding aux spec
+    let stVal = document.getElementById('' + a.id).value.toString().trim();
+    console.log("stVal = " + stVal);
+    if ((a.required == true) && (stVal == "")) {
+      alert('"' + a.name + '" is required');
+      document.getElementById('' + a.id).focus();
+      aOK = false; // flag for when outside the current arrow fn
+      return; // from the current arrrow fn, iterating the array
+    }
+  });
+  // maybe other tests?
+  if (!aOK) {return;}
+  // If all tests passed, save AuxData
+  sArr.forEach(a => {
+    let stVal = document.getElementById('' + a.id).value.toString().trim();
+    if (stVal != "") { // no need to save empties
+      var parID = "";
+      switch (a.for) {
+        case "sites":
+          parID = current_site_id;
+          break;
+        case "spp_items":
+          parID = current_spp_item_id;
+          break;
+        default:
+      }
+      let auxDObj = {
+        // could there be dupicate ids? if created fast enough?
+        // seems like no problem, will be fetched by parent_id
+        "id": new Date().getTime().toString(),
+        "for": a.for, // may be redundant
+        "parent_id": parID, // id of the site or speecies item
+        "spec_id": a.id, // may be redundant
+        "name": a.name,
+        "value": stVal
+      };
+      aux_data_array.unshift(auxDObj);
+    } // end of if not empty
+  }); // end of adding all aux data items
+  console.log("aux_data_array");
+  console.log(aux_data_array);
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
+  shwSitesTimeout = setTimeout(showSites, 10);
+});
 
 document.getElementById('btn-cancel-auxdata').addEventListener('click', function (e) {
   // for testing, use this as the exit point
