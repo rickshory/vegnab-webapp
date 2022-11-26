@@ -1222,7 +1222,7 @@ vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
       + (auxSpec.default == "" ? 'no default, ' : 'default = ' + auxSpec.default + ', ')
       + (auxSpec.min == "" ? 'no minimum, ' : 'minimum = ' + auxSpec.min + ', ')
       + (auxSpec.max == "" ? 'no maximum, ' : 'maximum = ' + auxSpec.max + ', ')
-      + (auxSpec.required == "" ? 'optional' : 'required') + '</li>';
+      + (auxSpec.required ? 'required' : 'optional') + '</li>';
     switch(auxSpec.for) {
       case "sites":
         sitesAuxSpecs += auxSpecListItm;
@@ -1346,13 +1346,17 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
   let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
   // TODO sort by listing order
   if (sArr.length == 0) {return;} // should not happen
+  var auxHdr = "";
   switch (aux_spec_for) {
     case "sites":
+      auxHdr = 'For Site &quot;' + site_info_array.find(s => s.id == current_site_id).name + '&quot;';
       break;
     case "spp_items":
+      auxHdr = 'For &quot;' + site_spp_array.find(s => s.id == current_spp_item_id).species + '&quot;';
       break;
     default:
   };
+  document.getElementById('aux-entry-hdr-msg').innerHTML = auxHdr;
   var auxBlx = "";
   sArr.forEach(s => {
     auxBlx += ""
@@ -1364,6 +1368,11 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + '    aria-label="' + s.name + '"'
 + '    aria-describedby="auxspec-"' + s.id + '">'
 + '</div>'
++ '<span><h3>'
++ (s.min == "" ? 'no minimum, ' : 'minimum = ' + s.min + ', ')
++ (s.max == "" ? 'no maximum, ' : 'maximum = ' + s.max + ', ')
++ (s.required ? 'required' : 'optional')
++ '</h3></span>'
 + '';
   });
   document.getElementById('auxdata_entry_inputs').innerHTML = auxBlx;
