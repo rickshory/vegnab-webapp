@@ -1396,6 +1396,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
     let stCk = ('' + document.getElementById('' + ck.id).value).trim();
     console.log("stCk = " + stCk);
     console.log("value = " + document.getElementById('' + ck.id).value);
+    // see what happen on a nonexistent input element
+    console.log("fake value = " + document.getElementById('' + 0).value);
     if ((ck.required == true) && (stCk == "")) {
       alert('"' + ck.name + '" is required');
       document.getElementById('' + ck.id).focus();
