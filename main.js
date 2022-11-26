@@ -1408,7 +1408,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // If all tests passed, save AuxData
   sArr.forEach(sp => {
     console.log("id = " + sp.id + ", value = " + document.getElementById('' + sp.id).value);
-    let stVal = document.getElementById('' + sp.id).value.toString().trim();
+    let stVal = document.getElementById('' + sp.id).value;
     if (stVal != "") { // no need to save empties
       console.log("stVal = " + stVal);
       var parID = "";
