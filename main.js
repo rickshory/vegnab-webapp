@@ -1398,6 +1398,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
 //    let stCk = document.getElementById('' + a.id).value.toString().trim();
     let stCk = ('' + document.getElementById('' + a.id).value).trim();
     console.log("stCk = " + stCk);
+    console.log("value = " + document.getElementById('' + a.id).value);
     if ((a.required == true) && (stCk == "")) {
       alert('"' + a.name + '" is required');
       document.getElementById('' + a.id).focus();
@@ -1409,6 +1410,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   if (!aOK) {return;}
   // If all tests passed, save AuxData
   sArr.forEach(a => {
+    console.log("id = " + a.id + ", value = " + document.getElementById('' + a.id).value);
     let stVal = document.getElementById('' + a.id).value.toString().trim();
     if (stVal != "") { // no need to save empties
       console.log("stVal = " + stVal);
