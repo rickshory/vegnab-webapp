@@ -1209,6 +1209,8 @@ document.getElementById('aux-specs-list-for-spp').addEventListener('click', func
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
     current_aux_spec_id = target.id;
+    console.log('current_aux_spec_id = ' + current_aux_spec_id + ', "'
+      + aux_specs_array.find(s => s.id == current_aux_spec_id).name + '"');
     aux_spec_state = "edit";
     aux_spec_for = "spp_items";
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
@@ -1278,8 +1280,9 @@ vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
       document.getElementById("inputAuxSpecMin").value = "";
       document.getElementById("inputAuxSpecMax").value = "";
       document.getElementById("ckAuxSpecRequired").checked = false;
+      document.getElementById("btn-save-auxdata-spec").value = "Save";
       // no need to Delete a new item
-      document.getElementById("btn-delete-auxdata-spec").style.display = "none";
+      document.getElementById("btn-delete-auxdata-spec").style.visibility = "hidden";
       break;
     case "edit":
       let a = aux_specs_array.find(a => a.id = current_aux_spec_id);
@@ -1288,6 +1291,7 @@ vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
       document.getElementById("inputAuxSpecMin").value = "" + a.min;
       document.getElementById("inputAuxSpecMax").value = "" + a.max;
       document.getElementById("ckAuxSpecRequired").checked = a.required;
+      document.getElementById("btn-save-auxdata-spec").value = "Save Changes";
       // this is the option to delete an existing spec
       document.getElementById("btn-delete-auxdata-spec").style.visibility = "visible";
       break;
@@ -1396,8 +1400,6 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
     let stCk = ('' + document.getElementById('' + ck.id).value).trim();
     console.log("stCk = " + stCk);
     console.log("value = " + document.getElementById('' + ck.id).value);
-    // see what happen on a nonexistent input element
-    console.log("fake value = " + document.getElementById('' + 0).value);
     if ((ck.required == true) && (stCk == "")) {
       alert('"' + ck.name + '" is required');
       document.getElementById('' + ck.id).focus();
