@@ -1,3 +1,4 @@
+"use strict";
 (function () {
 
 // install Service Worker here, then it will "live" in the browser
@@ -31,7 +32,7 @@ var browser_supports_geolocation = false; // until determined true
 var position_tracker_id = 0;
 var latestLocation; // latest location acquired
 
-locationOptions = {
+const locationOptions = {
   enableHighAccuracy: true,
   timeout: 60000,
   maximumAge: 0
