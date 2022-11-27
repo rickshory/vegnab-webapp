@@ -1425,8 +1425,15 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   sArr.forEach(sp => {
     console.log("id = " + sp.id + ", value = " + document.getElementById('' + sp.id).value);
     let stVal = document.getElementById('' + sp.id).value;
-    if (stVal != "") { // no need to save empties
-      console.log("stVal = " + stVal);
+    if (stVal === "") { // no need to save empties
+      console.log('stVal === ""');
+      if (stVal == "") {
+        console.log('stVal == ""');
+      } else {
+        console.log('stVal != ""');
+      }
+    } else {
+      console.log("Valid stVal = " + stVal);
       var parID = "";
       switch (sp.for) {
         case "sites":
@@ -1440,6 +1447,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       let auxDObj = {
         // could there be dupicate ids? if created fast enough?
         // seems like no problem, will be fetched by parent_id
+        // and all of them used
         "id": new Date().getTime().toString(),
         "for": sp.for, // may be redundant
         "parent_id": parID, // id of the site or speecies item
