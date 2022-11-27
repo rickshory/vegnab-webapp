@@ -1286,7 +1286,7 @@ vnAuxDataSpecInfoScreen.addEventListener('shown.bs.modal', function (event) {
       document.getElementById("btn-delete-auxdata-spec").style.visibility = "hidden";
       break;
     case "edit":
-      let a = aux_specs_array.find(a => a.id = current_aux_spec_id);
+      let a = aux_specs_array.find(a => a.id == current_aux_spec_id);
       document.getElementById("inputAuxSpecName").value = a.name;
       document.getElementById("inputAuxSpecDefault").value = "" + a.default;
       document.getElementById("inputAuxSpecMin").value = "" + a.min;
@@ -1330,7 +1330,7 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
       aux_specs_array.unshift(as_obj);
       break;
     case "edit":
-      let a = aux_specs_array.find(a => a.id = current_aux_spec_id);
+      let a = aux_specs_array.find(a => a.id == current_aux_spec_id);
       a.name = auxSpecNameString;
       a.default = "" + document.getElementById("inputAuxSpecDefault").value.toString().trim();
       a.min = "" + document.getElementById("inputAuxSpecMin").value.toString().trim();
