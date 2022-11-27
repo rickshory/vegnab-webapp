@@ -1210,8 +1210,6 @@ document.getElementById('aux-specs-list-for-spp').addEventListener('click', func
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
     current_aux_spec_id = target.id;
-    console.log('current_aux_spec_id = ' + current_aux_spec_id + ', "'
-      + aux_specs_array.find(s => s.id == current_aux_spec_id).name + '"');
     aux_spec_state = "edit";
     aux_spec_for = "spp_items";
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataListScreen')).hide();
@@ -1339,6 +1337,19 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
       break;
     default:
       // do nothing
+  }
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
+});
+
+document.getElementById('btn-delete-auxdata-spec').addEventListener('click', function (e) {
+  // remove this specification, but retain any data for it already collected
+  let ix = aux_specs_array.findIndex(s => {
+    return s.id === current_aux_spec_id;
+  });
+  if (ix === -1) {
+    alert("Aux Data spec to delete not found");
+  } else {
+    aux_specs_array.splice(ix, 1);
   }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
 });
