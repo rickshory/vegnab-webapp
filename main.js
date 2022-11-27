@@ -1383,7 +1383,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + '  <span class="input-group-text" id="auxspec-' + s.id + '">'
 + '    <h3>' + s.name + '</h3></span>'
 + '  <input type="number" class="form-control"'
-+ '    id="' + s.id + '"'
++ '    id="as_' + s.id + '"'
 + '    aria-label="' + s.name + '"'
 + '    aria-describedby="auxspec-' + s.id + '">'
 + '</div>'
@@ -1409,12 +1409,12 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   sArr.forEach(ck => {
     // the input's id is the id field of the corresponding aux spec
 //    let stCk = document.getElementById('' + a.id).value.toString().trim();
-    let stCk = ('' + document.getElementById('' + ck.id).value).trim();
+    let stCk = ('' + document.getElementById('as_' + ck.id).value).trim();
     console.log("stCk = " + stCk);
-    console.log("value = " + document.getElementById('' + ck.id).value);
+    console.log("value = " + document.getElementById('as_' + ck.id).value);
     if ((ck.required == true) && (stCk == "")) {
       alert('"' + ck.name + '" is required');
-      document.getElementById('' + ck.id).focus();
+      document.getElementById('as_' + ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
     }
@@ -1423,8 +1423,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   if (!aOK) {return;}
   // If all tests passed, save AuxData
   sArr.forEach(sp => {
-    console.log("id = " + sp.id + ", value = " + document.getElementById('' + sp.id).value);
-    let stVal = document.getElementById('' + sp.id).value;
+    console.log("id = " + sp.id + ", value = " + document.getElementById('as_' + sp.id).value);
+    let stVal = document.getElementById('as_' + sp.id).value;
     if (stVal === "") { // no need to save empties
       console.log('stVal === ""');
       if (stVal == "") {
