@@ -53,6 +53,8 @@ var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 
 var sentDataFormat = "fmtHumanReadable"; // default until changed
 
+var siteInfoComplete = false; // flag to distinguish screen simply
+  // dismissed, and so to stop the location ticker
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
@@ -533,7 +535,13 @@ function startTrackingPosition() {
 }
 
 function stopTrackingPosition() {
-  navigator.geolocation.clearWatch(position_tracker_id);
+  try {
+    navigator.geolocation.clearWatch(position_tracker_id);
+    console.log("stopTrackingPosition.clearWatch no error");
+  } catch(err) {
+    console.log('error in "stopTrackingPosition": ' + err.message
+      + ', possibly trying after already stopped');
+  }
 }
 
 function trackPosition(position) {
@@ -648,6 +656,12 @@ var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
 document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', function (event) {
+  siteInfoComplete = false; // flag to stop the location ticker if this screen dismissed
+  // start fresh
+  vnSiteName.value = ""; // user entry
+  vnSiteNotes.value = ""; // user entry
+  vnSiteDate.innerHTML = ""; // fill in almost immediately, below
+  vnSiteLocation.innerHTML = ""; // fill in by location ticker
 	latest_site_date = new Date();
 	vnSiteDate.innerHTML = latest_site_date.toString();
 //  getLocation(); // redundant?
@@ -662,12 +676,15 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
 });
 
 document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', function (event) {
-	console.log("In modal Hide event");
-  // clear form for next time
-  vnSiteName.value = "";
-  vnSiteNotes.value = "";
-  vnSiteDate.innerHTML = "";
-  vnSiteLocation.innerHTML = "";
+	console.log("In 'vnSiteInfoScreen' modal Hide event");
+  if (!siteInfoComplete) { // screen was dismissed
+    // stop the location ticker
+    clearInterval(periodicLocationCheckFlag);
+    stopTrackingPosition();
+    console.log("Location ticker stopped by 'vnSiteInfoScreen' dismiss");
+  } else {
+    console.log("Location ticker allowed to run for normal acquire");
+  }
 });
 
 document.getElementById('btn-save-site-info').addEventListener('click', function () {
@@ -708,6 +725,8 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   current_site_id = site_obj.id;
   // new item at the beginning
   site_info_array.unshift(site_obj);
+  siteInfoComplete = true; // flag, don't need to stop the ticker when this
+    // screen hidden
   // any AuxData to ask for?
   auxDataDone = ((aux_specs_array.filter(a => a.for == "sites").length == 0) ? true : false);
   // if flagged, check that target accuracy was met
@@ -929,6 +948,8 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
 //  var target = e.target; // Clicked element
 // console.log("in click event for 'btn-delete-spp-item'");
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
+ // first, remove any AuxData
+ aux_data_array = aux_data_array.filter(d => d.parent_id != current_spp_item_id);
  let i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
  site_spp_array.splice(i, 1);
  showSites();
