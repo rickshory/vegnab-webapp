@@ -53,12 +53,14 @@ var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 
 var sentDataFormat = "fmtHumanReadable"; // default until changed
 
-var siteInfoComplete = false; // flag to distinguish screen simply
+var siteScreenComplete = false; // flag to distinguish screen simply
   // dismissed, and so to stop the location ticker
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
 var latest_site_date = new Date();
+var sppScreenComplete = false; // flag to distinguish screen simply
+  // dismissed, and so to stop the location ticker
 var site_spp_array = []; // the species items for all the sites, internally
 // indexed by which site each one belongs to.
 var current_spp_item_id = ""; // tracks which item, for working on details, or
@@ -325,6 +327,8 @@ match_list.addEventListener('click', function (e) {
       alert("Can't save without a location");
       return;
     }
+    sppScreenComplete = true; // flag, screen was not simply dismissed; allow
+      // any location ticker to continue
 //        alert(target.id);
     // if a regular species code
     if (nrcs_spp_array.some(obj => obj.nrcs_code == target.id)) {
@@ -495,6 +499,7 @@ var sppSearchModal = document.getElementById('vnSppSearchScreen');
 var sppSearchInput = document.getElementById('search-box');
 sppSearchInput.addEventListener("input", updateMatchList);
 sppSearchModal.addEventListener('shown.bs.modal', function () {
+  sppScreenComplete = false; // flag, if screen dismissed, to stop location ticker
   sppSearchInput.value = "";
   match_list.innerHTML = "";
   sppSearchInput.focus();
@@ -510,7 +515,17 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 500);
 });
 
-sppSearchModal.addEventListener('hidden.bs.modal', function () {});
+sppSearchModal.addEventListener('hidden.bs.modal', function () {
+  if (!sppScreenComplete) { // screen was dismissed
+    // stop the location ticker
+    clearInterval(periodicLocationCheckFlag);
+    stopTrackingPosition();
+    console.log("Location ticker stopped by 'vnSppSearchScreen' dismiss");
+    sppScreenComplete = true;
+  } else {
+    console.log("Location ticker allowed to run for normal acquire");
+  }
+});
 
 var vnAddSiteButton = document.getElementById('btn-add-site');
 var vnSiteDate = document.getElementById('site_date');
@@ -656,7 +671,7 @@ var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
 document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', function (event) {
-  siteInfoComplete = false; // flag to stop the location ticker if this screen dismissed
+  siteScreenComplete = false; // flag to stop the location ticker if this screen dismissed
   // start fresh
   vnSiteName.value = ""; // user entry
   vnSiteNotes.value = ""; // user entry
@@ -677,11 +692,12 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
 
 document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', function (event) {
 	console.log("In 'vnSiteInfoScreen' modal Hide event");
-  if (!siteInfoComplete) { // screen was dismissed
+  if (!siteScreenComplete) { // screen was dismissed
     // stop the location ticker
     clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
     console.log("Location ticker stopped by 'vnSiteInfoScreen' dismiss");
+    siteScreenComplete = true;
   } else {
     console.log("Location ticker allowed to run for normal acquire");
   }
@@ -725,7 +741,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   current_site_id = site_obj.id;
   // new item at the beginning
   site_info_array.unshift(site_obj);
-  siteInfoComplete = true; // flag, don't need to stop the ticker when this
+  siteScreenComplete = true; // flag, don't need to stop the ticker when this
     // screen hidden
   // any AuxData to ask for?
   auxDataDone = ((aux_specs_array.filter(a => a.for == "sites").length == 0) ? true : false);
