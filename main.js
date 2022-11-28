@@ -1226,9 +1226,9 @@ vnAuxDataListScreen.addEventListener('shown.bs.modal', function (event) {
   aux_specs_array.forEach(auxSpec => {
     let auxSpecListItm = '<li id="' + auxSpec.id + '">'
       + '&quot;' + auxSpec.name + '&quot;, '
-      + (auxSpec.default == "" ? 'no default, ' : 'default = ' + auxSpec.default + ', ')
-      + (auxSpec.min == "" ? 'no minimum, ' : 'minimum = ' + auxSpec.min + ', ')
-      + (auxSpec.max == "" ? 'no maximum, ' : 'maximum = ' + auxSpec.max + ', ')
+      + (auxSpec.default === "" ? 'no default, ' : 'default = ' + auxSpec.default + ', ')
+      + (auxSpec.min === "" ? 'no minimum, ' : 'minimum = ' + auxSpec.min + ', ')
+      + (auxSpec.max === "" ? 'no maximum, ' : 'maximum = ' + auxSpec.max + ', ')
       + (auxSpec.required ? 'required' : 'optional') + '</li>';
     switch(auxSpec.for) {
       case "sites":
@@ -1386,9 +1386,9 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + '    <h3>' + s.name + '</h3></span>'
 + '  <input type="number" class="form-control"'
 + '    id="as_' + s.id + '"'
-+ ((s.default == "") ? '' : ' value="' + s.default + '"')
-+ ((s.min == "") ? '' : ' min="' + s.min + '"')
-+ ((s.max == "") ? '' : ' max="' + s.max + '"')
++ ((s.default === "") ? '' : ' value="' + s.default + '"')
++ ((s.min === "") ? '' : ' min="' + s.min + '"')
++ ((s.max === "") ? '' : ' max="' + s.max + '"')
 + '    aria-label="' + s.name + '"'
 + '    aria-describedby="auxspec-' + s.id + '">'
 + '</div>'
