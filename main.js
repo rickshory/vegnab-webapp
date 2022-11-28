@@ -339,6 +339,7 @@ match_list.addEventListener('click', function (e) {
       let new_spp_item = {
         "id": spp_entry_date.getTime().toString(),
         "site_id": current_site_id,
+        "type": 'sp', // a real species, vs. 'ph' for placeholders
         "species": spp,
         "uncertainty": "",
         "date": spp_entry_date,
@@ -404,6 +405,7 @@ match_list.addEventListener('click', function (e) {
           current_placeholder = {
             "id": ph_create_date.getTime().toString(),
             "site_id": current_site_id,
+            "type": 'ph', // a placeholder, vs. 'sp' for a real species
             "code": current_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
@@ -1585,8 +1587,8 @@ function sendData() {
   }
 
   console.log(emailAddrString);
-  let emailSubjectStr = "VegNab webapp data";
   let siteObj = site_info_array[site_chosen_to_send];
+  let emailSubjectStr = "VegNab webapp data, " + siteObj.name;
   console.log('siteObj: ' + siteObj);
   let emailBodyStr = 'Site name: ' + siteObj.name + '\n'
     + 'Notes: ' + siteObj.notes + '\n'
@@ -1598,6 +1600,11 @@ function sendData() {
         + ', ' + siteObj.longitude
         + ') accuracy ' + siteObj.accuracy + ' meters\n';
   }
+  // add any auxiliary data for the site
+  let this_site_aux_data_array = aux_data_array.filter(d => d.parent_id === siteObj.id);
+  this_site_aux_data_array.forEach(ad => {
+    emailBodyStr += ad.name + ': ' + ad.value + '\n';
+  });
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteObj.id)
     .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
@@ -1619,10 +1626,16 @@ function sendData() {
         }
         descr_string = sst;
       }
+      // add any auxiliary data
+      let this_aux_data_array = aux_data_array.filter(d => d.parent_id === itm.id);
+      this_aux_data_array.forEach(ad => {
+        descr_string += '; "' + ad.name + '" = ' + ad.value;
+      });
       emailBodyStr += '\n' + descr_string
           + '; ' + itm.date.toISOString()
           + '; ' + '(' + itm.latitude + ', ' + itm.longitude
               + ') accuracy ' + itm.accuracy + ' meters';
+
     });
     // done with species items, add the info for any placeholders used
     let this_site_ph_array = placeholders_array.filter(ph_obj =>
