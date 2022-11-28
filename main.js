@@ -1377,6 +1377,8 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
   };
   document.getElementById('aux-entry-hdr-msg').innerHTML = auxHdr;
   var auxBlx = "";
+  // if the id of an input is an all-numeric string, the value always reads as
+  // zero; I have no idea why, but the 'as_' prefix fixes that
   sArr.forEach(s => {
     auxBlx += ""
 + '<div class="input-group">'
@@ -1384,6 +1386,9 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + '    <h3>' + s.name + '</h3></span>'
 + '  <input type="number" class="form-control"'
 + '    id="as_' + s.id + '"'
++ ((s.default == "") ? '' : ' value="' + s.default + '"')
++ ((s.min == "") ? '' : ' min="' + s.min + '"')
++ ((s.max == "") ? '' : ' max="' + s.max + '"')
 + '    aria-label="' + s.name + '"'
 + '    aria-describedby="auxspec-' + s.id + '">'
 + '</div>'
@@ -1422,6 +1427,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // maybe other tests?
   if (!aOK) {return;}
   // If all tests passed, save AuxData
+  // if the id of an input is an all-numeric string, the value always reads as
+  // zero; I have no idea why, but the 'as_' prefix fixes that
   sArr.forEach(sp => {
     console.log("id = " + sp.id + ", value = " + document.getElementById('as_' + sp.id).value);
     let stVal = document.getElementById('as_' + sp.id).value;
