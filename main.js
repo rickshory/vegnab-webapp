@@ -1412,13 +1412,26 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log(sArr);
   var aOK = true; // default until some vital test fails
   sArr.forEach(ck => {
-    // the input's id is the id field of the corresponding aux spec
-//    let stCk = document.getElementById('' + a.id).value.toString().trim();
-    let stCk = ('' + document.getElementById('as_' + ck.id).value).trim();
+    // the input's id is the id field of the corresponding aux spec plus the prefix 'as_'
+    let stCk = document.getElementById('as_' + ck.id).value.toString().trim();
     console.log("stCk = " + stCk);
     console.log("value = " + document.getElementById('as_' + ck.id).value);
-    if ((ck.required == true) && (stCk == "")) {
+    if ((ck.required === true) && (stCk === "")) {
       alert('"' + ck.name + '" is required');
+      document.getElementById('as_' + ck.id).focus();
+      aOK = false; // flag for when outside the current arrow fn
+      return; // from the current arrrow fn, iterating the array
+    }
+    if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
+      document.getElementById('as_' + ck.id).value = ck.min;
+      alert('"' + ck.name + '" was below minimum, corrected');
+      document.getElementById('as_' + ck.id).focus();
+      aOK = false; // flag for when outside the current arrow fn
+      return; // from the current arrrow fn, iterating the array
+    }
+    if ((ck.max) && stCk && (Number(stCk) > Number(ck.max))) { // already checked if required
+      document.getElementById('as_' + ck.id).value = ck.max;
+      alert('"' + ck.name + '" was above maximum, corrected');
       document.getElementById('as_' + ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
