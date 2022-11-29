@@ -70,7 +70,8 @@ var nonlocal_spp_array = [];
 var found_spp_array = []; // track which species have been previously found
 /*
 let new_spp_item = {
-  "id": spp_entry_date.getTime().toString(),
+  // if 'id' used as HTML element id, prefix assures it does not start with a number
+  "id": 'sp_' + spp_entry_date.getTime().toString(),
   "site_id": current_site_id,
   "type": 'sp', // a real species, vs. 'ph' for placeholders
   "species": spp,
@@ -343,7 +344,8 @@ match_list.addEventListener('click', function (e) {
       // use the code and description as one string "species"
       let spp_entry_date = new Date();
       let new_spp_item = {
-        "id": spp_entry_date.getTime().toString(),
+        // if 'id' used as HTML element id, prefix assures it does not start with a number
+        "id": 'sp_' + spp_entry_date.getTime().toString(),
         "site_id": current_site_id,
         "type": 'sp', // a real species, vs. 'ph' for placeholders
         "species": spp,
@@ -409,7 +411,8 @@ match_list.addEventListener('click', function (e) {
           console.log("new placeholder code: " + current_ph_code);
           let ph_create_date = new Date();
           let new_ph = {
-            "id": ph_create_date.getTime().toString(),
+            // if 'id' used as HTML element id, prefix assures it does not start with a number
+            "id": 'ph_' + ph_create_date.getTime().toString(),
             "site_id": current_site_id,
             "code": current_ph_code,
             "keywords": [], // empty until filled in
@@ -735,13 +738,15 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   }
 
   // store data
+  let st_create_date = new Date();
   let site_obj = {
     // multiple sites would never be created in the same millisecond, so id
     // would be unique
-    "id": new Date().getTime().toString(),
+    // if 'id' used as HTML element id, prefix assures it does not start with a number
+    "id": 'si_' + st_create_date.getTime().toString(),
     "name": SiteNameString,
     "notes": SiteNotesString,
-    "date": latest_site_date,
+    "date": st_create_date,
     "latitude": "" + latestLocation.coords.latitude,
     "longitude": "" + latestLocation.coords.longitude,
     "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
@@ -937,7 +942,7 @@ function showSites() {
         current_spp_item_id = target.id; // store in global, to track which item worked on
 //        console.log("list ID: " + e.currentTarget.id);
 //        console.log("item ID: " + current_spp_item_id);
-        let spp = target.textContent;
+//        let spp = target.textContent;
 //        console.log(spp);
         var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
           keyboard: false
@@ -1238,7 +1243,8 @@ function insertPlHolderItm() {
   // use the code and keywords as one string "species"
   let ph_entry_date = new Date();
   let new_ph_item = {
-    "id": ph_entry_date.getTime().toString(),
+    // if 'id' used as HTML element id, prefix assures it does not start with a number
+    "id": 'ph_' + ph_entry_date.getTime().toString(),
     "site_id": current_site_id,
     "type": 'ph', // a placeholder, vs. 'sp' for a real species
     "ph_id": cur_placeholder.id, // allows for lookup
@@ -1407,7 +1413,8 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
     case "new":
       let as_obj = {
         // not using all fields yet
-        "id": new Date().getTime().toString(),
+        // if 'id' used as HTML element id, prefix assures it does not start with a number
+        "id": 'as_' + new Date().getTime().toString(),
         "for": aux_spec_for,
         "name": auxSpecNameString,
         "type": "number",
@@ -1562,7 +1569,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         // could there be dupicate ids? if created fast enough?
         // seems like no problem, will be fetched by parent_id
         // and all of them used
-        "id": new Date().getTime().toString(),
+        // if 'id' used as HTML element id, prefix assures it does not start with a number
+        "id": 'ad_' + new Date().getTime().toString(),
         "for": sp.for, // may be redundant
         "parent_id": parID, // id of the site or speecies item
         "spec_id": sp.id, // may be redundant
