@@ -541,14 +541,6 @@ var vnAddSiteButton = document.getElementById('btn-add-site');
 var vnSiteDate = document.getElementById('site_date');
 var vnSiteLocation = document.getElementById("site_location");
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    vnSiteLocation.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
 function startTrackingPosition() {
   if (navigator.geolocation) {
     browser_supports_geolocation = true;
@@ -593,12 +585,6 @@ switch(err.code) {
 }
 */
 
-}
-
-function showPosition(position) {
-  vnSiteLocation.innerHTML = "Latitude: " + position.coords.latitude +
-  "<br>Longitude: " + position.coords.longitude +
-  "<br>Accuracy: " + position.coords.accuracy.toFixed(1) + " meters";
 }
 
 function checkPositionAccuracy() {
@@ -688,7 +674,6 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   vnSiteDate.innerHTML = ""; // fill in almost immediately, below
   vnSiteLocation.innerHTML = ""; // fill in by location ticker
 	vnSiteDate.innerHTML = new Date().toString();
-//  getLocation(); // redundant?
   targetAccuracyOK = false;
   accuracyAccepted = false;
   whatIsAwaitingAccuracy = "site";
