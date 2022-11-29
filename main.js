@@ -340,7 +340,7 @@ match_list.addEventListener('click', function (e) {
     if (nrcs_spp_array.some(obj => obj.nrcs_code == target.id)) {
       let spp = target.textContent;
       console.log(spp);
-      // for testing, use the code and description as one string "species"
+      // use the code and description as one string "species"
       let spp_entry_date = new Date();
       let new_spp_item = {
         "id": spp_entry_date.getTime().toString(),
@@ -898,9 +898,11 @@ function showSites() {
     let this_site_spp_list = document.getElementById("spp-list-for-" + ste.id);
     let spp_listitems_string = "";
     this_site_spp_array.forEach(spp_obj => {
-      if (spp_obj.species === undefined) { // a placeholder
+      // both real species and placeholders have a display field 'species'
+      if (spp_obj.type === "ph") { // a placeholder
         spp_listitems_string += '<li id="' + spp_obj.id + '">'
-          + spp_obj.code + ': ' + spp_obj.keywords.join(" ");
+          + spp_obj.species;
+        // placeholders do not have Uncertainty
       } else { // a real species
         let sst = spp_obj.species;
         if (spp_obj.uncertainty == "species") {
@@ -1233,7 +1235,7 @@ function insertPlHolderItm() {
   // inserts a species item into site_spp_array for the current placeholder
   // assumes these globals: current_site_id, cur_placeholder, latestLocation
   // returns the id of the newly inserted element in site_spp_array
-  // for testing, use the code and description as one string "species"
+  // use the code and keywords as one string "species"
   let ph_entry_date = new Date();
   let new_ph_item = {
     "id": ph_entry_date.getTime().toString(),
@@ -1667,8 +1669,10 @@ function sendData() {
     console.log(this_site_spp_array);
     let descr_string = "";
     this_site_spp_array.forEach((itm, spp_index) => {
-      if (itm.species === undefined) { // a placeholder
-        descr_string = itm.code + ": " + itm.keywords.join(" ");
+      // both real species and placeholders have a 'species' field for display
+      if (itm.type === "ph") { // a placeholder
+        descr_string = itm.species;
+        // placeholders do not have Uncertainty
       } else { // a real species
         let sst = itm.species;
         if (itm.uncertainty == "species") {
