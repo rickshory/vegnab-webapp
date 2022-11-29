@@ -407,10 +407,9 @@ match_list.addEventListener('click', function (e) {
           current_ph_code = decodeURIComponent(target.id.slice(8));
           console.log("new placeholder code: " + current_ph_code);
           let ph_create_date = new Date();
-          cur_placeholder = {
+          let new_ph = {
             "id": ph_create_date.getTime().toString(),
             "site_id": current_site_id,
-            "type": 'ph', // a placeholder, vs. 'sp' for a real species
             "code": current_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
@@ -419,10 +418,14 @@ match_list.addEventListener('click', function (e) {
             "longitude": "" + latestLocation.coords.longitude,
             "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
           };
+          current_ph_id = new_ph.id; // remember the ID
+          // put this placeholder, at least temporarily, into the placeholders array
+          placeholders_array.unshift(new_ph);
+          // get a reference to the array element
+          cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
 
-          // if flagged, check that target accuracy was met
+          // if flagged to, check that target accuracy was met
           if (waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
-            current_ph_id = cur_placeholder.id;
             accuracyAccepted = false; // can be manually accepted
             locationDeferred = true;
             whatIsAwaitingAccuracy = "new_plholder";
@@ -450,29 +453,21 @@ match_list.addEventListener('click', function (e) {
           console.log("target.id for existing placeholder: " + target.id);
           let matched_placeholder_code = decodeURIComponent(target.id.slice(4));
           console.log("parsed placeholder code: " + matched_placeholder_code);
-          // at this point the placeholder information is all in the list item
-          // textContent, and can be processed the same as a regular species,
-          // but detecting a placeholder will allow specialized processing in
-          // the future, such as displaying photos, or checking if the placeholder
-          // has been identified
           let ph = target.textContent;
           console.log(ph);
-          // for testing, use the code and description as one string "species"
-          let ph_entry_date = new Date();
-          let new_ph_item = {
-            "id": ph_entry_date.getTime().toString(),
-            "site_id": current_site_id,
-            "species": ph,
-            "date": ph_entry_date,
-            "latitude": "" + latestLocation.coords.latitude,
-            "longitude": "" + latestLocation.coords.longitude,
-            "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
-          };
-          site_spp_array.unshift(new_ph_item);
+          // get the global 'cur_placeholder' the following fn needs
+          cur_placeholder = placeholders_array.find(p => p.code === matched_placeholder_code);
+          // following fn fills in fields that might be rudunant, but includes
+          // "ph_id": to allow lookup back to the original placeholder definition
+          // "type": 'ph' which flags this item as a placeholder, vs. a real species
+          // could allow specialized processing
+          // such as displaying photos, or checking if the placeholder
+          // has been identified
+          current_spp_item_id = insertPlHolderItm(); // uses globals
           // if flagged, check that target accuracy was met
           if (waitForSppLocTarget && (!targetAccuracyOK)) {
-            // for now the lat/lon/acc fields are the same as for a species
-            current_spp_item_id = new_ph_item.id;
+            // for the lat/lon/acc fields are the same as for a species
+//            current_spp_item_id = new_ph_item.id;
             accuracyAccepted = false; // can be manually accepted
             locationDeferred = true;
             whatIsAwaitingAccuracy = "spp_itm"; // for now, this works the same
@@ -1028,10 +1023,12 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   if (placeholder_state === "new") {
     document.getElementById('placeholder_code_label').innerHTML
         = 'New placeholder "' + cur_placeholder.code + '"';
+    phScreenComplete = false; // flag to delete incomplete placeholder if screen dismissed
   }
   if (placeholder_state === "edit") {
     document.getElementById('placeholder_code_label').innerHTML
         = 'Editing placeholder "' + cur_placeholder.code + '"';
+    phScreenComplete = true; // don't delete this placeholder, even if screen dismissed
   }
   document.getElementById('placeholder_keywords').value
       = cur_placeholder.keywords.join(" ");
@@ -1042,6 +1039,33 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
    document.getElementById('placeholder_date').innerHTML
        = cur_placeholder.date;
   showPhPix();
+});
+
+vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
+  // occurs if screen dismissed by "X" button
+  if ((placeholder_state === "new") && !phScreenComplete) {
+    // new placeholder was never completed, remove it from the array
+    cur_placeholder = undefined; // unattach any reference
+    // remove the incomplete placeholder
+    console.log('about to remove incomplete Placeholder "'
+      + placeholders_array.find(p => p.id === current_ph_id).code + '"');
+    placeholders_array = placeholders_array.filter(ph => ph.id != current_ph_id);
+    // remove any species item for it
+    var i;
+    while ((i = site_spp_array.findIndex(itm => itm.ph_id === current_ph_id)) > -1) {
+      console.log('about to remove incomplete Ph item "'
+        + site_spp_array.find(p => p.id === i).species + '"');
+      site_spp_array.splice(i, 1);
+    }
+    // stop the locations ticker
+    clearInterval(periodicLocationCheckFlag);
+    stopTrackingPosition();
+    accuracyAccepted = true;
+    locationDeferred = false;
+    latestLocation = undefined;
+    whatIsAwaitingAccuracy = "";
+  }
+  showSites();
 });
 
 function showPhPix() {
@@ -1095,7 +1119,7 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
 document.getElementById('ph-img-file-input').addEventListener('change', () => {
 //  console.log('ph-img-file-input file input change');
 //  console.log(document.getElementById('ph-img-file-input').files.length + ' files chosen');
-  img_files = [];
+  let img_files = [];
   for (const ph_file of document.getElementById('ph-img-file-input').files) {
 //    console.log('' + ph_file.name);
 //    console.log('type ' + ph_file.type);
@@ -1138,30 +1162,14 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   }
   cur_placeholder.keywords = phKeywordsArray;
   if (placeholder_state === "new") {
-    if (latestLocation === undefined) {
-      alert("Can't save without a location");
-      return;
-    }
-    // accept this placeholder into the placeholders array
-    placeholders_array.unshift(cur_placeholder);
+    phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
     // add an instance of this placeholder to the site items
     // may need to defer its location too
-    let ph_entry_date = new Date();
-    let new_ph_item = {
-      "id": ph_entry_date.getTime().toString(),
-      "site_id": current_site_id,
-      "code": cur_placeholder.code,
-      "keywords": cur_placeholder.keywords,
-      "date": ph_entry_date,
-      "latitude": "" + latestLocation.coords.latitude,
-      "longitude": "" + latestLocation.coords.longitude,
-      "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
-    };
-    site_spp_array.unshift(new_ph_item);
+    current_spp_item_id = insertPlHolderItm(); // uses globals
     if (waitForSppLocTarget && !targetAccuracyOK) {
-      current_ph_id = cur_placeholder.id; // this is the general placeholder
-      current_spp_item_id = new_ph_item.id; // this is the instance of the placeholder
+      current_ph_id = cur_placeholder.id; // current_spp_item_id is is the general placeholder
+      // current_spp_item_id is the instance of the placeholder
       accuracyAccepted = false; // can be manually accepted
       locationDeferred = true;
       whatIsAwaitingAccuracy = "new_plholder";
@@ -1181,16 +1189,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       whatIsAwaitingAccuracy = "";
     }
   } // end of placeholder_state === "new"
-  if (placeholder_state === "edit") {
-    let phIndex = placeholders_array.findIndex(ph => ph.code == current_ph_code);
-    if (phIndex === -1) {
-      console.log("placeholder to edit not found, not changed: " + cur_placeholder);
-    } else {
-      placeholders_array.splice(phIndex, 1, cur_placeholder);
-    }
-  }
   placeholder_state = ""
-//  console.log(site_spp_array);
   // flag that work is finished
   cur_placeholder = undefined;
   current_ph_code = "";
@@ -1203,6 +1202,29 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   console.log('About to hide the Save Placeholder modal');
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
 });
+
+function insertPlHolderItm() {
+  // inserts a species item into site_spp_array for the current placeholder
+  // assumes these globals: current_site_id, cur_placeholder, latestLocation
+  // returns the id of the newly inserted element in site_spp_array
+  // for testing, use the code and description as one string "species"
+  let ph_entry_date = new Date();
+  let new_ph_item = {
+    "id": ph_entry_date.getTime().toString(),
+    "site_id": current_site_id,
+    "type": 'ph', // a placeholder, vs. 'sp' for a real species
+    "ph_id": cur_placeholder.id, // allows for lookup
+    "code": cur_placeholder.code,
+    "keywords": cur_placeholder.keywords,
+    "species": cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" "),
+    "date": ph_entry_date,
+    "latitude": "" + latestLocation.coords.latitude,
+    "longitude": "" + latestLocation.coords.longitude,
+    "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+  };
+  site_spp_array.unshift(new_ph_item);
+  return new_ph_item.id;
+}
 
 document.getElementById('btn-add-aux-spec-for-site').addEventListener('click', function (e) {
   aux_spec_state = "new";
