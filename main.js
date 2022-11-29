@@ -72,6 +72,7 @@ var found_spp_array = []; // track which species have been previously found
 let new_spp_item = {
   "id": spp_entry_date.getTime().toString(),
   "site_id": current_site_id,
+  "type": 'sp', // a real species, vs. 'ph' for placeholders
   "species": spp,
   "uncertainty": "",
   "date": spp_entry_date,
@@ -855,7 +856,7 @@ function showSites() {
   console.log("in 'showSites()', about to generate accordion");
   site_info_array.forEach((obj, index) => {
     if (obj.id == current_site_id) {
-      console.log("current_site_id is " + current_site_id + ", for site " + obj.name);
+      console.log('current_site_id is ' + current_site_id + ', for site "' + obj.name + '"');
     }
     sites_accordion_listitems += '<div class="card">' +
       '  <div class="card-header" id="heading' + (index + 1) + '">' +
@@ -952,19 +953,24 @@ vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
   if (current_spp_item_id === "undefined") {
     return;
   }
-  if (detailed_spp_item.species === undefined) { // a placeholder
-    document.getElementById('spp-for-details').innerHTML
-        = detailed_spp_item.code + ': ' + detailed_spp_item.keywords.join(" ");
-  } else { // a real species
-    document.getElementById('spp-for-details').innerHTML
-        = detailed_spp_item.species;
+  document.getElementById('spp-for-details').innerHTML = detailed_spp_item.species;
+
+  // it makes no sense to apply uncertainty to Placeholders, hide those buttons
+  // (you either know it's the same thing you already entered as a Placeholder, 
+  // or you make up a new Placeholder)
+  for (let bt of document.getElementsByClassName("hide-for-ph")) {
+    if (detailed_spp_item.type === "ph") { // a placeholder
+      bt.style.display = "none";
+    } else {
+      bt.style.display = "block";
+    }
   }
   document.getElementById('spp-detail-location').innerHTML
-      = '(' + detailed_spp_item.latitude
-      + ', ' + detailed_spp_item.longitude
-      + '), accuracy ' + detailed_spp_item.accuracy + ' m';
+    = '(' + detailed_spp_item.latitude
+    + ', ' + detailed_spp_item.longitude
+    + '), accuracy ' + detailed_spp_item.accuracy + ' m';
   document.getElementById('spp-detail-timestamp').innerHTML
-      = detailed_spp_item.date;
+    = detailed_spp_item.date;
 });
 
 document.getElementById('btn-delete-spp-item').addEventListener('click', function (e) {
