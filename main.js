@@ -424,6 +424,11 @@ match_list.addEventListener('click', function (e) {
           // get a reference to the array element
           cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
 
+          // add an instance of this placeholder to the site items
+          // which will be deleted if the new placeholder is canceled
+          // may need to defer its location too
+          current_spp_item_id = insertPlHolderItm(); // uses globals
+
           // if flagged to, check that target accuracy was met
           if (waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
             accuracyAccepted = false; // can be manually accepted
@@ -1042,8 +1047,25 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 });
 
 vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
-  // occurs if screen dismissed by "X" button
-  if ((placeholder_state === "new") && !phScreenComplete) {
+  if (phScreenComplete) { // any Placeholder edits will have to go past this point
+    console.log("in 'vnPlaceholderInfoScreen.hidden', placeholder_state = " + placeholder_state);
+    console.log("in 'vnPlaceholderInfoScreen.hidden', cur_placeholder");
+    console.log(cur_placeholder);
+    // get all the species items that are based on the current placeholder
+    site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
+      .map(itm => { return itm.id; }).forEach(iid => {
+        // update any fields that may have changed
+        console.log("in 'vnPlaceholderInfoScreen.hidden', updating placeholder spp item " + iid);
+        let sp_elem = site_spp_array.find(i => i.id === iid);
+        console.log("in 'vnPlaceholderInfoScreen.hidden', sp_elem");
+        console.log(sp_elem);
+        sp_elem.keywords = cur_placeholder.keywords.join(" ").split(" ");
+        sp_elem.species = cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" ");
+        sp_elem.latitude = (sp_elem.latitude == "") ? cur_placeholder.latitude : sp_elem.latitude;
+        sp_elem.longitude = (sp_elem.longitude == "") ? cur_placeholder.longitude : sp_elem.longitude;
+        sp_elem.accuracy = (sp_elem.accuracy == "") ? cur_placeholder.accuracy : sp_elem.accuracy;
+      });
+  } else { //  !phScreenComplete,  occurs if screen dismissed by "X" button
     // new placeholder was never completed, remove it from the array
     cur_placeholder = undefined; // unattach any reference
     // remove the incomplete placeholder
@@ -1054,7 +1076,7 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     var i;
     while ((i = site_spp_array.findIndex(itm => itm.ph_id === current_ph_id)) > -1) {
       console.log('about to remove incomplete Ph item "'
-        + site_spp_array.find(p => p.id === i).species + '"');
+        + site_spp_array[i].species + '"');
       site_spp_array.splice(i, 1);
     }
     // stop the locations ticker
@@ -1065,6 +1087,10 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     latestLocation = undefined;
     whatIsAwaitingAccuracy = "";
   }
+  // flag that work is finished
+  placeholder_state = ""
+  cur_placeholder = undefined;
+  current_ph_code = "";
   showSites();
 });
 
@@ -1164,9 +1190,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   if (placeholder_state === "new") {
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
-    // add an instance of this placeholder to the site items
-    // may need to defer its location too
-    current_spp_item_id = insertPlHolderItm(); // uses globals
+
     if (waitForSppLocTarget && !targetAccuracyOK) {
       current_ph_id = cur_placeholder.id; // current_spp_item_id is is the general placeholder
       // current_spp_item_id is the instance of the placeholder
@@ -1189,10 +1213,6 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       whatIsAwaitingAccuracy = "";
     }
   } // end of placeholder_state === "new"
-  placeholder_state = ""
-  // flag that work is finished
-  cur_placeholder = undefined;
-  current_ph_code = "";
   // trigger to refresh site list
   shwSitesTimeout = setTimeout(showSites, 10);
   // clear the keywords
