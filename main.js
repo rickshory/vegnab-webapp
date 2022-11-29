@@ -58,7 +58,6 @@ var siteScreenComplete = false; // flag to distinguish screen simply
 var site_info_array = [];
 var current_site_id = "";
 var site_chosen_to_send = -1;
-var latest_site_date = new Date();
 var sppScreenComplete = false; // flag to distinguish screen simply
   // dismissed, and so to stop the location ticker
 var site_spp_array = []; // the species items for all the sites, internally
@@ -688,8 +687,7 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   vnSiteNotes.value = ""; // user entry
   vnSiteDate.innerHTML = ""; // fill in almost immediately, below
   vnSiteLocation.innerHTML = ""; // fill in by location ticker
-	latest_site_date = new Date();
-	vnSiteDate.innerHTML = latest_site_date.toString();
+	vnSiteDate.innerHTML = new Date().toString();
 //  getLocation(); // redundant?
   targetAccuracyOK = false;
   accuracyAccepted = false;
@@ -1478,15 +1476,15 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
   };
   document.getElementById('aux-entry-hdr-msg').innerHTML = auxHdr;
   var auxBlx = "";
-  // if the id of an input is an all-numeric string, the value always reads as
-  // zero; I have no idea why, but the 'as_' prefix fixes that
-  sArr.forEach(s => {
+  // The 'auxspec_' prefix for labels prevents them having the same id as 
+  // the corresponding input. Otherwise, the input value reads as zero
+    sArr.forEach(s => {
     auxBlx += ""
 + '<div class="input-group">'
 + '  <span class="input-group-text" id="auxspec-' + s.id + '">'
 + '    <h3>' + s.name + '</h3></span>'
 + '  <input type="number" class="form-control"'
-+ '    id="as_' + s.id + '"'
++ '    id="' + s.id + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
@@ -1513,27 +1511,26 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log(sArr);
   var aOK = true; // default until some vital test fails
   sArr.forEach(ck => {
-    // the input's id is the id field of the corresponding aux spec plus the prefix 'as_'
-    let stCk = document.getElementById('as_' + ck.id).value.toString().trim();
+    let stCk = document.getElementById(ck.id).value.toString().trim();
     console.log("stCk = " + stCk);
-    console.log("value = " + document.getElementById('as_' + ck.id).value);
+    console.log("value = " + document.getElementById(ck.id).value);
     if ((ck.required === true) && (stCk === "")) {
       alert('"' + ck.name + '" is required');
-      document.getElementById('as_' + ck.id).focus();
+      document.getElementById(ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
     }
     if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
-      document.getElementById('as_' + ck.id).value = ck.min;
+      document.getElementById(ck.id).value = ck.min;
       alert('"' + ck.name + '" was below minimum, corrected');
-      document.getElementById('as_' + ck.id).focus();
+      document.getElementById(ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
     }
     if ((ck.max) && stCk && (Number(stCk) > Number(ck.max))) { // already checked if required
-      document.getElementById('as_' + ck.id).value = ck.max;
+      document.getElementById(ck.id).value = ck.max;
       alert('"' + ck.name + '" was above maximum, corrected');
-      document.getElementById('as_' + ck.id).focus();
+      document.getElementById(ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
     }
@@ -1544,8 +1541,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // if the id of an input is an all-numeric string, the value always reads as
   // zero; I have no idea why, but the 'as_' prefix fixes that
   sArr.forEach(sp => {
-    console.log("id = " + sp.id + ", value = " + document.getElementById('as_' + sp.id).value);
-    let stVal = document.getElementById('as_' + sp.id).value;
+    console.log("id = " + sp.id + ", value = " + document.getElementById(sp.id).value);
+    let stVal = document.getElementById(sp.id).value;
     if (stVal === "") { // no need to save empties
       console.log('stVal === ""');
       if (stVal == "") {
