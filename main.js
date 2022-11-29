@@ -84,7 +84,12 @@ var placeholders_array = [];
 var placeholder_state = ""; // will be 'new' or 'edit'
 var current_ph_id = "";
 var current_ph_code = "";
-var current_placeholder;
+var cur_placeholder; // the placeholder being added/edited, first created incomplete
+  // some fields filled in by user, some by GPS acquire
+  // incomplete placehold will be deleted if info screen dismissed without finishing
+var phScreenComplete = false; // flag to distinguish screen simply
+  // dismissed, and so to stop the location ticker, and delete an incomplete placeholder
+
 //  = {
 //   "id": numeric from timestamp,
 //   "site_id": current_site_id,
@@ -402,7 +407,7 @@ match_list.addEventListener('click', function (e) {
           current_ph_code = decodeURIComponent(target.id.slice(8));
           console.log("new placeholder code: " + current_ph_code);
           let ph_create_date = new Date();
-          current_placeholder = {
+          cur_placeholder = {
             "id": ph_create_date.getTime().toString(),
             "site_id": current_site_id,
             "type": 'ph', // a placeholder, vs. 'sp' for a real species
@@ -417,7 +422,7 @@ match_list.addEventListener('click', function (e) {
 
           // if flagged, check that target accuracy was met
           if (waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
-            current_ph_id = current_placeholder.id;
+            current_ph_id = cur_placeholder.id;
             accuracyAccepted = false; // can be manually accepted
             locationDeferred = true;
             whatIsAwaitingAccuracy = "new_plholder";
@@ -634,9 +639,9 @@ function checkPositionAccuracy() {
       if (placeholder_state === "new" && !locationDeferred) {
         // display the updating location
         document.getElementById('placeholder_location').innerHTML
-             = '(' + current_placeholder.latitude
-             + ', ' + current_placeholder.longitude
-             + '), accuracy ' + current_placeholder.accuracy + ' m';
+             = '(' + cur_placeholder.latitude
+             + ', ' + cur_placeholder.longitude
+             + '), accuracy ' + cur_placeholder.accuracy + ' m';
       }
       break;
     default:
@@ -1012,7 +1017,7 @@ vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
 // Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
-  if (current_ph_code === "" || current_placeholder === undefined) {
+  if (current_ph_code === "" || cur_placeholder === undefined) {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').value = "";
     document.getElementById('placeholder_location').innerHTML = "(no location)";
@@ -1022,32 +1027,32 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   }
   if (placeholder_state === "new") {
     document.getElementById('placeholder_code_label').innerHTML
-        = 'New placeholder "' + current_placeholder.code + '"';
+        = 'New placeholder "' + cur_placeholder.code + '"';
   }
   if (placeholder_state === "edit") {
     document.getElementById('placeholder_code_label').innerHTML
-        = 'Editing placeholder "' + current_placeholder.code + '"';
+        = 'Editing placeholder "' + cur_placeholder.code + '"';
   }
   document.getElementById('placeholder_keywords').value
-      = current_placeholder.keywords.join(" ");
+      = cur_placeholder.keywords.join(" ");
   document.getElementById('placeholder_location').innerHTML
-       = '(' + current_placeholder.latitude
-       + ', ' + current_placeholder.longitude
-       + '), accuracy ' + current_placeholder.accuracy + ' m';
+       = '(' + cur_placeholder.latitude
+       + ', ' + cur_placeholder.longitude
+       + '), accuracy ' + cur_placeholder.accuracy + ' m';
    document.getElementById('placeholder_date').innerHTML
-       = current_placeholder.date;
+       = cur_placeholder.date;
   showPhPix();
 });
 
 function showPhPix() {
   let ph_pix_html = "";
   try {
-    if (current_placeholder.photos.length == 0) {
+    if (cur_placeholder.photos.length == 0) {
       ph_pix_html = "no photos yet"
     } else {
       ph_pix_html += '    <div class="container">'
          + '\n               <div class="row imagetiles">';
-      current_placeholder.photos.forEach(itm => {
+      cur_placeholder.photos.forEach(itm => {
         ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
            + '<img src=' + URL.createObjectURL(itm)
            + ' class="img-responsive">'
@@ -1075,7 +1080,7 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
     current_ph_code = decodeURIComponent(target.id);
 //    console.log("current_ph_code = " + current_ph_code);
     // get ph record
-    current_placeholder = placeholders_array.find(ph => ph.code == current_ph_code);
+    cur_placeholder = placeholders_array.find(ph => ph.code == current_ph_code);
     placeholder_state = "edit";
     // close this screen
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPhListScreen')).hide();
@@ -1110,7 +1115,7 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
   }
 
   if (img_files.length > 0) {
-    current_placeholder.photos = img_files.concat(current_placeholder.photos);
+    cur_placeholder.photos = img_files.concat(cur_placeholder.photos);
     showPhPix();
   }
 });
@@ -1131,14 +1136,14 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     document.getElementById('placeholder_keywords').focus();
     return;
   }
-  current_placeholder.keywords = phKeywordsArray;
+  cur_placeholder.keywords = phKeywordsArray;
   if (placeholder_state === "new") {
     if (latestLocation === undefined) {
       alert("Can't save without a location");
       return;
     }
     // accept this placeholder into the placeholders array
-    placeholders_array.unshift(current_placeholder);
+    placeholders_array.unshift(cur_placeholder);
     // may need to defer the location
     // add an instance of this placeholder to the site items
     // may need to defer its location too
@@ -1146,8 +1151,8 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     let new_ph_item = {
       "id": ph_entry_date.getTime().toString(),
       "site_id": current_site_id,
-      "code": current_placeholder.code,
-      "keywords": current_placeholder.keywords,
+      "code": cur_placeholder.code,
+      "keywords": cur_placeholder.keywords,
       "date": ph_entry_date,
       "latitude": "" + latestLocation.coords.latitude,
       "longitude": "" + latestLocation.coords.longitude,
@@ -1155,7 +1160,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     };
     site_spp_array.unshift(new_ph_item);
     if (waitForSppLocTarget && !targetAccuracyOK) {
-      current_ph_id = current_placeholder.id; // this is the general placeholder
+      current_ph_id = cur_placeholder.id; // this is the general placeholder
       current_spp_item_id = new_ph_item.id; // this is the instance of the placeholder
       accuracyAccepted = false; // can be manually accepted
       locationDeferred = true;
@@ -1179,15 +1184,15 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   if (placeholder_state === "edit") {
     let phIndex = placeholders_array.findIndex(ph => ph.code == current_ph_code);
     if (phIndex === -1) {
-      console.log("placeholder to edit not found, not changed: " + current_placeholder);
+      console.log("placeholder to edit not found, not changed: " + cur_placeholder);
     } else {
-      placeholders_array.splice(phIndex, 1, current_placeholder);
+      placeholders_array.splice(phIndex, 1, cur_placeholder);
     }
   }
   placeholder_state = ""
 //  console.log(site_spp_array);
   // flag that work is finished
-  current_placeholder = undefined;
+  cur_placeholder = undefined;
   current_ph_code = "";
   // trigger to refresh site list
   shwSitesTimeout = setTimeout(showSites, 10);
