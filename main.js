@@ -17,10 +17,11 @@ if ('serviceWorker' in navigator) {
 }
 
 // for testing, region is "OR" (Oregon)
+// user can change it 'Options' screen
 // todo: automatically acquire or input region
 var region_code = "OR";
-// for testing, ignore subspecies and varieties
-// todo: make this an option
+// default, ignore subspecies and varieties
+// can change in 'Options' screen
 var include_subspp_var = false;
 
 // value returned by setInterval, for periocally checking the location
@@ -30,6 +31,7 @@ var browser_supports_geolocation = false; // until determined true
 // return value used to halt position tracking
 // by calling clearWatch on this id
 var position_tracker_id = 0;
+var locationTickerInterval = 1000; // milliseconds, default to a reasonable average, settable by Site or Species
 var latestLocation; // latest location acquired
 
 const locationOptions = {
@@ -523,10 +525,9 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   whatIsAwaitingAccuracy = "spp_itm"; // may be overridden if placeholder, but
     // here makes screen update work correctly in checkPositionAccuracy loop
   latestLocation = undefined; // start fresh
+  locationTickerInterval = 500; // every half second for Species
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
-  console.log("about to start spp location checking ticker");
-  periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 500);
 });
 
 sppSearchModal.addEventListener('hidden.bs.modal', function () {
@@ -570,7 +571,7 @@ function startTrackingPosition() {
           browser_supports_geolocation = false;
         }
         console.log("about to start location checking ticker");
-        periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 2000);
+        periodicLocationCheckFlag = setInterval(checkPositionAccuracy, locationTickerInterval);
         break;
       case 'prompt':
         console.log("location persmission prompt");
@@ -593,7 +594,7 @@ function startTrackingPosition() {
             browser_supports_geolocation = false;
           }
           console.log("about to start location checking ticker");
-          periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 2000);
+          periodicLocationCheckFlag = setInterval(checkPositionAccuracy, locationTickerInterval);
         }
         break;
       default:
@@ -619,30 +620,27 @@ function trackPosition(position) {
 
 function locationError(err) {
   console.warn('ERROR(' + err.code + '): ' + err.message);
+  switch(err.code) {
+    case err.PERMISSION_DENIED:
+      console.warn("User denied the request for Geolocation.");
+      // following 'hide' will stop ticker
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+      var vnLocDenied = new bootstrap.Modal(document.getElementById('vnLocationsDeniedScreen'), {
+        keyboard: false
+      });
+      vnLocDenied.show();
 
-switch(err.code) {
-  case err.PERMISSION_DENIED:
-    console.warn("User denied the request for Geolocation.");
-    // following 'hide' will stop ticker
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-    var vnLocDenied = new bootstrap.Modal(document.getElementById('vnLocationsDeniedScreen'), {
-      keyboard: false
-    });
-    vnLocDenied.show();
-
-    break;
-  case err.POSITION_UNAVAILABLE:
-    console.warn("Location information is unavailable.");
-    break;
-  case err.TIMEOUT:
-    console.warn("The request to get user location timed out.");
-    break;
-  case err.UNKNOWN_ERROR:
-    console.warn("An unknown Geolocation error occurred.");
-    break;
-}
-
-
+      break;
+    case err.POSITION_UNAVAILABLE:
+      console.warn("Location information is unavailable.");
+      break;
+    case err.TIMEOUT:
+      console.warn("The request to get user location timed out.");
+      break;
+    case err.UNKNOWN_ERROR:
+      console.warn("An unknown Geolocation error occurred.");
+      break;
+  }
 }
 
 function checkPositionAccuracy() {
@@ -736,10 +734,9 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   accuracyAccepted = false;
   whatIsAwaitingAccuracy = "site";
   latestLocation = undefined; // start fresh
+  locationTickerInterval = 2000; // every 2 seconds for sites
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
-  // console.log("about to start location checking ticker");
-  // periodicLocationCheckFlag = setInterval(checkPositionAccuracy, 2000);
 });
 
 document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', function (event) {
