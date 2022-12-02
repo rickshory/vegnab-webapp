@@ -72,52 +72,52 @@
           Add site
         </button>
     </div>
-      <!-- show sites and their lists as an accordion -->
-      <div class="container mt-3">
-        <!-- innerHTML of accordion will be filled in by a function -->
-        <div id="sites-accordion">
-          No sites yet
-        </div>
+    <!-- show sites and their lists as an accordion -->
+    <div class="container mt-3">
+      <!-- innerHTML of accordion will be filled in by a function -->
+      <div id="sites-accordion">
+        No sites yet
       </div>
+    </div>
 
-      <!-- begin modal, site info -->
-      <div id="vnSiteInfoScreen" class="modal site_info_screen">
-        <div class="modal-dialog modal-fullscreen-sm-down">
-          <div class="modal-content">
+    <!-- begin modal, site info -->
+    <div id="vnSiteInfoScreen" class="modal site_info_screen">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h3>Site info</h3>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Site info</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-              <div class="site_info_div">
-                <form  id="site_info_form" autocomplete="off">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="site_info_div">
+              <form  id="site_info_form" autocomplete="off">
 
-                  <div class="form-floating mb-3 mt-3">
-                    <p>Site name</p>
-                    <input type="text" class="form-control form-control-lg"
-                      id="site_name">
-                  </div>
-                  <div class="form-group">
-                    <p>Notes</p>
-                    <textarea style="font-size:22px;" class="form-control form-control-lg"
-                      id="site_notes" rows="4"></textarea>
-                  </div>
-                  <button type="button" class="btn btn-primary  btn-xl"
-                    name="btn-save-site-info" id="btn-save-site-info">
-                    Save</button>
-                  <div id="site_date">Site date should appear here</div>
-                  <div id="site_location">Site location should appear here</div>
-                </form>
-              </div>
+                <div class="form-floating mb-3 mt-3">
+                  <p>Site name</p>
+                  <input type="text" class="form-control form-control-lg"
+                    id="site_name">
+                </div>
+                <div class="form-group">
+                  <p>Notes</p>
+                  <textarea style="font-size:22px;" class="form-control form-control-lg"
+                    id="site_notes" rows="4"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary  btn-xl"
+                  name="btn-save-site-info" id="btn-save-site-info">
+                  Save</button>
+                <div id="site_date">Site date should appear here</div>
+                <div id="site_location">Site location should appear here</div>
+              </form>
             </div>
           </div>
         </div>
       </div>
-      <!-- end of modal, site info -->
+    </div>
+    <!-- end of modal, site info -->
 
     <!-- begin modal, species search -->
     <div id="vnSppSearchScreen" class="modal spp_search_screen">
@@ -446,6 +446,43 @@
       </div>
     </div>
     <!-- end of modal, AuxData entry -->
+
+    <!-- begin modal, allow locations -->
+    <div id="vnAllowLocationsScreen" class="modal">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>The purpose of this app is to record locations of plants.
+              For this you must 'Allow' the app to know your location. 
+              Otherwise, there is no point to using this app.
+            </h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, allow locations -->
+
+    <!-- begin modal, locations denied -->
+    <div id="vnLocationsDeniedScreen" class="modal">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>You have denied this app to know your location, and 
+              so it cannot function. 
+              You may be able to change this in the browser settings, 
+              otherwise, this app is not usable.
+            </h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, locations denied -->
 
     <!-- begin modal, wait for accuracy -->
     <div id="vnWaitForAccuracyScreen" class="modal wait_accuracy_screen" role="dialog">
