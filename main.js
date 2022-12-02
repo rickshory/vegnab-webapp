@@ -619,22 +619,29 @@ function trackPosition(position) {
 
 function locationError(err) {
   console.warn('ERROR(' + err.code + '): ' + err.message);
-/*
+
 switch(err.code) {
   case err.PERMISSION_DENIED:
-    x.innerHTML = "User denied the request for Geolocation."
+    console.warn("User denied the request for Geolocation.");
+    // following 'hide' will stop ticker
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+    var vnLocDenied = new bootstrap.Modal(document.getElementById('vnLocationsDeniedScreen'), {
+      keyboard: false
+    });
+    vnLocDenied.show();
+
     break;
   case err.POSITION_UNAVAILABLE:
-    x.innerHTML = "Location information is unavailable."
+    console.warn("Location information is unavailable.");
     break;
   case err.TIMEOUT:
-    x.innerHTML = "The request to get user location timed out."
+    console.warn("The request to get user location timed out.");
     break;
   case err.UNKNOWN_ERROR:
-    x.innerHTML = "An unknown error occurred."
+    console.warn("An unknown Geolocation error occurred.");
     break;
 }
-*/
+
 
 }
 
