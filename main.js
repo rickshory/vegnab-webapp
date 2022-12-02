@@ -555,11 +555,7 @@ function startTrackingPosition() {
         console.log("location persmission denied");
         // if the user has denied location requests, block all such requests
         // without starting location checking, because the loop would never end
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-        var vnLocDenied = new bootstrap.Modal(document.getElementById('vnLocationsDeniedScreen'), {
-          keyboard: false
-        });
-        vnLocDenied.show();
+        warnLocationDenied();
         break;
       case 'granted':
         console.log("location persmission granted");
@@ -584,7 +580,7 @@ function startTrackingPosition() {
           });
           vnAllowLoc.show();
           firstLocRequest = false;
-          return 'prompt';
+          return 'prompt, first time';
         } else { // attempt location, which will show the prompt
           if (navigator.geolocation) {
             browser_supports_geolocation = true;
@@ -602,6 +598,33 @@ function startTrackingPosition() {
     }
   });
 };
+
+function warnLocationDenied() {
+  // if location denied, hide the screen that is waiting for locations,
+  // and show the user an explanation
+  switch (whatIsAwaitingAccuracy) {
+    case "site":
+      // most likely, first use of location attempt
+      // 'hidden' event will stop any location acquire ticker
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+      break;
+    case "spp_itm":
+      // could happen on browsers that allow dismissing Allow/Block location dialog
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+      break;
+    case "new_plholder":
+      // this one is unlikely
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+      break;
+    default:
+      // do nothing
+  }
+  // show the message
+  var vnLocDenied = new bootstrap.Modal(document.getElementById('vnLocationsDeniedScreen'), {
+    keyboard: false
+  });
+  vnLocDenied.show();
+}
 
 function stopTrackingPosition() {
   try {
@@ -623,13 +646,9 @@ function locationError(err) {
   switch(err.code) {
     case err.PERMISSION_DENIED:
       console.warn("User denied the request for Geolocation.");
-      // following 'hide' will stop ticker
-      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-      var vnLocDenied = new bootstrap.Modal(document.getElementById('vnLocationsDeniedScreen'), {
-        keyboard: false
-      });
-      vnLocDenied.show();
-
+      // following will detect which, if any, screen is awaiting location,
+      // will 'hide' that screen, and that screen's 'hidden' will stop ticker
+      warnLocationDenied();
       break;
     case err.POSITION_UNAVAILABLE:
       console.warn("Location information is unavailable.");
