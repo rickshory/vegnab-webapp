@@ -43,6 +43,8 @@ const locationOptions = {
 // flag first, to notify user they need to 'Allow' locations
 var firstLocRequest = true; // this can be reset to 'true' when app reloaded,
   // but by then the user will likely have either granted or denied locations
+var locationsGranted = false; // when true, flags that location reading has been allowed, 
+  // and app can skip checking the state
 
 // keep acquiring site location until accuracy is <= this
 // user can manually accept greater inaccuracty
@@ -547,56 +549,73 @@ var vnSiteDate = document.getElementById('site_date');
 var vnSiteLocation = document.getElementById("site_location");
 
 function startTrackingPosition() {
-  navigator.permissions.query({name:'geolocation'}).then((result) => {
-    // diagnostics
-    console.log("geolocation.permissions.state = " + result.state);
-    switch (result.state) {
-      case 'denied':
-        console.log("location persmission denied");
-        // if the user has denied location requests, block all such requests
-        // without starting location checking, because the loop would never end
-        warnLocationDenied();
-        break;
-      case 'granted':
-        console.log("location persmission granted");
-        if (navigator.geolocation) {
-          browser_supports_geolocation = true;
-          position_tracker_id = navigator.geolocation.watchPosition(trackPosition,
-              locationError, locationOptions);
-        } else {
-          browser_supports_geolocation = false;
-        }
-        console.log("about to start location checking ticker");
-        periodicLocationCheckFlag = setInterval(checkPositionAccuracy, locationTickerInterval);
-        break;
-      case 'prompt':
-        console.log("location persmission prompt");
-        if (firstLocRequest) { // catch before the first prompt, and notify user they
-          // need to Allow locations
-          // cancel this modal and show the message
-          bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-          var vnAllowLoc = new bootstrap.Modal(document.getElementById('vnAllowLocationsScreen'), {
-            keyboard: false
-          });
-          vnAllowLoc.show();
-          firstLocRequest = false;
-          return 'prompt, first time';
-        } else { // attempt location, which will show the prompt
+  if (locationsGranted) { // skip querying permission, which slows down GPS acquire 
+    // and causes more frequent "can't save without location" messages
+    console.log("locationsGranted = true, don't query location permission");
+    // a bit much repeated code, but worth it for speed and user experience
+    if (navigator.geolocation) {
+      browser_supports_geolocation = true;
+      position_tracker_id = navigator.geolocation.watchPosition(trackPosition,
+          locationError, locationOptions);
+    } else {
+      browser_supports_geolocation = false;
+    }
+    console.log("about to start location checking ticker");
+    periodicLocationCheckFlag = setInterval(checkPositionAccuracy, locationTickerInterval);
+  } else { // location access not granted yet, or app was reloaded and doesn't know it yet
+    navigator.permissions.query({name:'geolocation'}).then((result) => {
+      // diagnostics
+      console.log("geolocation.permissions.state = " + result.state);
+      switch (result.state) {
+        case 'denied':
+          console.log("location persmission denied");
+          // if the user has denied location requests, block all such requests
+          // without starting location checking, because the loop would never end
+          warnLocationDenied();
+          break;
+        case 'granted':
+          console.log("location persmission granted");
           if (navigator.geolocation) {
             browser_supports_geolocation = true;
             position_tracker_id = navigator.geolocation.watchPosition(trackPosition,
                 locationError, locationOptions);
+            console.log("about to set locationsGranted = true");
+            locationsGranted = true; // skip querying permission from now on
           } else {
             browser_supports_geolocation = false;
           }
           console.log("about to start location checking ticker");
           periodicLocationCheckFlag = setInterval(checkPositionAccuracy, locationTickerInterval);
-        }
-        break;
-      default:
-        // do nothing 
-    }
-  });
+          break;
+        case 'prompt':
+          console.log("location persmission prompt");
+          if (firstLocRequest) { // catch before the first prompt, and notify user they
+            // need to Allow locations
+            // cancel this modal and show the message
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+            var vnAllowLoc = new bootstrap.Modal(document.getElementById('vnAllowLocationsScreen'), {
+              keyboard: false
+            });
+            vnAllowLoc.show();
+            firstLocRequest = false;
+            return 'prompt, first time';
+          } else { // attempt location, which will show the prompt
+            if (navigator.geolocation) {
+              browser_supports_geolocation = true;
+              position_tracker_id = navigator.geolocation.watchPosition(trackPosition,
+                  locationError, locationOptions);
+            } else {
+              browser_supports_geolocation = false;
+            }
+            console.log("about to start location checking ticker");
+            periodicLocationCheckFlag = setInterval(checkPositionAccuracy, locationTickerInterval);
+          }
+          break;
+        default:
+          // do nothing 
+      }
+    });
+  }
 };
 
 function warnLocationDenied() {
