@@ -1,6 +1,7 @@
 "use strict";
 (function () {
 
+  var swVersion = "";
 // install Service Worker here, then it will "live" in the browser
 if ('serviceWorker' in navigator) {
   // Register a service worker hosted at the root of the
@@ -9,13 +10,36 @@ if ('serviceWorker' in navigator) {
   //  indicates this code does get run
   navigator.serviceWorker.register('/sw.js').then((registration) => {
     console.log('Service worker registration succeeded:', registration);
+
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      // event is a MessageEvent object
+      console.log('Service worker sent message: ' + event.data);
+      // at this point, the only message will be the sw version
+      swVersion = event.data;
+    });
+
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.active.postMessage("requestVersion");
+    });
+
   }, /*catch*/ (error) => {
     console.error(`Service worker registration failed: ${error}`);
   });
 } else {
   console.error('Service workers are not supported.');
 }
+/*if (navigator.serviceWorker) {
+  navigator.serviceWorker.register("service-worker.js");
 
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    // event is a MessageEvent object
+    console.log(`The service worker sent me a message: ${event.data}`);
+  });
+
+  navigator.serviceWorker.ready.then((registration) => {
+    registration.active.postMessage("Hi service worker");
+  });
+}*/
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
 // todo: automatically acquire or input region
@@ -1946,6 +1970,18 @@ settingsFormRegionsList.addEventListener('click', function (e) {
       function(value) {showAppStatus(value);},
       function(error) {showListsError(error);}
     );
+  }
+});
+
+vnHelpAboutScreen.addEventListener('shown.bs.modal', function () {
+  // following can't work because 'cacheName' is defined inside of 'sw.js', 
+  //  which is in a different environment
+//  document.getElementById('serviceworker-version').innerHTML = 'ServiceWorker version: "' + cacheName + '"'
+  // on service worker registration, exchanged messages which should have set this variable
+  if (swVersion) {
+    document.getElementById('serviceworker-version').innerHTML = 'ServiceWorker version: "' + swVersion + '"'
+  } else {
+    document.getElementById('serviceworker-version').innerHTML = 'ServiceWorker version not known'
   }
 });
 

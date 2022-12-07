@@ -34,6 +34,15 @@ self.addEventListener('install', (e) => {
   })());
 });
 
+self.onmessage = (event) => {
+  // event is an ExtendableMessageEvent object
+  console.log("Service worker received message: " + event.data);
+  if (event.data == "requestVersion") {
+    // the cache name is the version e.g. 'VegNab-v0.13'
+    event.source.postMessage("" + cacheName);
+  }
+};
+
 // fetch content using Service Worker
 // self.addEventListener('fetch', (e) => {
 //   e.respondWith((async () => {
