@@ -362,7 +362,7 @@ match_list.addEventListener('click', function (e) {
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
     if (latestLocation === undefined) {
-      alert("Can't save without a location");
+      alert("Try again, still reading location");
       return;
     }
     sppScreenComplete = true; // flag, screen was not simply dismissed; allow
@@ -574,7 +574,7 @@ var vnSiteLocation = document.getElementById("site_location");
 
 function startTrackingPosition() {
   if (locationsGranted) { // skip querying permission, which slows down GPS acquire 
-    // and causes more frequent "can't save without location" messages
+    // and causes more frequent "no location" messages
     console.log("locationsGranted = true, don't query location permission");
     // a bit much repeated code, but worth it for speed and user experience
     if (navigator.geolocation) {
@@ -816,7 +816,7 @@ document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', 
 
 document.getElementById('btn-save-site-info').addEventListener('click', function () {
   if (latestLocation === undefined) {
-    alert("Can't save a site without its location");
+    alert("Try again, still reading location");
     return;
   }
 	let SiteNameString = vnSiteName.value.toString().trim();
