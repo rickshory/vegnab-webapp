@@ -1,2 +1,4 @@
 # species list text file
 *.txt
+# folder, configuration of Visual Studio Code editor
+.vscode/
