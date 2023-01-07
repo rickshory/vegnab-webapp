@@ -178,6 +178,18 @@ function distanceTwoPoints(lat1, lon1, lat2, lon2) {
     + Math.cos(φ1)*Math.cos(φ2) * Math.cos(Δλ) ) * R);
 }
 
+function initBearing(lat1, lon1, lat2, lon2) {
+  // bearing, starting from point (lat1, lon1) towards point (lat2, lon2)
+  const φ1 = lat1 * Math.PI/180;
+  const φ2 = lat2 * Math.PI/180;
+  const λ1 = lon1 * Math.PI/180;
+  const λ2 = lon2 * Math.PI/180;
+  const y = Math.sin(λ2-λ1) * Math.cos(φ2);
+  const x = Math.cos(φ1)*Math.sin(φ2) - Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1);
+  const θ = Math.atan2(y, x);
+  return (θ*180/Math.PI + 360) % 360; // in degrees
+}
+
 function showAppStatus(rtn_ok) {
   if (rtn_ok) {
     try {
