@@ -1,4 +1,4 @@
-const cacheName = 'VegNab-v0.14';
+const cacheName = 'VegNab-v0.15';
 const appShellFiles = [
 //  '/vegnab-webapp/',
   '../index.html',
