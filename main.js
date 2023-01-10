@@ -193,14 +193,18 @@ function initBearing(lat1, lon1, lat2, lon2) {
 /**
  * @return {boolean} true if (lng, lat) is in bounds
  */
-function contains(bounds, lat, lng) {
+function polygonContainsPt(bounds, lng, lat) {
   //https://rosettacode.org/wiki/Ray-casting_algorithm
   var count = 0;
-  for (var b = 0; b < bounds.length; b++) {
+  // polygon: last vertex is a copy of the first one
+  for (var b = 0; b < (bounds.length - 1); b++) {
     var vertex1 = bounds[b];
-    var vertex2 = bounds[(b + 1) % bounds.length];
+    var vertex2 = bounds[(b + 1)];
     if (west(vertex1, vertex2, lng, lat))
       ++count;
+      console.log("in fn 'polygonContainsPt");
+      console.log("segment from " + vertex1 + " to " + vertex2 + " is west of (" + lng + "," + lat + ")");
+      console.log("count: " + count);
   }
   return count % 2;
 
@@ -208,13 +212,13 @@ function contains(bounds, lat, lng) {
    * @return {boolean} true if (x,y) is west of the line segment connecting A and B
    */
   function west(A, B, x, y) {
-    if (A.y <= B.y) {
-      if (y <= A.y || y > B.y || x >= A.x && x >= B.x) {
+    if (A[1] <= B[1]) {
+      if (y <= A[1] || y > B[1] || x >= A[0] && x >= B[0]) {
         return false;
-      } else if (x < A.x && x < B.x) {
+      } else if (x < A[0] && x < B[0]) {
         return true;
       } else {
-        return (y - A.y) / (x - A.x) > (B.y - A.y) / (B.x - A.x);
+        return (y - A[1]) / (x - A[0]) > (B[1] - A[1]) / (B[0] - A[0]);
       }
     } else {
       return west(B, A, x, y);
@@ -247,7 +251,7 @@ function contains(bounds, lat, lng) {
 //   for (var tp = 0; tp < testPoints.length; tp++) {
 //     var testPoint = testPoints[tp];
 //     console.log(JSON.stringify(testPoint) + '\tin ' + shape.name + '\t' 
-//     + contains(shape.bounds, testPoint.lat, testPoint.lng));
+//     + polygonContainsPt(shape.bounds, testPoint.lat, testPoint.lng));
 //   }
 // }
 
