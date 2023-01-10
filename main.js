@@ -234,6 +234,7 @@ function polygonContainsPt(bounds, lng, lat) {
       console.log("ray east from (" + lng + "," + lat + ") crosses segment " + vertex1 + " to " + vertex2 );
     }
   }
+  alert(count + " boundary crossing(s), in testing location");
   return count % 2;
 
   /**
