@@ -190,6 +190,29 @@ function initBearing(lat1, lon1, lat2, lon2) {
   return (θ*180/Math.PI + 360) % 360; // in degrees
 }
 
+function findRegion() {
+  // find the geographic region where this app is being used
+  // to show the most relevant plant species
+
+  // for testing, just check if the current location is in the test region Oregon, and
+  // show an alert for diagnostics
+  console.log("In fn 'findRegion'");
+  if (current_site_id === undefined) {
+    alert("No site yet");
+    return;
+  }
+  let curSite = site_info_array.find(s => s.id == current_site_id);
+  let lat = parseFloat(curSite.latitude);
+  let lng = parseFloat(curSite.longitude);
+  let bounds = region_bounds_array[0].vertexes;
+  console.log(bounds);
+  if (polygonContainsPt(bounds, lng, lat)) {
+    alert("Location is in Oregon");
+  } else {
+    alert("Location is outside Oregon");
+  }
+}
+
 /**
  * @return {boolean} true if (lng, lat) is in bounds
  */
@@ -1033,6 +1056,9 @@ function showSites() {
     current_site_id = "";
     return;
   };
+
+  // for testing, run this
+  findRegion();
 
   let sites_accordion_listitems = "";
   console.log("in 'showSites()', about to generate accordion");
