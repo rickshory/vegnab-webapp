@@ -205,11 +205,16 @@ function findRegion() {
   let lat = parseFloat(curSite.latitude);
   let lng = parseFloat(curSite.longitude);
   let bounds = region_bounds_array[0].vertexes;
-  console.log(bounds);
-  if (polygonContainsPt(bounds, lng, lat)) {
-    alert("Location is in Oregon");
+ // console.log(bounds);
+  // time how long this takes
+  let ivStart = new Date().getTime();
+  let inThisRegion = polygonContainsPt(bounds, lng, lat);
+  let ivEnd =  new Date().getTime();
+  let interval = ivEnd - ivStart;
+  if (inThisRegion) {
+    alert("Location is in Oregon, and testing took this long: " + interval);
   } else {
-    alert("Location is outside Oregon");
+    alert("Location is outside Oregon, and testing took this long: " + interval);
   }
 }
 
@@ -223,11 +228,11 @@ function polygonContainsPt(bounds, lng, lat) {
   for (var b = 0; b < (bounds.length - 1); b++) {
     var vertex1 = bounds[b];
     var vertex2 = bounds[(b + 1)];
-    if (west(vertex1, vertex2, lng, lat))
+    if (west(vertex1, vertex2, lng, lat)) {
       ++count;
-      console.log("in fn 'polygonContainsPt");
-      console.log("segment from " + vertex1 + " to " + vertex2 + " is west of (" + lng + "," + lat + ")");
-      console.log("count: " + count);
+      console.log("in fn 'polygonContainsPt', count = "  + count);
+      console.log("ray east from (" + lng + "," + lat + ") crosses segment " + vertex1 + " to " + vertex2 );
+    }
   }
   return count % 2;
 
