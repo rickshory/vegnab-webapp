@@ -190,6 +190,8 @@ function initBearing(lat1, lon1, lat2, lon2) {
   return (θ*180/Math.PI + 360) % 360; // in degrees
 }
 
+var crossingCount = 0;
+
 function findRegion() {
   // find the geographic region where this app is being used
   // to show the most relevant plant species
@@ -211,10 +213,11 @@ function findRegion() {
   let inThisRegion = polygonContainsPt(bounds, lng, lat);
   let ivEnd =  new Date().getTime();
   let interval = ivEnd - ivStart;
+  let msgEnd = ", found " + crossingCount + " crossings, took " + interval + "ms" ;
   if (inThisRegion) {
-    alert("Location is in Oregon, and testing took this long: " + interval);
+    alert("Location is in Oregon" + msgEnd);
   } else {
-    alert("Location is outside Oregon, and testing took this long: " + interval);
+    alert("Location is outside Oregon" + msgEnd);
   }
 }
 
@@ -234,7 +237,7 @@ function polygonContainsPt(bounds, lng, lat) {
       console.log("ray east from (" + lng + "," + lat + ") crosses segment " + vertex1 + " to " + vertex2 );
     }
   }
-  alert(count + " boundary crossing(s), in testing location");
+  crossingCount = count;
   return count % 2;
 
   /**
