@@ -1067,7 +1067,7 @@ function showSites() {
   };
 
   // for testing, run this
-  findRegion();
+ // findRegion();
 
   let sites_accordion_listitems = "";
   console.log("in 'showSites()', about to generate accordion");
