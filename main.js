@@ -1729,18 +1729,18 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log("sArr");
   console.log(sArr);
   var aOK = true; // default until some vital test fails
-  // try getting all auxValues at once
-  let auxVals = [];
-  sArr.forEach(ck => {
-    let auxVal = {
-      auxID: ck.id,
-      auxName: ck.name,
-      value: document.getElementById(ck.id).value.toString().trim()
-    };
-    auxVals.unshift(auxVal);
-  })
-  console.log('auxVals');
-  console.log(auxVals);
+  // // try getting all auxValues at once
+  // let auxVals = [];
+  // sArr.forEach(ck => {
+  //   let auxVal = {
+  //     auxID: ck.id,
+  //     auxName: ck.name,
+  //     value: document.getElementById(ck.id).value.toString().trim()
+  //   };
+  //   auxVals.unshift(auxVal);
+  // })
+  // console.log('auxVals');
+  // console.log(auxVals);
 
   sArr.forEach(ck => {
     let stCk = document.getElementById(ck.id).value.toString().trim();
