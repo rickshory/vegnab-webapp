@@ -1730,9 +1730,9 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log(sArr);
   var aOK = true; // default until some vital test fails
   sArr.forEach(ck => {
-    let stCk = document.getElementById(ck.id).value.toString().trim();
+    let stCk = document.getElementById(('' + ck.id)).value.toString().trim();
     console.log('"' + ck.name + '", ' + 'id = ' + ck.id 
-      + ', stCk = ' + stCk + ', value = ' + document.getElementById(ck.id).value);
+      + ', stCk = ' + stCk + ', value = ' + document.getElementById(('' + ck.id)).value);
     if ((ck.required === true) && (stCk === "")) {
       alert('"' + ck.name + '" is required');
       document.getElementById(ck.id).focus();
