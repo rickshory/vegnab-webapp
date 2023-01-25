@@ -1697,7 +1697,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
     auxBlx += ""
 + '<div class="input-group">'
 + '  <span class="input-group-text" id="auxspec-' + s.id + '">'
-+ '    <h3>' + s.name + '</h3></span>'
++ '    <h3>' + s.name + '</h3>'
 + '  <input type="number" class="form-control"'
 + '    id="' + s.id + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
@@ -1705,6 +1705,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
 + '    aria-label="' + s.name + '"'
 + '    aria-describedby="auxspec-' + s.id + '">'
++ '</span>'
 + '</div>'
 + '<span><h3>'
 + (s.min == "" ? 'no minimum, ' : 'minimum = ' + s.min + ', ')
