@@ -1730,7 +1730,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log(sArr);
   var aOK = true; // default until some vital test fails
     sArr.forEach(ck => {
-    let stCk = document.getElementById('x' + ck.id).value.toString().trim();
+    let stCk = document.getElementById(ck.id).value.toString().trim();
     console.log('"' + ck.name + '", ' + 'id = ' + ck.id 
       + ', stCk = ' + stCk + ', value = ' + document.getElementById(ck.id).value);
     if ((ck.required === true) && (stCk === "")) {
