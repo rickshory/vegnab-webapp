@@ -1675,6 +1675,7 @@ function enterAuxData() {
 }
 
 vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
+  document.getElementById('auxdata_entry_inputs').innerHTML = "";
   let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
   // TODO sort by listing order
   if (sArr.length == 0) {return;} // should not happen
@@ -1718,7 +1719,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 });
 
 vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
-
+  document.getElementById('auxdata_entry_inputs').innerHTML = "";
 });
 
 document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
@@ -1737,14 +1738,14 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       return; // from the current arrow fn, iterating the array
     }
     if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
-      document.getElementById(ck.id).value = ck.min;
+      document.getElementById(ck.id).value = "" + ck.min;
       alert('"' + ck.name + '" was below minimum, corrected');
       document.getElementById(ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
       return; // from the current arrrow fn, iterating the array
     }
     if ((ck.max) && stCk && (Number(stCk) > Number(ck.max))) { // already checked if required
-      document.getElementById(ck.id).value = ck.max;
+      document.getElementById(ck.id).value = "" + ck.max;
       alert('"' + ck.name + '" was above maximum, corrected');
       document.getElementById(ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
