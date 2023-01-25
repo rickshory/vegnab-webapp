@@ -1697,7 +1697,8 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
     auxBlx += ""
 + '<div class="input-group">'
 + '  <span class="input-group-text" id="auxspec-' + s.id + '">'
-+ '    <h3>' + s.name + '</h3>'
++ '    <h3>' + s.name + '</h3></span>'
++ '<span>'
 + '  <input type="number" class="form-control"'
 + '    id="' + s.id + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
