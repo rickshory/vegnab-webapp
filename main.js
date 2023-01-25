@@ -1712,6 +1712,8 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + '</h3></span>'
 + '';
   });
+  console.log("auxBlx");
+  console.log(auxBlx);
   document.getElementById('auxdata_entry_inputs').innerHTML = auxBlx;
 });
 
@@ -1732,7 +1734,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       alert('"' + ck.name + '" is required');
       document.getElementById(ck.id).focus();
       aOK = false; // flag for when outside the current arrow fn
-      return; // from the current arrrow fn, iterating the array
+      return; // from the current arrow fn, iterating the array
     }
     if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
       document.getElementById(ck.id).value = ck.min;
