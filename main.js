@@ -1729,8 +1729,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   var aOK = true; // default until some vital test fails
   sArr.forEach(ck => {
     let stCk = document.getElementById(ck.id).value.toString().trim();
-    console.log("stCk = " + stCk);
-    console.log("value = " + document.getElementById(ck.id).value);
+    console.log('"' + ck.name + '", ' + 'id = ' + ck.id 
+      + ', stCk = ' + stCk + ', value = ' + document.getElementById(ck.id).value);
     if ((ck.required === true) && (stCk === "")) {
       alert('"' + ck.name + '" is required');
       document.getElementById(ck.id).focus();
@@ -1738,18 +1738,22 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       return; // from the current arrow fn, iterating the array
     }
     if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
-      document.getElementById(ck.id).value = "" + ck.min;
-      alert('"' + ck.name + '" was below minimum, corrected');
-      document.getElementById(ck.id).focus();
-      aOK = false; // flag for when outside the current arrow fn
-      return; // from the current arrrow fn, iterating the array
+      console.log('"' + ck.name + '" below minimum, correcting ' + stCk + ' to ' + ck.min);
+      alert('"' + ck.name + '" was below minimum, corrected ' + stCk + ' to ' + ck.min);
+      stCk = ck.min;
+      document.getElementById(ck.id).value = "" + stCk;
+      // document.getElementById(ck.id).focus();
+      // aOK = false; // flag for when outside the current arrow fn
+      // return; // from the current arrrow fn, iterating the array
     }
     if ((ck.max) && stCk && (Number(stCk) > Number(ck.max))) { // already checked if required
-      document.getElementById(ck.id).value = "" + ck.max;
-      alert('"' + ck.name + '" was above maximum, corrected');
-      document.getElementById(ck.id).focus();
-      aOK = false; // flag for when outside the current arrow fn
-      return; // from the current arrrow fn, iterating the array
+      console.log('"' + ck.name + '" above maximum, correcting ' + stCk + ' to ' + ck.max);
+      alert('"' + ck.name + '" was above maximum, corrected ' + stCk + ' to ' + ck.max);
+      stCk = ck.max;
+      document.getElementById(ck.id).value = "" + stCk;
+      // document.getElementById(ck.id).focus();
+      // aOK = false; // flag for when outside the current arrow fn
+      // return; // from the current arrrow fn, iterating the array
     }
   });
   // maybe other tests?
@@ -1758,7 +1762,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // if the id of an input is an all-numeric string, the value always reads as
   // zero; I have no idea why, but the 'as_' prefix fixes that
   sArr.forEach(sp => {
-    console.log("id = " + sp.id + ", value = " + document.getElementById(sp.id).value);
+    console.log('"' + sp.name + '", id = ' + sp.id + ', value = ' + document.getElementById(sp.id).value);
     let stVal = document.getElementById(sp.id).value;
     if (stVal === "") { // no need to save empties
       console.log('stVal === ""');
@@ -1791,8 +1795,10 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         "name": sp.name,
         "value": stVal
       };
+      console.log("auxDObj");
+      console.log(auxDObj);
       aux_data_array.unshift(auxDObj);
-      console.log("auxDObj.value = " + auxDObj.value);
+      
     } // end of if not empty
   }); // end of adding all aux data items
   console.log("aux_data_array");
