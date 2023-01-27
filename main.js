@@ -1909,7 +1909,7 @@ function sendData() {
           sst = "Probably " + itm.species + ", but can't determine species"
         }
         if (itm.uncertainty == "genus") {
-          sst = "Most likely " + itm.species + ", but unsure at genus level"
+          sst = "Look like " + itm.species + ", but unsure at genus level"
         }
         descr_string = sst;
       }
