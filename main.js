@@ -1702,6 +1702,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
       + (s.max == "" ? 'no maximum, ' : 'maximum = ' + s.max + ', ')
       + (s.required ? 'required' : 'optional');
     auxBlx += ""
++ '<form>'
 + '<span><h3><b>' + s.name + '</b> (' + lbldtls + '):</h3></span>'    
 + '  <input type="number" class="form-control"'
 + '    id="' + s.id + '"'
@@ -1709,6 +1710,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
 + '">'
++ '</form>'
 + '';
   });
   console.log("auxBlx");
