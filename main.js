@@ -1708,7 +1708,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
-+ '">'
++ ' >'
 + '</div>'
 + '';
   });
