@@ -1693,26 +1693,25 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
   var auxBlx = "";
   // The 'auxspec_' prefix for labels prevents them having the same id as 
   // the corresponding input. Otherwise, the input value reads as zero
+//   <div class="form-group">
+//   <label for="usr">Name:</label>
+//   <input type="text" class="form-control" id="usr">
+// </div>
     sArr.forEach(s => {
+      let lbldtls = '' + (s.min == "" ? 'no minimum, ' : 'minimum = ' + s.min + ', ')
+      + (s.max == "" ? 'no maximum, ' : 'maximum = ' + s.max + ', ')
+      + (s.required ? 'required' : 'optional');
     auxBlx += ""
 + '<div class="input-group">'
-+ '  <span class="input-group-text" id="auxspec-' + s.id + '">'
-+ '    <h3>' + s.name + '</h3></span>'
-+ '<span>'
++ ' <label for="' + s.id + '"><h3>' + s.name + '(' + lbldtls + '):</h3></label>'
 + '  <input type="number" class="form-control"'
 + '    id="' + s.id + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
-+ '    aria-label="' + s.name + '"'
-+ '    aria-describedby="auxspec-' + s.id + '">'
++ '">'
 + '</span>'
 + '</div>'
-+ '<span><h3>'
-+ (s.min == "" ? 'no minimum, ' : 'minimum = ' + s.min + ', ')
-+ (s.max == "" ? 'no maximum, ' : 'maximum = ' + s.max + ', ')
-+ (s.required ? 'required' : 'optional')
-+ '</h3></span>'
 + '';
   });
   console.log("auxBlx");
