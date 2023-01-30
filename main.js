@@ -1703,14 +1703,13 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
       + (s.required ? 'required' : 'optional');
     auxBlx += ""
 + '<div class="input-group">'
-+ ' <label for="' + s.id + '"><h3>' + s.name + '(' + lbldtls + '):</h3></label>'
++ ' <label for="' + s.id + '"><h3><em>' + s.name + '</em> (' + lbldtls + '):</h3></label>'
 + '  <input type="number" class="form-control"'
 + '    id="' + s.id + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
 + '">'
-+ '</span>'
 + '</div>'
 + '';
   });
