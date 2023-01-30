@@ -1766,8 +1766,9 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // if the id of an input is an all-numeric string, the value always reads as
   // zero; I have no idea why, but the 'as_' prefix fixes that
   sArr.forEach(sp => {
-    console.log('"' + sp.name + '", id = ' + sp.id + ', value = ' + document.getElementById(sp.id).value);
-    let stVal = document.getElementById(sp.id).value;
+    let inpid = 'dt_' + sp.id;
+    console.log('"' + sp.name + '", id = ' + inpid + ', value = ' + document.getElementById(inpid).value);
+    let stVal = document.getElementById(inpid).value;
     if (stVal === "") { // no need to save empties
       console.log('stVal === ""');
       if (stVal == "") {
