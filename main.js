@@ -1698,17 +1698,20 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 //   <input type="text" class="form-control" id="usr">
 // </div>
     sArr.forEach(s => {
+      // 'dt_' prefix distinguishes the <input> from the list item that otherwise
+      // has the same ID in the 'vnAuxDataListScreen' modal
+      let inpid = 'dt_'+ s.id;
       let lbldtls = '' + (s.min == "" ? 'no minimum, ' : 'minimum = ' + s.min + ', ')
       + (s.max == "" ? 'no maximum, ' : 'maximum = ' + s.max + ', ')
       + (s.required ? 'required' : 'optional');
     auxBlx += ""
 + '<div>'
 + '<span><h3><b>' + s.name + '</b> (' + lbldtls + '):</h3></span>'    
-+ '  <input type="number" id="' + s.id + '"'
++ '  <input type="number" id="' + inpid + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
-+ ' />'
++ ' >'
 + '</div>'
 + '';
   });
@@ -1727,34 +1730,36 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   console.log(sArr);
   var aOK = true; // default until some vital test fails
     sArr.forEach(ck => {
-    let stCk = document.getElementById(ck.id).value.toString().trim();
-    console.log('"' + ck.name + '", ' + 'id = ' + ck.id 
-      + ', stCk = ' + stCk + ', value = ' + document.getElementById(ck.id).value);
-    if ((ck.required === true) && (stCk === "")) {
-      alert('"' + ck.name + '" is required');
-      document.getElementById(ck.id).focus();
-      aOK = false; // flag for when outside the current arrow fn
-      return; // from the current arrow fn, iterating the array
-    }
-    if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
-      console.log('"' + ck.name + '" below minimum, correcting ' + stCk + ' to ' + ck.min);
-      alert('"' + ck.name + '" was below minimum, corrected ' + stCk + ' to ' + ck.min);
-      stCk = ck.min;
-      document.getElementById(ck.id).value = "" + stCk;
-      // document.getElementById(ck.id).focus();
-      // aOK = false; // flag for when outside the current arrow fn
-      // return; // from the current arrrow fn, iterating the array
-    }
-    if ((ck.max) && stCk && (Number(stCk) > Number(ck.max))) { // already checked if required
-      console.log('"' + ck.name + '" above maximum, correcting ' + stCk + ' to ' + ck.max);
-      alert('"' + ck.name + '" was above maximum, corrected ' + stCk + ' to ' + ck.max);
-      stCk = ck.max;
-      document.getElementById(ck.id).value = "" + stCk;
-      // document.getElementById(ck.id).focus();
-      // aOK = false; // flag for when outside the current arrow fn
-      // return; // from the current arrrow fn, iterating the array
-    }
-  });
+      let inpid = 'dt_' + ck.id; // 'dt_' prefix distinguishes from the list item that otherwise
+      // has the same ID in the 'vnAuxDataListScreen' modal
+      let stCk = document.getElementById(inpid).value.toString().trim();
+      console.log('"' + ck.name + '", ' + 'id = ' + inpid 
+        + ', stCk = ' + stCk + ', value = ' + document.getElementById(inpid).value);
+      if ((ck.required === true) && (stCk === "")) {
+        alert('"' + ck.name + '" is required');
+        document.getElementById(inpid).focus();
+        aOK = false; // flag for when outside the current arrow fn
+        return; // from the current arrow fn, iterating the array
+      }
+      if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
+        console.log('"' + ck.name + '" below minimum, correcting ' + stCk + ' to ' + ck.min);
+        alert('"' + ck.name + '" was below minimum, corrected ' + stCk + ' to ' + ck.min);
+        stCk = ck.min;
+        document.getElementById(inpid).value = "" + stCk;
+        // document.getElementById(inpid).focus();
+        // aOK = false; // flag for when outside the current arrow fn
+        // return; // from the current arrrow fn, iterating the array
+      }
+      if ((ck.max) && stCk && (Number(stCk) > Number(ck.max))) { // already checked if required
+        console.log('"' + ck.name + '" above maximum, correcting ' + stCk + ' to ' + ck.max);
+        alert('"' + ck.name + '" was above maximum, corrected ' + stCk + ' to ' + ck.max);
+        stCk = ck.max;
+        document.getElementById(inpid).value = "" + stCk;
+        // document.getElementById(inpid).focus();
+        // aOK = false; // flag for when outside the current arrow fn
+        // return; // from the current arrrow fn, iterating the array
+      }
+    });
   // maybe other tests?
   if (!aOK) {return;}
   // If all tests passed, save AuxData
