@@ -1704,8 +1704,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
     auxBlx += ""
 + '<div>'
 + '<span><h3><b>' + s.name + '</b> (' + lbldtls + '):</h3></span>'    
-+ '  <input type="number" class="form-control"'
-+ '    id="' + s.id + '"'
++ '  <input type="number" id="' + s.id + '"'
 + ((s.default === "") ? '' : ' value="' + s.default + '"')
 + ((s.min === "") ? '' : ' min="' + s.min + '"')
 + ((s.max === "") ? '' : ' max="' + s.max + '"')
