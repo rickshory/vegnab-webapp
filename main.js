@@ -1701,7 +1701,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
     + (s.max == "" ? 'no maximum, ' : 'maximum = ' + s.max + ', ')
     + (s.required ? 'required' : 'optional');
     auxBlx += ""
-    + '<div class="input-group">'
+    + '<div class="input-group mb-3">'
     + '<span class="input-group-text" id="auxspec-' + inpid
     + '"><h3>' + s.name + '</h3></span>'
     + '  <input type="number" id="' + inpid + '"'
