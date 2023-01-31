@@ -1689,6 +1689,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
       break;
     default:
   };
+
   document.getElementById('aux-entry-hdr-msg').innerHTML = auxHdr;
   var auxBlx = "";
   // The 'auxspec_' prefix for labels prevents them having the same id as 
@@ -1713,8 +1714,8 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
     + '<span><h3>' + lbldtls + '</h3></span>'
     + '';
   });
-  console.log("auxBlx");
-  console.log(auxBlx);
+  // console.log("auxBlx");
+  // console.log(auxBlx);
   document.getElementById('auxdata_entry_inputs').innerHTML = auxBlx;
 });
 
@@ -1724,15 +1725,15 @@ vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
 
 document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
   let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
-  console.log("sArr");
-  console.log(sArr);
+  // console.log("sArr");
+  // console.log(sArr);
   var aOK = true; // default until some vital test fails
     sArr.forEach(ck => {
       let inpid = 'dt_' + ck.id; // 'dt_' prefix distinguishes from the list item that otherwise
       // has the same ID in the 'vnAuxDataListScreen' modal
       let stCk = document.getElementById(inpid).value.toString().trim();
-      console.log('"' + ck.name + '", ' + 'id = ' + inpid 
-        + ', stCk = ' + stCk + ', value = ' + document.getElementById(inpid).value);
+//      console.log('"' + ck.name + '", ' + 'id = ' + inpid 
+//        + ', stCk = ' + stCk + ', value = ' + document.getElementById(inpid).value);
       if ((ck.required === true) && (stCk === "")) {
         alert('"' + ck.name + '" is required');
         document.getElementById(inpid).focus();
@@ -1740,7 +1741,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         return; // from the current arrow fn, iterating the array
       }
       if ((ck.min) && stCk && (Number(stCk) < Number(ck.min))) { // already checked if required
-        console.log('"' + ck.name + '" below minimum, correcting ' + stCk + ' to ' + ck.min);
+//        console.log('"' + ck.name + '" below minimum, correcting ' + stCk + ' to ' + ck.min);
         alert('"' + ck.name + '" was below minimum, corrected ' + stCk + ' to ' + ck.min);
         stCk = ck.min;
         document.getElementById(inpid).value = "" + stCk;
@@ -1804,8 +1805,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       
     } // end of if not empty
   }); // end of adding all aux data items
-  console.log("aux_data_array");
-  console.log(aux_data_array);
+  // console.log("aux_data_array");
+  // console.log(aux_data_array);
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
   shwSitesTimeout = setTimeout(showSites, 10);
 });
