@@ -1721,6 +1721,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 
 vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
   document.getElementById('auxdata_entry_inputs').innerHTML = "";
+  shwSitesTimeout = setTimeout(showSites, 10);
 });
 
 document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
@@ -1799,8 +1800,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         "name": sp.name,
         "value": stVal
       };
-      console.log("auxDObj");
-      console.log(auxDObj);
+      // console.log("auxDObj");
+      // console.log(auxDObj);
       aux_data_array.unshift(auxDObj);
       
     } // end of if not empty
@@ -1808,11 +1809,26 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // console.log("aux_data_array");
   // console.log(aux_data_array);
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
-  shwSitesTimeout = setTimeout(showSites, 10);
+  // shwSitesTimeout = setTimeout(showSites, 10);
 });
 
 document.getElementById('btn-cancel-auxdata').addEventListener('click', function (e) {
-  // for testing, use this as the exit point
+  // the only way we would be here is if the site or species is half-done, waiting for auxdata
+  // back out, and delete the site or species too
+ // TODO check flag auxDataDone
+  var i;
+  switch (aux_spec_for) {
+    case "sites":
+      i = site_info_array.findIndex(itm => itm.id === current_site_id);
+      site_info_array.splice(i, 1);
+      break;
+    case "spp_items":
+      i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
+      site_spp_array.splice(i, 1);
+      break;
+    default:
+  }
+  // showSites(); on this modal hide
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
 });
 
