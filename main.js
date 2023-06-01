@@ -1,33 +1,50 @@
 "use strict";
+ // Register the service worker
+ if ('serviceWorker' in navigator) {
+  // Wait for the 'load' event to not block other work
+  window.addEventListener('load', async () => {
+    // Try to register the service worker.
+    try {
+      // Capture the registration for later use, if needed
+      let reg;
+      reg = await navigator.serviceWorker.register('/sw.js');
+      console.log('Service worker registered.', reg);
+    } catch (err) {
+      console.log('Service worker registration failed: ', err);
+    }
+  });
+ }
+
 (function () {
 
-  var swVersion = "";
-// install Service Worker here, then it will "live" in the browser
-if ('serviceWorker' in navigator) {
-  // Register a service worker hosted at the root of the
-  // site using the default scope.
-  // Fails because there is no 'sw.js' yet, but console logs
-  //  indicates this code does get run
-  navigator.serviceWorker.register('/sw.js').then((registration) => {
-    console.log('Service worker registration succeeded:', registration);
+//   var swVersion = "";
+// // install Service Worker here, then it will "live" in the browser
+// if ('serviceWorker' in navigator) {
+//   // Register a service worker hosted at the root of the
+//   // site using the default scope.
+//   // Fails because there is no 'sw.js' yet, but console logs
+//   //  indicates this code does get run
+//   navigator.serviceWorker.register('/sw.js').then((registration) => {
+//     console.log('Service worker registration succeeded:', registration);
 
-    navigator.serviceWorker.addEventListener("message", (event) => {
-      // event is a MessageEvent object
-      console.log('Service worker sent message: ' + event.data);
-      // at this point, the only message will be the sw version
-      swVersion = event.data;
-    });
+//     navigator.serviceWorker.addEventListener("message", (event) => {
+//       // event is a MessageEvent object
+//       console.log('Service worker sent message: ' + event.data);
+//       // at this point, the only message will be the sw version
+//       swVersion = event.data;
+//     });
 
-    navigator.serviceWorker.ready.then((registration) => {
-      registration.active.postMessage("requestVersion");
-    });
+//     navigator.serviceWorker.ready.then((registration) => {
+//       registration.active.postMessage("requestVersion");
+//     });
 
-  }, /*catch*/ (error) => {
-    console.error(`Service worker registration failed: ${error}`);
-  });
-} else {
-  console.error('Service workers are not supported.');
-}
+//   }, /*catch*/ (error) => {
+//     console.error(`Service worker registration failed: ${error}`);
+//   });
+// } else {
+//   console.error('Service workers are not supported.');
+// }
+
 /*if (navigator.serviceWorker) {
   navigator.serviceWorker.register("service-worker.js");
 
