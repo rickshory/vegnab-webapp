@@ -780,6 +780,37 @@ function warnLocationDenied() {
   vnLocDenied.show();
 }
 
+function warnBadSafari() {
+  // if 'PERMISSION_DENIED' error, and testing found Safari browser
+  // hide the screen that is waiting for locations,
+  // and show the user an explanation
+  switch (whatIsAwaitingAccuracy) {
+    case "site":
+      // most likely, first use of location attempt
+      // 'hidden' event will stop any location acquire ticker
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
+      break;
+    case "spp_itm":
+      // could happen on browsers that allow dismissing Allow/Block location dialog
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
+      break;
+    case "new_plholder":
+      // this one is unlikely
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+      break;
+    default:
+      // do nothing
+  }
+  // show the message
+  var vnBumSafari = new bootstrap.Modal(document.getElementById('vnBadSafariScreen'), {
+    keyboard: false
+  });
+  vnBumSafari.show();
+}
+
+
+
+
 function stopTrackingPosition() {
   try {
     navigator.geolocation.clearWatch(position_tracker_id);
@@ -799,10 +830,35 @@ function locationError(err) {
   console.warn('ERROR(' + err.code + '): ' + err.message);
   switch(err.code) {
     case err.PERMISSION_DENIED:
-      console.warn("User denied the request for Geolocation.");
-      // following will detect which, if any, screen is awaiting location,
-      // will 'hide' that screen, and that screen's 'hidden' will stop ticker
-      warnLocationDenied();
+      // user may have denied permission, or could be unsupported by browser
+      // known unsupported in Safari before version 16 (Released 2022-09-12)
+      // attempt to check if the current browser is Safari
+      var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+      if (isSafari) {
+        // Extract the Safari version number
+        var safariVersion = navigator.userAgent.match(/Version\/([\d.]+)/);
+        
+        if (safariVersion) {
+          // Display the Safari version
+          console.log('Safari version:', safariVersion[1]);
+        } else {
+          // Safari version not found
+          console.log('Safari version could not be detected');
+        }
+        // in either case, display the warning
+        warnBadSafari();
+
+        // vnBadSafariScreen
+      } else {
+        // Not Safari browser
+        console.log('Not using Safari');
+        // assume user denied
+        console.warn("User denied the request for Geolocation.");
+        // following will detect which, if any, screen is awaiting location,
+        // will 'hide' that screen, and that screen's 'hidden' will stop ticker
+        warnLocationDenied();        
+      }
       break;
     case err.POSITION_UNAVAILABLE:
       console.warn("Location information is unavailable.");
