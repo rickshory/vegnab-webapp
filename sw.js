@@ -1,4 +1,4 @@
-const cacheName = 'VegNab-v0.22';
+const cacheName = 'VegNab-v0.23';
 const appShellFiles = [
 //  '/vegnab-webapp/',
   '../index.html',
@@ -65,9 +65,22 @@ self.addEventListener('fetch', (e) => {
       return cache.match(e.request).then((response) => {
         if (response) {
           // If there is an entry in the cache for event.request, then response
-          // will be defined and we can just return it.
+          // will be defined and we can use it.
           console.log(' Found response in cache:', response);
-          return response;
+          //return response;
+          // if the page is trying an initial load from completely offline, we need to 
+          // override the original headers, which may have specified browser caching,
+          // which visually loads the app, but the screen is dead
+
+          // Clone the response to add headers without modifying the original cached response
+          var ovHeaders = new Headers(response.headers);
+          ovHeaders.append('Cache-Control', 'public, max-age=0');
+          var clonedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: ovHeaders
+          });
+          return clonedResponse;
         }
 
         // Otherwise, if there is no entry in the cache for event.request,
