@@ -1,4 +1,8 @@
-const cacheName = 'VegNab-v0.23';
+
+const APP_PREFIX = 'VegNab_' 
+const VERSION = 'v0.23'
+const CACHE_NAME = APP_PREFIX + VERSION
+
 const appShellFiles = [
 //  '/vegnab-webapp/',
   '../index.html',
@@ -28,7 +32,7 @@ const contentToCache = appShellFiles.concat(extraFiles);
 self.addEventListener('install', (e) => {
   console.log('[Service Worker install] Begin install');
   e.waitUntil((async () => {
-    const cache = await caches.open(cacheName);
+    const cache = await caches.open(CACHE_NAME);
     console.log('[Service Worker install] Caching content');
     await cache.addAll(contentToCache);
   })());
@@ -39,7 +43,7 @@ self.onmessage = (event) => {
   console.log("Service worker received message: " + event.data);
   if (event.data == "requestVersion") {
     // the cache name is the version e.g. 'VegNab-v0.13'
-    event.source.postMessage("" + cacheName);
+    event.source.postMessage("" + CACHE_NAME);
   }
 };
 
@@ -50,7 +54,7 @@ self.onmessage = (event) => {
 //     console.log(`[Service Worker fetch] Fetching resource: ${e.request.url}`);
 //     if (r) return r;
 //     const response = await fetch(e.request);
-//     const cache = await caches.open(cacheName);
+//     const cache = await caches.open(CACHE_NAME);
 //     console.log(`[Service Worker fetch] Caching new resource: ${e.request.url}`);
 //     cache.put(e.request, response.clone());
 //     return response;
@@ -61,7 +65,7 @@ self.addEventListener('fetch', (e) => {
   console.log('Handling fetch event for', e.request.url);
 
   e.respondWith(
-    caches.open(cacheName).then((cache) => {
+    caches.open(CACHE_NAME).then((cache) => {
       return cache.match(e.request).then((response) => {
         if (response) {
           // If there is an entry in the cache for event.request, then response
@@ -128,7 +132,7 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keyList) => {
     return Promise.all(keyList.map((key) => {
-      if (key === cacheName) { return; }
+      if (key === CACHE_NAME) { return; }
       console.log(`[Service Worker activate] deleting key: ${key}`);
       return caches.delete(key);
     }));
