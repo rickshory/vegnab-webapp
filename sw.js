@@ -3,30 +3,33 @@ const APP_PREFIX = 'VegNab_'
 const VERSION = 'v0.23'
 const CACHE_NAME = APP_PREFIX + VERSION
 
+// const appRoot = '/vegnab-webapp';
 const appShellFiles = [
 //  '/vegnab-webapp/',
-  '../index.html',
-  '../nrcs_spp.js',
-  '../main.js',
-  '../regions.js',
-  '../bootstrap.bundle.min.js',
-  '../bootstrap.bundle.min.js.map',
-  '../main.css',
-  '../bootstrap.min.css',
-  '../bootstrap.min.css.map',
-  '../bootstrap-glyphicons.css',
-  '../favicon_io/android-chrome-192x192.png',
-  '../favicon_io/android-chrome-512x512.png',
-  '../favicon_io/apple-touch-icon.png',
-  '../favicon_io/favicon.ico',
-  '../favicon_io/favicon-16x16.png',
-  '../favicon_io/favicon-32x32.png',
-  '../favicon_io/site.webmanifest',
+  'index.html',
+  'nrcs_spp.js',
+  'main.js',
+  'regions.js',
+  'bootstrap.bundle.min.js',
+  'bootstrap.bundle.min.js.map',
+  'main.css',
+  'bootstrap.min.css',
+  'bootstrap.min.css.map',
+  'bootstrap-glyphicons.css',
+  'favicon_io/android-chrome-192x192.png',
+  'favicon_io/android-chrome-512x512.png',
+  'favicon_io/apple-touch-icon.png',
+  'favicon_io/favicon.ico',
+  'favicon_io/favicon-16x16.png',
+  'favicon_io/favicon-32x32.png',
+  'favicon_io/site.webmanifest',
 ];
-// the sw.js file itself does not go in the cache
-// in case there are extra files to cache
-const extraFiles = []; // reserve space
-const contentToCache = appShellFiles.concat(extraFiles);
+// The sw.js file itself does not go in the cache
+const extraFiles = []; // reserve space for any additional files to cache
+var contentToCache = (appShellFiles.concat(extraFiles)).map(file_name => {
+  // optionally prepend path formatting
+  return '' + file_name;
+});
 
 // install Service Worker
 self.addEventListener('install', (e) => {
