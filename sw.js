@@ -131,10 +131,18 @@ self.addEventListener('fetch', (e) => {
 // cleanup on version change
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keyList) => {
-    return Promise.all(keyList.map((key) => {
-      if (key === CACHE_NAME) { return; }
-      console.log(`[Service Worker activate] deleting key: ${key}`);
-      return caches.delete(key);
-    }));
+    // 'keyList' contains all cache names under username.github.io
+    // filter out those that have this app prefix to create white list
+    var cacheWhitelist = keyList.filter(function (key) {
+      return key.indexOf(APP_PREFIX)
+    })
+    // add current cache name to white list
+    cacheWhitelist.push(CACHE_NAME)
+    return Promise.all(keyList.map(function (key, i) {
+      if (cacheWhitelist.indexOf(key) === -1) {
+        console.log('deleting cache : ' + keyList[i])
+        return caches.delete(keyList[i])
+      }
+    }))
   }));
 });
