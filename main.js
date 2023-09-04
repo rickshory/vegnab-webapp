@@ -68,12 +68,39 @@ dbRequest.onupgradeneeded = (e) => {
   // stored objects will be arrays, and keys will be explicit
   console.log("created 'VnObjStore'");
   VnObjStore.put([], "vnSitesBkup"); // initialize to empty array
-  console.log(" 'VnObjStore', 'vnSitesBkup' initialized as empty array");
-  VnObjStore.put([], "vnSppBkup");
-  console.log(" 'VnObjStore', 'vnSppBkup' initialized as empty array");
+  console.log(" VnObjStore[VNAppStates], 'vnSitesBkup' initialized as empty array");
+  VnObjStore.put([], "vnSpeciesBkup");
+  console.log(" VnObjStore[VNAppStates], 'vnSpeciesBkup' initialized as empty array");
 
 };
 
+// for places to insert sitelist backup look for 'site_info_array.unshift', 
+//  'site_info_array.splice', 'whatIsAwaitingAccuracy'
+function bkupSiteList() {
+  let sitesBkupRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(site_info_array, "vnSitesBkup"); // 'put' overwrites any previous
+
+  sitesBkupRequest.onsuccess = (e) => {
+    console.log(" in object store 'VNAppStates', 'site_info_array' backed up under key 'vnSitesBkup' " + e);
+  };
+  sitesBkupRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'site_info_array' failed to back up under key 'vnSitesBkup' " + e);
+  };
+};
+
+function bkupSpeciesList() {
+  let sppBkupRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(site_spp_array, "vnSpeciesBkup"); // 'put' overwrites any previous
+
+sppBkupRequest.onsuccess = (e) => {
+    console.log(" in object store 'VNAppStates', 'site_spp_array' backed up under key 'vnSpeciesBkup' " + e);
+  };
+  sppBkupRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'site_spp_array' failed to back up under key 'vnSpeciesBkup' " + e);
+  };
+};
 
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
@@ -841,9 +868,6 @@ function warnBadSafari() {
   vnBumSafari.show();
 }
 
-
-
-
 function stopTrackingPosition() {
   try {
     navigator.geolocation.clearWatch(position_tracker_id);
@@ -1054,6 +1078,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   current_site_id = site_obj.id;
   // new item at the beginning
   site_info_array.unshift(site_obj);
+  bkupSiteList();
   siteScreenComplete = true; // flag, don't need to stop the ticker when this
     // screen hidden
   // any AuxData to ask for?
@@ -1124,6 +1149,24 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
     itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
     console.log("Updated latest " + whatIsAwaitingAccuracy + ", id=" + itmToUpdate.id);
   }
+
+  switch(whatIsAwaitingAccuracy) {
+    case "site":
+      bkupSiteList();
+//      aux_spec_for = "sites"; // in case we need this
+      break;
+    case "spp_itm":
+      bkupSpeciesList();
+//      aux_spec_for = "spp_items"; // in case we need this
+      break;
+    case "new_plholder":
+//      bkupPlaceholders();
+//      aux_spec_for = "spp_items"; // in case we need this
+      break;
+    default:
+      // do nothing
+  }
+
   console.log("About to clear 'periodicLocationCheckFlag' in 'Wait for Accuracy'");
   clearInterval(periodicLocationCheckFlag);
   console.log("In 'Wait for Accuracy', about to stopTrackingPosition");
