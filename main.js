@@ -43,6 +43,38 @@ if ('serviceWorker' in navigator) {
     registration.active.postMessage("Hi service worker");
   });
 }*/
+
+// set up persistent storage
+let db;
+const dbRequest = indexedDB.open("VnDatabase", 1);
+dbRequest.onerror = (e) => {
+  console.error("VegNab web app not confirmed to used indexedDB");
+};
+dbRequest.onsuccess = (e) => {
+  console.log("indexedDB open succeeded for 'VnDatabase'");
+  // object store should have been initialized in onupgradeneeded event
+  db = e.target.result;
+  db.onerror = (e) => {
+    // generic error handler for the database
+    console.error(`Database error: ${e.target.errorCode}`)
+  };
+};
+
+dbRequest.onupgradeneeded = (e) => {
+  // save the IDBDatabase interface
+  const db = e.target.result;
+  // create the db object store
+  const VnObjStore = db.createObjectStore("VNAppStates");
+  // stored objects will be arrays, and keys will be explicit
+  console.log("created 'VnObjStore'");
+  VnObjStore.put([], "vnSitesBkup"); // initialize to empty array
+  console.log(" 'VnObjStore', 'vnSitesBkup' initialized as empty array");
+  VnObjStore.put([], "vnSppBkup");
+  console.log(" 'VnObjStore', 'vnSppBkup' initialized as empty array");
+
+};
+
+
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
 // todo: automatically acquire or input region
