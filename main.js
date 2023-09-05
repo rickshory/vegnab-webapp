@@ -134,8 +134,10 @@ function bkupSpeciesList() {
 //TODO: backup aux_specs_array, aux-data?, settings
 
 // TODO: figure out how to get the data restore to happen at the right time
-// document.addEventListener("DOMContentLoaded", function() {
-//   console.log('DOMContentLoaded');
+ document.addEventListener("DOMContentLoaded", function() {
+   console.log('DOMContentLoaded');
+   // trigger to refresh site list
+   shwSitesTimeout = setTimeout(showSites, 200);
 //   // presume this is where persistent data needs to be restored
 //   const obStore = db.transaction(["VNAppStates"]).objectStore("VNAppStates");
 //   obStore.get("vnSitesBkup").onsuccess = (e) => {
@@ -147,7 +149,7 @@ function bkupSpeciesList() {
 //     site_spp_array = e.result;
 //     console.log('site_spp_array retrieved');
 //   };
-// });
+ });
 
 
 
