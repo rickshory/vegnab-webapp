@@ -58,6 +58,35 @@ dbRequest.onsuccess = (e) => {
     // generic error handler for the database
     console.error(`Database error: ${e.target.errorCode}`)
   };
+  const transaction = db.transaction(["VNAppStates"]);
+  const objectStore = transaction.objectStore("VNAppStates");
+  const sitesRequest = objectStore.get("vnSitesBkup");
+  sitesRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnSitesBkup`);
+  };
+  sitesRequest.onsuccess = (event) => {
+    console.log(`retrieved vnSitesBkup ${sitesRequest.result}`);
+    site_info_array = sitesRequest.result;
+  };
+  const sppRequest = objectStore.get("vnSpeciesBkup");
+  sppRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnSpeciesBkup`);
+  };
+  sppRequest.onsuccess = (event) => {
+    console.log(`retrieved vnSpeciesBkup ${sppRequest.result}`);
+    site_spp_array = sppRequest.result;
+  };
+  // const obStore = db.transaction(["VNAppStates"]).objectStore("VNAppStates");
+  // obStore.get("vnSitesBkup").onsuccess = (e) => {
+  //   console.log('e.target.result: ' + e.target.resulty);
+  //   site_info_array = e.target.result;
+  //   console.log('site_info_array retrieved: ' + site_info_array);
+  // };
+  // obStore.get("vnSpeciesBkup").onsuccess = (e) => {
+  //   site_spp_array = e.target.result;
+  //   console.log('site_spp_array retrieved');
+  // };
+
 };
 
 dbRequest.onupgradeneeded = (e) => {
@@ -94,13 +123,33 @@ function bkupSpeciesList() {
     .objectStore("VNAppStates")
     .put(site_spp_array, "vnSpeciesBkup"); // 'put' overwrites any previous
 
-sppBkupRequest.onsuccess = (e) => {
-    console.log(" in object store 'VNAppStates', 'site_spp_array' backed up under key 'vnSpeciesBkup' " + e);
-  };
+  sppBkupRequest.onsuccess = (e) => {
+      console.log(" in object store 'VNAppStates', 'site_spp_array' backed up under key 'vnSpeciesBkup' " + e);
+    };
   sppBkupRequest.onerror = (e) => {
     console.log(" in object store 'VNAppStates', 'site_spp_array' failed to back up under key 'vnSpeciesBkup' " + e);
   };
 };
+
+//TODO: backup aux_specs_array, aux-data?, settings
+
+// TODO: figure out how to get the data restore to happen at the right time
+// document.addEventListener("DOMContentLoaded", function() {
+//   console.log('DOMContentLoaded');
+//   // presume this is where persistent data needs to be restored
+//   const obStore = db.transaction(["VNAppStates"]).objectStore("VNAppStates");
+//   obStore.get("vnSitesBkup").onsuccess = (e) => {
+//     site_info_array = e.result;
+//     console.log('site_info_array retrieved');
+//   };
+//   console.log('site_info_array retrieved');
+//   obStore.get("vnSpeciesBkup").onsuccess = (e) => {
+//     site_spp_array = e.result;
+//     console.log('site_spp_array retrieved');
+//   };
+// });
+
+
 
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
@@ -1334,12 +1383,14 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
  aux_data_array = aux_data_array.filter(d => d.parent_id != current_spp_item_id);
  let i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
  site_spp_array.splice(i, 1);
+ bkupSpeciesList();
  showSites();
 });
 
 document.getElementById('btn-mark-uncertain-spp').addEventListener('click', function (e) {
 // console.log("in click event for 'btn-mark-uncertain-spp'");
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "species";
+ bkupSpeciesList();
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
@@ -1347,6 +1398,7 @@ document.getElementById('btn-mark-uncertain-spp').addEventListener('click', func
 document.getElementById('btn-mark-uncertain-genus').addEventListener('click', function (e) {
 // console.log("in click event for 'btn-mark-uncertain-genus'");
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "genus";
+ bkupSpeciesList();
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
@@ -1354,6 +1406,7 @@ document.getElementById('btn-mark-uncertain-genus').addEventListener('click', fu
 document.getElementById('btn-mark-not-uncertain').addEventListener('click', function (e) {
 // console.log("in click event for 'btn-mark-not-uncertain'");
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "";
+ bkupSpeciesList();
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  showSites();
 });
@@ -1603,6 +1656,7 @@ function insertPlHolderItm() {
     "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
   };
   site_spp_array.unshift(new_ph_item);
+  bkupSpeciesList();
   return new_ph_item.id;
 }
 
