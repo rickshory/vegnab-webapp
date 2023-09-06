@@ -1658,6 +1658,7 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
 
   if (img_files.length > 0) {
     cur_placeholder.photos = img_files.concat(cur_placeholder.photos);
+    bkupPlaceholders();
     showPhPix();
   }
 });
@@ -1679,6 +1680,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     return;
   }
   cur_placeholder.keywords = phKeywordsArray;
+  bkupPlaceholders();
   if (placeholder_state === "new") {
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
@@ -2260,7 +2262,13 @@ function sendData() {
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
 } // end of fn sendData
 
-// Why does the following work? Is 'vnSettingsScreen' and object readable by its ID?
+document.getElementById('btn-reset-app').addEventListener('click', function () {
+  
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnResetAppScreen')).hide();
+
+});
+
+// Why does the following work? Is 'vnSettingsScreen' an object readable by its ID?
 vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSettingsScreen 'shown.bs.modal'");
   // set up Regions section
