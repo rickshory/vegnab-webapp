@@ -105,6 +105,15 @@ dbRequest.onsuccess = (e) => {
     aux_specs_array = auxSpecsRequest.result;
   };
 
+  const auxDataRequest = objectStore.get("vnAuxDataBkup");
+  auxDataRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnAuxDataBkup`);
+  };
+  auxDataRequest.onsuccess = (event) => {
+    console.log(`retrieved vnAuxDataBkup ${auxDataRequest.result}`);
+    aux_data_array = auxDataRequest.result;
+  };
+
 };
 
 dbRequest.onupgradeneeded = (e) => {
@@ -121,6 +130,7 @@ dbRequest.onupgradeneeded = (e) => {
   VnObjStore.put([], "vnPlaceholdersBkup");
   VnObjStore.put([], "vnFoundSppBkup");
   VnObjStore.put([], "vnAuxSpecsBkup");
+  VnObjStore.put([], "vnAuxDataBkup");
   VnObjStore.put([], "vnSettingsBkup"); // not yet used
   VnObjStore.put([], "vnAppStateBkup"); // not yet implemented
 };
@@ -179,8 +189,33 @@ function bkupFoundSpp() {
   };
 };
 
+function bkupAuxSpecs() {
+  let auxSpecsRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(aux_specs_array, "vnAuxSpecsBkup"); // 'put' overwrites any previous
 
-//TODO: backup aux_specs_array, aux-data?, settings
+  auxSpecsRequest.onsuccess = (e) => {
+    console.log(" in object store 'VNAppStates', 'aux_specs_array' backed up under key 'vnAuxSpecsBkup' " + e);
+  };
+  auxSpecsRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'aux_specs_array' failed to back up under key 'vnAuxSpecsBkup' " + e);
+  };
+};
+
+function bkupAuxData() {
+  let auxDataRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(aux_data_array, "vnAuxDataBkup"); // 'put' overwrites any previous
+
+  auxDataRequest.onsuccess = (e) => {
+    console.log(" in object store 'VNAppStates', 'aux_data_array' backed up under key 'vnAuxDataBkup' " + e);
+  };
+  auxDataRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'aux_data_array' failed to back up under key 'vnAuxDataBkup' " + e);
+  };
+};
+
+//TODO: backup app settings and state
 
 // TODO: possibly change the following, to avoid any possible race conditions of
 //  the arrays not being retrieved before the UI gets refreshed
@@ -655,6 +690,7 @@ match_list.addEventListener('click', function (e) {
       };
       if ((found_spp_array.find(itm => itm.item_code == found_spp.item_code)) == undefined) {
         found_spp_array.push(found_spp);
+        bkupFoundSpp();
       }
       // any AuxData to ask for?
       auxDataDone = ((aux_specs_array.filter(a => a.for == "spp_items").length == 0) ? true : false);
@@ -1420,6 +1456,7 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
  // first, remove any AuxData
  aux_data_array = aux_data_array.filter(d => d.parent_id != current_spp_item_id);
+ bkupAuxData();
  let i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
  site_spp_array.splice(i, 1);
  bkupSpeciesList();
@@ -1866,6 +1903,7 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
       current_aux_spec_id = as_obj.id;
       // new item at the beginning
       aux_specs_array.unshift(as_obj);
+      bkupAuxSpecs();
       break;
     case "edit":
       let a = aux_specs_array.find(a => a.id == current_aux_spec_id);
@@ -1890,6 +1928,7 @@ document.getElementById('btn-delete-auxdata-spec').addEventListener('click', fun
     alert("Aux Data spec to delete not found");
   } else {
     aux_specs_array.splice(ix, 1);
+    bkupAuxSpecs();
   }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
 });
@@ -2030,6 +2069,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       // console.log("auxDObj");
       // console.log(auxDObj);
       aux_data_array.unshift(auxDObj);
+      bkupAuxData();
       
     } // end of if not empty
   }); // end of adding all aux data items
