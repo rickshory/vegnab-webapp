@@ -7,8 +7,10 @@ if ('serviceWorker' in navigator) {
   // site using the default scope.
   // Fails because there is no 'sw.js' yet, but console logs
   //  indicates this code does get run
-  navigator.serviceWorker.register('sw.js').then((registration) => {
-  // navigator.serviceWorker.register('/vegnab-webapp/sw.js', {scope: '/vegnab-webapp/'}).then((registration) => {
+  //  Use following format to run on LocalHost
+  //navigator.serviceWorker.register('sw.js').then((registration) => {
+  //  Use following format to run from GitHub
+   navigator.serviceWorker.register('/vegnab-webapp/sw.js', {scope: '/vegnab-webapp/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
 
     navigator.serviceWorker.addEventListener("message", (event) => {
