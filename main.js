@@ -2263,9 +2263,27 @@ function sendData() {
 } // end of fn sendData
 
 document.getElementById('btn-reset-app').addEventListener('click', function () {
-  
+  if (confirm("This will erase all your data. Are you sure?")) {
+    // clear the arrays, in ascending order of importance, and nesting
+    aux_data_array = [];
+    bkupAuxData();
+    aux_specs_array = [];
+    bkupAuxSpecs();
+    found_spp_array = [];
+    bkupFoundSpp();
+    placeholders_array = [];
+    bkupPlaceholders();
+    site_spp_array = [];
+    bkupSpeciesList();
+    site_info_array = [];
+    bkupSiteList();
+    // trigger to refresh site list and species
+    shwSitesTimeout = setTimeout(showSites, 200);
+    alert("Data erased, and app reset to defaults");
+  } else {
+    // drop through to dismissing this screen
+  }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnResetAppScreen')).hide();
-
 });
 
 // Why does the following work? Is 'vnSettingsScreen' an object readable by its ID?
