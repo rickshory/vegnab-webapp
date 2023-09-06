@@ -31,19 +31,6 @@ if ('serviceWorker' in navigator) {
 
 (function () {
 
-/*if (navigator.serviceWorker) {
-  navigator.serviceWorker.register("service-worker.js");
-
-  navigator.serviceWorker.addEventListener("message", (event) => {
-    // event is a MessageEvent object
-    console.log(`The service worker sent me a message: ${event.data}`);
-  });
-
-  navigator.serviceWorker.ready.then((registration) => {
-    registration.active.postMessage("Hi service worker");
-  });
-}*/
-
 // set up persistent storage
 let db;
 const dbRequest = indexedDB.open("VnDatabase", 1);
