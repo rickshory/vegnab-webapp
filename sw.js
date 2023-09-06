@@ -1,6 +1,6 @@
 
 const APP_PREFIX = 'VegNab_' 
-const VERSION = 'v0.23'
+const VERSION = 'v0.24'
 const CACHE_NAME = APP_PREFIX + VERSION
 
 // const appRoot = '/vegnab-webapp';
