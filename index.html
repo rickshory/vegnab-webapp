@@ -655,14 +655,14 @@
                               <li class="dropdown-item" id = "region_WA"><h3>Washington</h3></li>
                               <li class="dropdown-item" id = "region_CA"><h3>California</h3></li>
                             </ul>
-                          </div> <!-- emd dropdown -->
-                        </div> <!-- emd first nested column containing dropdown -->
+                          </div> <!-- end dropdown -->
+                        </div> <!-- end first nested column containing dropdown -->
                         <div class="col"> <!-- 2nd column, region chosen -->
                           <div id = "regionChosen" class="form-text">
                             <h3>Oregon</h3>
                           </div>
                         </div> <!-- end of 2nd column, region chosen -->
-                      </div> <!-- emd row, end nested grid -->
+                      </div> <!-- end row, end nested grid -->
                     </div> <!-- end visually set off contents -->
                   </div> <!-- end of first column, dropdown and region chosen -->
                 </div> <!-- end of first row, dropdown and region chosen -->
@@ -787,6 +787,33 @@
       </div>
     </div>
     <!-- end of modal, Settings -->
+
+    <!-- begin modal, Corrections, Reset -->
+    <div id="vnResetAppScreen" class="modal">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Reset this app and clear all data</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form id="reset-app-form" autocomplete="off">
+              <div class="form-floating mb-3 mt-3">
+                <div class="row"> <!-- first row, 'Reset' button -->
+                  <button type="button" class="btn btn-primary btn-xl"
+                      name="btn-reset-app"
+                      id="btn-reset-app">Reset this app
+                  </button>
+                </div> <!-- end of first row, 'Reset' button -->
+              </div> <!-- end of form contents -->
+            </form> <!-- end of form-floating -->
+          </div> <!-- end of modal body -->
+        </div> <!-- end of modal content -->
+      </div> <!-- end of modal dialog -->
+    </div> <!-- end of screen -->
+    <!-- end of modal, Corrections, Reset -->
 
     <!-- begin modal, Help, About -->
     <div id="vnHelpAboutScreen" class="modal">
