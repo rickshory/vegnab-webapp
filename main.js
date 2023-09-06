@@ -792,7 +792,7 @@ match_list.addEventListener('click', function (e) {
           console.log(ph);
           // get the global 'cur_placeholder' the following fn needs
           cur_placeholder = placeholders_array.find(p => p.code === matched_placeholder_code);
-          // following fn fills in fields that might be rudunant, but includes
+          // following fn fills in fields that might be redunant, but includes
           // "ph_id": to allow lookup back to the original placeholder definition
           // "type": 'ph' which flags this item as a placeholder, vs. a real species
           // could allow specialized processing
@@ -1261,6 +1261,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
         phItm.longitude = "" + latestLocation.coords.longitude;
         phItm.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
         console.log("Updated deferred placeholder item, id=" + phItm.id);
+        bkupPlaceholders();
       }
       aux_spec_for = "spp_items"; // in case we need this
       break;
@@ -1535,6 +1536,7 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 });
 
 vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
+  bkupPlaceholders();
   if (phScreenComplete) { // any Placeholder edits will have to go past this point
     console.log("in 'vnPlaceholderInfoScreen.hidden', placeholder_state = " + placeholder_state);
     console.log("in 'vnPlaceholderInfoScreen.hidden', cur_placeholder");
@@ -1560,12 +1562,14 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     console.log('about to remove incomplete Placeholder "'
       + placeholders_array.find(p => p.id === current_ph_id).code + '"');
     placeholders_array = placeholders_array.filter(ph => ph.id != current_ph_id);
+    bkupPlaceholders();
     // remove any species item for it
     var i;
     while ((i = site_spp_array.findIndex(itm => itm.ph_id === current_ph_id)) > -1) {
       console.log('about to remove incomplete Ph item "'
         + site_spp_array[i].species + '"');
       site_spp_array.splice(i, 1);
+      bkupSpeciesList();
     }
     // stop the locations ticker
     clearInterval(periodicLocationCheckFlag);
@@ -1680,7 +1684,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     // may need to defer the location
 
     if (waitForSppLocTarget && !targetAccuracyOK) {
-      current_ph_id = cur_placeholder.id; // current_spp_item_id is is the general placeholder
+      current_ph_id = cur_placeholder.id; // current_ph_id is the general placeholder
       // current_spp_item_id is the instance of the placeholder
       accuracyAccepted = false; // can be manually accepted
       locationDeferred = true;
