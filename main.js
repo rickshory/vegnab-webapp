@@ -68,6 +68,7 @@ dbRequest.onsuccess = (e) => {
     console.log(`retrieved vnSitesBkup ${sitesRequest.result}`);
     site_info_array = sitesRequest.result;
   };
+
   const sppRequest = objectStore.get("vnSpeciesBkup");
   sppRequest.onerror = (event) => {
     console.log(`error retrieving object for vnSpeciesBkup`);
@@ -76,16 +77,33 @@ dbRequest.onsuccess = (e) => {
     console.log(`retrieved vnSpeciesBkup ${sppRequest.result}`);
     site_spp_array = sppRequest.result;
   };
-  // const obStore = db.transaction(["VNAppStates"]).objectStore("VNAppStates");
-  // obStore.get("vnSitesBkup").onsuccess = (e) => {
-  //   console.log('e.target.result: ' + e.target.resulty);
-  //   site_info_array = e.target.result;
-  //   console.log('site_info_array retrieved: ' + site_info_array);
-  // };
-  // obStore.get("vnSpeciesBkup").onsuccess = (e) => {
-  //   site_spp_array = e.target.result;
-  //   console.log('site_spp_array retrieved');
-  // };
+
+  const phRequest = objectStore.get("vnPlaceholdersBkup");
+  phRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnPlaceholdersBkup`);
+  };
+  phRequest.onsuccess = (event) => {
+    console.log(`retrieved vnPlaceholdersBkup ${phRequest.result}`);
+    placeholders_array = phRequest.result;
+  };
+
+  const foundSppRequest = objectStore.get("vnFoundSppBkup");
+  foundSppRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnFoundSppBkup`);
+  };
+  foundSppRequest.onsuccess = (event) => {
+    console.log(`retrieved vnFoundSppBkup ${foundSppRequest.result}`);
+    found_spp_array = foundSppRequest.result;
+  };
+
+  const auxSpecsRequest = objectStore.get("vnAuxSpecsBkup");
+  auxSpecsRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnAuxSpecsBkup`);
+  };
+  auxSpecsRequest.onsuccess = (event) => {
+    console.log(`retrieved vnAuxSpecsBkup ${auxSpecsRequest.result}`);
+    aux_specs_array = auxSpecsRequest.result;
+  };
 
 };
 
@@ -100,7 +118,11 @@ dbRequest.onupgradeneeded = (e) => {
   console.log(" VnObjStore[VNAppStates], 'vnSitesBkup' initialized as empty array");
   VnObjStore.put([], "vnSpeciesBkup");
   console.log(" VnObjStore[VNAppStates], 'vnSpeciesBkup' initialized as empty array");
-
+  VnObjStore.put([], "vnPlaceholdersBkup");
+  VnObjStore.put([], "vnFoundSppBkup");
+  VnObjStore.put([], "vnAuxSpecsBkup");
+  VnObjStore.put([], "vnSettingsBkup"); // not yet used
+  VnObjStore.put([], "vnAppStateBkup"); // not yet implemented
 };
 
 // for places to insert sitelist backup look for 'site_info_array.unshift', 
@@ -131,27 +153,42 @@ function bkupSpeciesList() {
   };
 };
 
+function bkupPlaceholders() {
+  let phBkupRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(placeholders_array, "vnPlaceholdersBkup"); // 'put' overwrites any previous
+
+  phBkupRequest.onsuccess = (e) => {
+      console.log(" in object store 'VNAppStates', 'placeholders_array' backed up under key 'vnPlaceholdersBkup' " + e);
+    };
+  phBkupRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'placeholders_array' failed to back up under key 'vnPlaceholdersBkup' " + e);
+  };
+};
+
+function bkupFoundSpp() {
+  let fndSppRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(found_spp_array, "vnFoundSppBkup"); // 'put' overwrites any previous
+
+  fndSppRequest.onsuccess = (e) => {
+    console.log(" in object store 'VNAppStates', 'found_spp_array' backed up under key 'vnFoundSppBkup' " + e);
+  };
+  fndSppRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'found_spp_array' failed to back up under key 'vnFoundSppBkup' " + e);
+  };
+};
+
+
 //TODO: backup aux_specs_array, aux-data?, settings
 
-// TODO: figure out how to get the data restore to happen at the right time
+// TODO: possibly change the following, to avoid any possible race conditions of
+//  the arrays not being retrieved before the UI gets refreshed
  document.addEventListener("DOMContentLoaded", function() {
    console.log('DOMContentLoaded');
-   // trigger to refresh site list
+   // trigger to refresh site list and species
    shwSitesTimeout = setTimeout(showSites, 200);
-//   // presume this is where persistent data needs to be restored
-//   const obStore = db.transaction(["VNAppStates"]).objectStore("VNAppStates");
-//   obStore.get("vnSitesBkup").onsuccess = (e) => {
-//     site_info_array = e.result;
-//     console.log('site_info_array retrieved');
-//   };
-//   console.log('site_info_array retrieved');
-//   obStore.get("vnSpeciesBkup").onsuccess = (e) => {
-//     site_spp_array = e.result;
-//     console.log('site_spp_array retrieved');
-//   };
  });
-
-
 
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
@@ -1211,7 +1248,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
 //      aux_spec_for = "spp_items"; // in case we need this
       break;
     case "new_plholder":
-//      bkupPlaceholders();
+      bkupPlaceholders();
 //      aux_spec_for = "spp_items"; // in case we need this
       break;
     default:
