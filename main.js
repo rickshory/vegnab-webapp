@@ -206,6 +206,10 @@ function bkupAuxData() {
 
 //TODO: backup app settings and state
 
+/* under 'vnAppStateBkup' building a list of items to store:
+current_site_id
+*/
+
 // TODO: possibly change the following, to avoid any possible race conditions of
 //  the arrays not being retrieved before the UI gets refreshed
  document.addEventListener("DOMContentLoaded", function() {
