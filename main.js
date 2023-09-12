@@ -483,6 +483,33 @@ function showListsError(err_msg) {
   document.getElementById("info_footer").innerHTML = err_msg;
 }
 
+var sitesNewOrAddList = document.getElementById('chooseOrAddNewSitesList');
+
+sitesNewOrAddList.addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== sitesNewOrAddList) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    if (target.id == 'siteAddNew') {
+      // add new site
+      var vnAddSiteModal = new bootstrap.Modal(document.getElementById('vnSiteInfoScreen'), {
+        keyboard: false
+      });
+      vnAddSiteModal.show();
+    } else {
+      // use existing site
+      // the element id is the string "st_" followed by the index number in the Sites array
+      let site_id_chosen = parseInt((target.id).split("_")[1]);
+        console.log("ID of site chosen = " + site_id_chosen);
+        current_site_id = site_id_chosen;
+        showSites();
+    }
+  }
+});
+
 makeLocalAndNonlocalSppArrays().then(
   function(value) {showAppStatus(value);},
   function(error) {showListsError(error);}
@@ -1331,7 +1358,7 @@ function showSites() {
     }
     sites_listitems += '<li class="dropdown-item" id = "st_' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
   });
-  document.getElementById('chooseOrAddNewSitesList').innerHTML = sites_listitems;
+  sitesNewOrAddList.innerHTML = sites_listitems;
 
   // fill in species list for this site
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
@@ -2100,7 +2127,7 @@ sites_available_to_send_list.addEventListener('click', function (e) {
       if(!target) { return; } // If element doesn't exist
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
-    // the element id is the string "siteToSend_" (to avoic confusion with
+    // the element id is the string "siteToSend_" (to avoid confusion with
     // any other elements) followed by the index number in the Sites array
     //
     site_chosen_to_send = parseInt((target.id).split("_")[1]);
@@ -2364,7 +2391,7 @@ settingsFormRegionsList.addEventListener('click', function (e) {
       if(!target) { return; } // If element doesn't exist
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
-    // the element id is the string "regionCode_" (to avoic confusion with
+    // the element id is the string "regionCode_" (to avoid confusion with
     // any other elements) followed by the two-letter code of the region
     //
     region_code = (target.id).split("_")[1];
