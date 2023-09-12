@@ -92,18 +92,44 @@
   <!-- begin main screen -->
   <div class="container-fluid">
     <div class="d-grid gap-2">
-        <button type="button" class="btn btn-primary  btn-xl"
-          data-bs-toggle="modal"
-          data-bs-target="#vnSiteInfoScreen"
-          name="btn-add-site" id="btn-add-site">
-          Add site
+      <div class="dropdown">
+        <button class="btn btn-primary btn-xl dropdown-toggle"
+            type="button" id="dropdownSiteChooseOrNew"
+            name="dropdownSiteChooseOrNew"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Choose site or add new
         </button>
+        <ul id = "chooseOrAddNewSitesList" class="dropdown-menu"
+           aria-labelledby="dropdownSiteChooseOrNew">
+           <!-- example items for testing -->
+          <li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>
+          <li class="dropdown-item" id = "st_1520400223"><h3>Dillacort Canyon</h3></li>
+          <li class="dropdown-item" id = "st_1511028833"><h3>Bare Mountain</h3></li>
+        </ul>
+      </div>
     </div>
-    <!-- show sites and their lists as an accordion -->
-    <div class="container mt-3">
-      <!-- innerHTML of accordion will be filled in by a function -->
-      <div id="sites-accordion">
-        No sites yet
+    <!-- show current site and its list in a card -->
+    <div class="card">
+      <div id="siteCardHeader" class="card-header">
+        <!-- example text for testing -->
+        Dillacort Canyon
+      </div>
+      <div class="card-body">
+        <button type="button" id="btnAddSiteSpecies" class="btn btn-primary btn-xl"
+          data-bs-toggle="modal"
+          data-bs-target="#vnSppSearchScreen">
+          Add species
+        </button>
+    
+        <ul id="sppListForCurSite" class="list-unstyled">
+          <!-- example items for testing -->
+          <li id="sp_1409181642">POTR15: Populus trichocarpa, black cottonwood</li>
+          <li id="sp_1509725200">ECCR: Echinochloa crus-galli, barnyard grass</li>
+          <li id="sp_1027200638">ASFA: Asclepias fascicularis, Mexican whorled milkweed, narrow leaf milkweed</li>
+          <li id="sp_1415238906">DISY: Dipsacus sylvestris, Fuller's teasel</li>
+          <li id="ph_1409126382">ele knit: eleocharis standing water stems like knitting needles</li>
+          <li id="ph_1073432642">lep perr: Perennial pepper weed lipidium</li>
+        </ul>
       </div>
     </div>
 

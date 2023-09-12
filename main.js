@@ -1308,12 +1308,12 @@ document.getElementById('btn_accept_accuracy').addEventListener('click', functio
 
 });
 
-var sites_accordion = document.getElementById("sites-accordion");
+var site_card_hdr = document.getElementById('siteCardHeader');
 
 function showSites() {
-  // show the sites in an accordion list, top item expanded by default
+  // show the current site data
   if (site_info_array.length == 0) {
-    sites_accordion.innerHTML = '<h2>No sites yet</h2>';
+    site_card_hdr.innerHTML = '(No sites yet)';
     current_site_id = "";
     return;
   };
@@ -1321,118 +1321,75 @@ function showSites() {
   // for testing, run this
  // findRegion();
 
-  let sites_accordion_listitems = "";
-  console.log("in 'showSites()', about to generate accordion");
+  console.log("in 'showSites()', about to generate list of sites");
+  // for testing, 'new...' first
+  let sites_listitems = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
   site_info_array.forEach((obj, index) => {
     if (obj.id == current_site_id) {
       console.log('current_site_id is ' + current_site_id + ', for site "' + obj.name + '"');
+      site_card_hdr.innerHTML = '' + obj.name;
     }
-    sites_accordion_listitems += '<div class="card">' +
-    '  <div class="card-header container" id="heading' + (index + 1) + '">' +
-    '    <div class="row"> ' +
-    '      <div class="col"> ' +
-    '        <a class="' + ((obj.id == current_site_id) ? '' : 'collapsed ') +
-    'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
-    '" aria-expanded="' + ((obj.id == current_site_id) ? 'true' : 'false') +
-    '" aria-controls="collapse' + (index + 1) + '">' +
-    '        <h3>' +  obj.name + '</h3>' +
-    '        </a>' +
-    '      </div>' +
-    '    </div> ' +
-    '  <div class="col"> ' +
-    '    <div class="dropdown">' +
-    '      <button class="btn btn-primary btn-xl dropdown-toggle"' +
-    '  type="button" id="dropdown' + (index + 1) + 'SiteAction"' +
-    '  data-bs-toggle="dropdown" aria-expanded="false">' +
-    '     . ' +
-    '      </button>' +
-    '        <ul id = "site' + (index + 1) + 'ActionsList" class="dropdown-menu"' +
-    '  aria-labelledby="dropdown' + (index + 1) + 'SiteAction">' +
-    '          <li class="dropdown-item" id = "action' + (index + 1) + 'Edit"><h3>Edit</h3></li>' +
-    '          <li class="dropdown-item" id = "action' + (index + 1) + 'Delete"><h3>Delete</h3></li>' +
-    '        </ul>' +
-    '      </div> ' +
-    '    </div> ' +
-    '  </div> ' +
-      '  <div id="collapse' + (index + 1) + '" class="collapse' +
-      ((obj.id == current_site_id) ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
-      '    <div class="card-body">' +
-      '      <button type="button" id="' + obj.id +
-      '" class="btn btn-primary  btn-xl" data-bs-toggle="modal"' +
-      '        data-bs-target="#vnSppSearchScreen">' +
-      '        Add species' +
-      '      </button>' +
-      '      <ul id="spp-list-for-' + obj.id + '" class="list-unstyled">' +
-      '      </ul>' +
-      '    </div>' +
-      '  </div>' +
-      '</div>';
-    });
-  sites_accordion.innerHTML = sites_accordion_listitems;
+    sites_listitems += '<li class="dropdown-item" id = "st_' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
+  });
+  document.getElementById('chooseOrAddNewSitesList').innerHTML = sites_listitems;
 
-  // fill in species lists for sites
-  site_info_array.forEach(ste => {
-    let this_site_button = document.getElementById("" + ste.id);
-    this_site_button.addEventListener('click', function (e) {
-      current_site_id = e.target.id;
-      console.log("current_site_id set to " + current_site_id + ", for "
-        + site_info_array.find(i => i.id == current_site_id).name);
-    });
-
-    let this_site_spp_array = site_spp_array.filter(spp_obj =>
-        spp_obj.site_id === ste.id)
-        .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
-    let this_site_spp_list = document.getElementById("spp-list-for-" + ste.id);
-    let spp_listitems_string = "";
-    this_site_spp_array.forEach(spp_obj => {
-      // both real species and placeholders have a display field 'species'
-      if (spp_obj.type === "ph") { // a placeholder
-        spp_listitems_string += '<li id="' + spp_obj.id + '">'
-          + spp_obj.species;
-        // placeholders do not have Uncertainty
-      } else { // a real species
-        let sst = spp_obj.species;
-        if (spp_obj.uncertainty == "species") {
-          sst = "Most likely " + spp_obj.species + ", but can't determine species."
-        }
-        if (spp_obj.uncertainty == "genus") {
-          sst = "Probably " + spp_obj.species + ", but unsure at genus level."
-        }
-        spp_listitems_string += '<li id="' + spp_obj.id + '">'
-          + sst ;
-      };
-      // add any auxData
-      let aDArr = aux_data_array.filter(a => a.parent_id == spp_obj.id);
-      aDArr.forEach(a => {
-        spp_listitems_string += ', ' + a.name + ' = ' + a.value;
-      });
-      spp_listitems_string += '</li>'; // finish the list item
-    });
-    this_site_spp_list.innerHTML = spp_listitems_string;
-    // add a listener to the species list
-    // From what I have been able to find out, event listeners are deleted with the
-    // element if there are no refernces to that element, so re-creating them each
-    // time like this should work.
-    this_site_spp_list.addEventListener('click', function (e) {
-      // spp list is parent of all the list items
-      var target = e.target; // Clicked element
-      while (target && target.parentNode !== this_site_spp_list) {
-        target = target.parentNode; // If the clicked element isn't a direct child
-        if(!target) { return; } // If element doesn't exist
+  // fill in species list for this site
+  let this_site_spp_array = site_spp_array.filter(spp_obj =>
+      spp_obj.site_id === current_site_id)
+      .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
+  let this_site_spp_list = document.getElementById('sppListForCurSite');
+  let spp_listitems_string = "";
+  if (this_site_spp_array.length == 0) {
+    this_site_spp_list.innerHTML = '<li>no species yet</li>';
+    return;
+  }
+  this_site_spp_array.forEach(spp_obj => {
+    // both real species and placeholders have a display field 'species'
+    if (spp_obj.type === "ph") { // a placeholder
+      spp_listitems_string += '<li id="' + spp_obj.id + '">'
+        + spp_obj.species;
+      // placeholders do not have Uncertainty
+    } else { // a real species
+      let sst = spp_obj.species;
+      if (spp_obj.uncertainty == "species") {
+        sst = "Most likely " + spp_obj.species + ", but can't determine species."
       }
-      if (target.tagName === 'LI') { // tagName returns uppercase
-        current_spp_item_id = target.id; // store in global, to track which item worked on
+      if (spp_obj.uncertainty == "genus") {
+        sst = "Probably " + spp_obj.species + ", but unsure at genus level."
+      }
+      spp_listitems_string += '<li id="' + spp_obj.id + '">' + sst ;
+    };
+    // add any auxData
+    let aDArr = aux_data_array.filter(a => a.parent_id == spp_obj.id);
+    aDArr.forEach(a => {
+      spp_listitems_string += ', ' + a.name + ' = ' + a.value;
+    });
+    spp_listitems_string += '</li>'; // finish the list item
+  });
+  this_site_spp_list.innerHTML = spp_listitems_string;
+  // add a listener to the species list
+  // From what I have been able to find out, event listeners are deleted with the
+  // element if there are no refernces to that element, so re-creating them each
+  // time like this should work.
+  this_site_spp_list.addEventListener('click', function (e) {
+    // spp list is parent of all the list items
+    var target = e.target; // Clicked element
+    while (target && target.parentNode !== this_site_spp_list) {
+      target = target.parentNode; // If the clicked element isn't a direct child
+      if(!target) { return; } // If element doesn't exist
+    }
+    if (target.tagName === 'LI') { // tagName returns uppercase
+      current_spp_item_id = target.id; // store in global, to track which item worked on
 //        console.log("list ID: " + e.currentTarget.id);
 //        console.log("item ID: " + current_spp_item_id);
 //        let spp = target.textContent;
 //        console.log(spp);
-        var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
-          keyboard: false
-        });
-        vnSppDtlModal.show();
-      };
-    });
-  }); // end of filling in species lists for sites
+      var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
+        keyboard: false
+      });
+      vnSppDtlModal.show();
+    };
+  }); // end of filling in species list  for current site
 }; // end of fn showSites
 
 // Why does the following work? Is 'vnSppDetailScreen' and object readable by its ID?
