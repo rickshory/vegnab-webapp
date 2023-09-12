@@ -1328,14 +1328,32 @@ function showSites() {
       console.log('current_site_id is ' + current_site_id + ', for site "' + obj.name + '"');
     }
     sites_accordion_listitems += '<div class="card">' +
-      '  <div class="card-header" id="heading' + (index + 1) + '">' +
-      '    <a class="' + ((obj.id == current_site_id) ? '' : 'collapsed ') +
-      'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
-      '" aria-expanded="' + ((obj.id == current_site_id) ? 'true' : 'false') +
-      '" aria-controls="collapse' + (index + 1) + '">' +
-      '    <h3>' +  obj.name + '</h3>' +
-      '    </a>' +
-      '  </div>' +
+    '  <div class="card-header container" id="heading' + (index + 1) + '">' +
+    '    <div class="row"> ' +
+    '      <div class="col"> ' +
+    '        <a class="' + ((obj.id == current_site_id) ? '' : 'collapsed ') +
+    'btn" data-bs-toggle="collapse" href="#collapse' + (index + 1) +
+    '" aria-expanded="' + ((obj.id == current_site_id) ? 'true' : 'false') +
+    '" aria-controls="collapse' + (index + 1) + '">' +
+    '        <h3>' +  obj.name + '</h3>' +
+    '        </a>' +
+    '      </div>' +
+    '    </div> ' +
+    '  <div class="col"> ' +
+    '    <div class="dropdown">' +
+    '      <button class="btn btn-primary btn-xl dropdown-toggle"' +
+    '  type="button" id="dropdown' + (index + 1) + 'SiteAction"' +
+    '  data-bs-toggle="dropdown" aria-expanded="false">' +
+    '     . ' +
+    '      </button>' +
+    '        <ul id = "site' + (index + 1) + 'ActionsList" class="dropdown-menu"' +
+    '  aria-labelledby="dropdown' + (index + 1) + 'SiteAction">' +
+    '          <li class="dropdown-item" id = "action' + (index + 1) + 'Edit"><h3>Edit</h3></li>' +
+    '          <li class="dropdown-item" id = "action' + (index + 1) + 'Delete"><h3>Delete</h3></li>' +
+    '        </ul>' +
+    '      </div> ' +
+    '    </div> ' +
+    '  </div> ' +
       '  <div id="collapse' + (index + 1) + '" class="collapse' +
       ((obj.id == current_site_id) ? ' show' : '') + '" data-bs-parent="#sites-accordion">' +
       '    <div class="card-body">' +
