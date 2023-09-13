@@ -1326,6 +1326,7 @@ document.getElementById('btn_accept_accuracy').addEventListener('click', functio
 });
 
 var site_card_hdr = document.getElementById('siteCardHeader');
+var this_site_spp_list = document.getElementById('sppListForCurSite');
 
 function showMainScreen() {
   // show the current site data
@@ -1356,7 +1357,6 @@ function showMainScreen() {
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
       spp_obj.site_id === current_site_id)
       .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
-  let this_site_spp_list = document.getElementById('sppListForCurSite');
   let spp_listitems_string = "";
   if (this_site_spp_array.length == 0) {
     this_site_spp_list.innerHTML = '<li>no species yet</li>';
