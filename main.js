@@ -329,7 +329,7 @@ var aux_specs_array = [];
 var aux_spec_state = ""; // will be 'new' or 'edit'
 var aux_spec_for = "";  // will be sites' or 'spp_items'
 var current_aux_spec_id = "";
-var auxDataDone = false; // flag for processing each new site or spp
+// var auxDataDone = false; // flag for processing each new site or spp, currently unused
 var aux_data_array = [];
 // the auxiliary data items themselves
 //  = {
@@ -713,9 +713,7 @@ match_list.addEventListener('click', function (e) {
         found_spp_array.push(found_spp);
         bkupFoundSpp();
       }
-      // any AuxData to ask for?
-      auxDataDone = ((aux_specs_array.filter(a => a.for == "spp_items").length == 0) ? true : false);
-      //    console.log(found_spp_array);
+
       // if flagged, check that target accuracy was met
       if (waitForSppLocTarget && !targetAccuracyOK) {
         current_spp_item_id = new_spp_item.id;
@@ -740,10 +738,8 @@ match_list.addEventListener('click', function (e) {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
         // trigger to refresh site list
         shwSitesTimeout = setTimeout(showSites, 10);
-        if (!auxDataDone) {
-          aux_spec_for = "spp_items";
-          enterAuxData();
-        }
+        aux_spec_for = "spp_items";
+        enterAnyAuxData();
       }
       // end, if regular species
     } else { // not a regular species
@@ -1225,10 +1221,8 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   // new item at the beginning
   site_info_array.unshift(site_obj);
   bkupSiteList();
-  siteScreenComplete = true; // flag, don't need to stop the ticker when this
-    // screen hidden
-  // any AuxData to ask for?
-  auxDataDone = ((aux_specs_array.filter(a => a.for == "sites").length == 0) ? true : false);
+  siteScreenComplete = true; // flag, don't need to stop the ticker when this screen hidden
+
   // if flagged, check that target accuracy was met
   if (waitForSiteLocTarget && !targetAccuracyOK) {
     accuracyAccepted = false; // can be manually accepted
@@ -1251,10 +1245,8 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     console.log('About to hide the Site Info modal');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
     shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
-    if (!auxDataDone) {
-      aux_spec_for = "sites";
-      enterAuxData();
-    }
+    aux_spec_for = "sites";
+    enterAnyAuxData();
   }
 });
 
@@ -1326,9 +1318,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   // refresh data, no matter what
   shwSitesTimeout = setTimeout(showSites, 10);
   // ask for AuxData, if any
-  if (!auxDataDone) {
-    enterAuxData();
-  }
+  enterAnyAuxData();
 });
 
 document.getElementById('btn_accept_accuracy').addEventListener('click', function () {
@@ -1939,11 +1929,14 @@ document.getElementById('btn-delete-auxdata-spec').addEventListener('click', fun
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
 });
 
-function enterAuxData() {
-  var vnAxDat = new bootstrap.Modal(document.getElementById('vnAuxDataEntryScreen'), {
-    keyboard: false
-  });
-  vnAxDat.show();
+function enterAnyAuxData() {
+  // if 'aux_spec_for' != "", it will be "sites" or "spp_items"
+  if (aux_specs_array.filter(a => a.for == aux_spec_for).length > 0) {
+    var vnAxDat = new bootstrap.Modal(document.getElementById('vnAuxDataEntryScreen'), {
+      keyboard: false
+    });
+    vnAxDat.show();
+  }
 }
 
 vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
@@ -2067,7 +2060,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         // if 'id' used as HTML element id, prefix assures it does not start with a number
         "id": 'ad_' + new Date().getTime().toString(),
         "for": sp.for, // may be redundant
-        "parent_id": parID, // id of the site or speecies item
+        "parent_id": parID, // id of the site or species item
         "spec_id": sp.id, // may be redundant
         "name": sp.name,
         "value": stVal
@@ -2088,7 +2081,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
 document.getElementById('btn-cancel-auxdata').addEventListener('click', function (e) {
   // the only way we would be here is if the site or species is half-done, waiting for auxdata
   // back out, and delete the site or species too
- // TODO check flag auxDataDone
+
   var i;
   switch (aux_spec_for) {
     case "sites":
