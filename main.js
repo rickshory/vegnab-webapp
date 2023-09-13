@@ -702,6 +702,7 @@ match_list.addEventListener('click', function (e) {
       };
       current_spp_item_id = new_spp_item.id;
       site_spp_array.unshift(new_spp_item);
+      bkupSpeciesList();
       // remember that this species has been found
       let a = spp.split(":");
       let found_spp = {
@@ -771,6 +772,7 @@ match_list.addEventListener('click', function (e) {
           current_ph_id = new_ph.id; // remember the ID
           // put this placeholder, at least temporarily, into the placeholders array
           placeholders_array.unshift(new_ph);
+          bkupPlaceholders();
           // get a reference to the array element
           cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
 
@@ -2092,10 +2094,12 @@ document.getElementById('btn-cancel-auxdata').addEventListener('click', function
     case "sites":
       i = site_info_array.findIndex(itm => itm.id === current_site_id);
       site_info_array.splice(i, 1);
+      bkupSiteList();
       break;
     case "spp_items":
       i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
       site_spp_array.splice(i, 1);
+      bkupSpeciesList();
       break;
     default:
   }
