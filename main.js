@@ -1327,31 +1327,51 @@ document.getElementById('btn_accept_accuracy').addEventListener('click', functio
 
 var site_card_hdr = document.getElementById('siteCardHeader');
 var this_site_spp_list = document.getElementById('sppListForCurSite');
+var add_spp_button = document.getElementById('btnAddSiteSpecies');
 
 function showMainScreen() {
+  let sites_listitems = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
   // show the current site data
   if (site_info_array.length == 0) {
+    console.log("in 'showMainScreen()', no sites yet");
+    sitesChooseOrAddList.innerHTML = sites_listitems;
     site_card_hdr.innerHTML = '(No sites yet)';
     current_site_id = "";
+    add_spp_button.style.display = "none";
+    this_site_spp_list.style.display = "none";
     return;
+  };
+
+  // for testing, 'new site' default remains first
+  site_info_array.forEach((obj, index) => {
+    // prfix 'siteToShow-' assures unique ID, of all objects in site
+    sites_listitems += '<li class="dropdown-item" id = "siteToShow-' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
+  });
+  sitesChooseOrAddList.innerHTML = sites_listitems;  
+
+  if (current_site_id === '') {
+    console.log("in 'showMainScreen()', no site chosen yet");
+    sitesChooseOrAddList.innerHTML = sites_listitems;
+    site_card_hdr.innerHTML = '(Choose site)';
+    add_spp_button.style.display = "none";
+    this_site_spp_list.style.display = "none";
+    return;  
   };
 
   // for testing, run this
  // findRegion();
 
-  console.log("in 'showMainScreen()', about to display current site name");
-  let siName = site_info_array.find(site => site.id === current_site_id).name;
+  let cur_site_obj = site_info_array.find(site => site.id === current_site_id);
+  console.log("in 'showMainScreen()', about to get current site name");
+  let siName = cur_site_obj.name;
   console.log('current_site_id is ' + current_site_id + ', for site "' + siName + '"');
   site_card_hdr.innerHTML = '' + siName;
   
   console.log("in 'showMainScreen()', about to generate info for current site");
-  // for testing, 'new...' first
-  let sites_listitems = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
-  site_info_array.forEach((obj, index) => {
-    // prfix 'siteToShow-' assures unique ID, of all objects in site
-    sites_listitems += '<li class="dropdown-item" id = "siteToShow-' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
-  });
-  sitesChooseOrAddList.innerHTML = sites_listitems;
+  add_spp_button.style.display = "initial";
+  add_spp_button.style.visibility = "visible";
+  this_site_spp_list.style.display = "initial";
+  this_site_spp_list.style.visibility = "visible";
 
   // fill in species list for this site
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
@@ -1359,7 +1379,7 @@ function showMainScreen() {
       .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
   let spp_listitems_string = "";
   if (this_site_spp_array.length == 0) {
-    this_site_spp_list.innerHTML = '<li>no species yet</li>';
+    this_site_spp_list.innerHTML = '<li id="noSpp">no species yet</li>';
     return;
   }
   this_site_spp_array.forEach(spp_obj => {
@@ -1396,6 +1416,12 @@ this_site_spp_list.addEventListener('click', function (e) {
     if(!target) { return; } // If element doesn't exist
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
+    if (target.id == 'noSpp') {
+      // the "no species yet" message, ignore
+      console.log("the 'no species yet' message clicked, ignored");
+      current_spp_item_id = "";
+      return;
+    }
     current_spp_item_id = target.id; // store in global, to track which item worked on
 //        console.log("list ID: " + e.currentTarget.id);
 //        console.log("item ID: " + current_spp_item_id);
