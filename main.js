@@ -124,8 +124,6 @@ dbRequest.onupgradeneeded = (e) => {
   VnObjStore.put([], "vnAppStateBkup"); // not yet implemented
 };
 
-// for places to insert sitelist backup look for 'site_info_array.unshift', 
-//  'site_info_array.splice', 'whatIsAwaitingAccuracy'
 function bkupSiteList() {
   let sitesBkupRequest = db.transaction(["VNAppStates"], "readwrite")
     .objectStore("VNAppStates")
@@ -215,7 +213,7 @@ current_site_id
  document.addEventListener("DOMContentLoaded", function() {
    console.log('DOMContentLoaded');
    // trigger to refresh site list and species
-   shwSitesTimeout = setTimeout(showSites, 200);
+   shwMainScreenTimeout = setTimeout(showMainScreen, 200);
  });
 
 // for testing, region is "OR" (Oregon)
@@ -341,8 +339,7 @@ var aux_data_array = [];
 //   "value": the value
 // };
 
-var shwSitesTimeout = setTimeout(showSites, 10); // first time, there are no
-// sites, so nothing visible will happen
+var shwMainScreenTimeout = setTimeout(showMainScreen, 10);
 var match_list = document.getElementById("match-list");
 var sites_available_to_send_list = document.getElementById("sendFormSitesList");
 
@@ -483,12 +480,12 @@ function showListsError(err_msg) {
   document.getElementById("info_footer").innerHTML = err_msg;
 }
 
-var sitesNewOrAddList = document.getElementById('chooseOrAddNewSitesList');
+var sitesChooseOrAddList = document.getElementById('chooseOrAddNewSitesList');
 
-sitesNewOrAddList.addEventListener('click', function (e) {
+sitesChooseOrAddList.addEventListener('click', function (e) {
   // list is parent of all the list items
   var target = e.target; // Clicked element
-  while (target && target.parentNode !== sitesNewOrAddList) {
+  while (target && target.parentNode !== sitesChooseOrAddList) {
       target = target.parentNode; // If the clicked element isn't a direct child
       if(!target) { return; } // If element doesn't exist
   }
@@ -501,11 +498,12 @@ sitesNewOrAddList.addEventListener('click', function (e) {
       vnAddSiteModal.show();
     } else {
       // use existing site
-      // the element id is the string "st_" followed by the index number in the Sites array
-      let site_id_chosen = parseInt((target.id).split("_")[1]);
+      // the element ID is the string 'siteToShow-' followed by the site ID, which has its
+      // own prefix 'st_ followed by a number generated from the creation timestamp
+      let site_id_chosen = (target.id).split("-")[1];
         console.log("ID of site chosen = " + site_id_chosen);
         current_site_id = site_id_chosen;
-        showSites();
+        showMainScreen();
     }
   }
 });
@@ -737,7 +735,7 @@ match_list.addEventListener('click', function (e) {
         console.log('About to hide the Species Search modal');
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
         // trigger to refresh site list
-        shwSitesTimeout = setTimeout(showSites, 10);
+        shwMainScreenTimeout = setTimeout(showMainScreen, 10);
         aux_spec_for = "spp_items";
         enterAnyAuxData();
       }
@@ -841,7 +839,7 @@ match_list.addEventListener('click', function (e) {
             console.log('About to hide the Species Search modal for a placeholder item');
             bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
             // trigger to refresh site list
-            shwSitesTimeout = setTimeout(showSites, 10);
+            shwMainScreenTimeout = setTimeout(showMainScreen, 10);
           }
           // end of processing an existing placeholder
         }
@@ -1244,7 +1242,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     // dismiss this modal
     console.log('About to hide the Site Info modal');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
-    shwSitesTimeout = setTimeout(showSites, 10); // trigger to refresh site list
+    shwMainScreenTimeout = setTimeout(showMainScreen, 10); // trigger to refresh site info
     aux_spec_for = "sites";
     enterAnyAuxData();
   }
@@ -1316,7 +1314,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   latestLocation = undefined;
   whatIsAwaitingAccuracy = "";
   // refresh data, no matter what
-  shwSitesTimeout = setTimeout(showSites, 10);
+  shwMainScreenTimeout = setTimeout(showMainScreen, 10);
   // ask for AuxData, if any
   enterAnyAuxData();
 });
@@ -1329,7 +1327,7 @@ document.getElementById('btn_accept_accuracy').addEventListener('click', functio
 
 var site_card_hdr = document.getElementById('siteCardHeader');
 
-function showSites() {
+function showMainScreen() {
   // show the current site data
   if (site_info_array.length == 0) {
     site_card_hdr.innerHTML = '(No sites yet)';
@@ -1340,20 +1338,19 @@ function showSites() {
   // for testing, run this
  // findRegion();
 
-  console.log("in 'showSites()', about to display current site name");
-
+  console.log("in 'showMainScreen()', about to display current site name");
+  let siName = site_info_array.find(site => site.id === current_site_id).name;
+  console.log('current_site_id is ' + current_site_id + ', for site "' + siName + '"');
+  site_card_hdr.innerHTML = '' + siName;
   
-  console.log("in 'showSites()', about to generate list of sites");
+  console.log("in 'showMainScreen()', about to generate info for current site");
   // for testing, 'new...' first
   let sites_listitems = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
   site_info_array.forEach((obj, index) => {
-    if (obj.id == current_site_id) {
-      console.log('current_site_id is ' + current_site_id + ', for site "' + obj.name + '"');
-      site_card_hdr.innerHTML = '' + obj.name;
-    }
-    sites_listitems += '<li class="dropdown-item" id = "' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
+    // prfix 'siteToShow-' assures unique ID, of all objects in site
+    sites_listitems += '<li class="dropdown-item" id = "siteToShow-' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
   });
-  sitesNewOrAddList.innerHTML = sites_listitems;
+  sitesChooseOrAddList.innerHTML = sites_listitems;
 
   // fill in species list for this site
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
@@ -1389,30 +1386,27 @@ function showSites() {
     spp_listitems_string += '</li>'; // finish the list item
   });
   this_site_spp_list.innerHTML = spp_listitems_string;
-  // add a listener to the species list
-  // From what I have been able to find out, event listeners are deleted with the
-  // element if there are no refernces to that element, so re-creating them each
-  // time like this should work.
-  this_site_spp_list.addEventListener('click', function (e) {
-    // spp list is parent of all the list items
-    var target = e.target; // Clicked element
-    while (target && target.parentNode !== this_site_spp_list) {
-      target = target.parentNode; // If the clicked element isn't a direct child
-      if(!target) { return; } // If element doesn't exist
-    }
-    if (target.tagName === 'LI') { // tagName returns uppercase
-      current_spp_item_id = target.id; // store in global, to track which item worked on
+}; // end of fn showMainScreen
+
+this_site_spp_list.addEventListener('click', function (e) {
+  // spp list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== this_site_spp_list) {
+    target = target.parentNode; // If the clicked element isn't a direct child
+    if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    current_spp_item_id = target.id; // store in global, to track which item worked on
 //        console.log("list ID: " + e.currentTarget.id);
 //        console.log("item ID: " + current_spp_item_id);
 //        let spp = target.textContent;
 //        console.log(spp);
-      var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
-        keyboard: false
-      });
-      vnSppDtlModal.show();
-    };
-  }); // end of filling in species list  for current site
-}; // end of fn showSites
+    var vnSppDtlModal = new bootstrap.Modal(document.getElementById('vnSppDetailScreen'), {
+      keyboard: false
+    });
+    vnSppDtlModal.show();
+  };
+}); 
 
 // Why does the following work? Is 'vnSppDetailScreen' and object readable by its ID?
 vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
@@ -1451,7 +1445,7 @@ document.getElementById('btn-delete-spp-item').addEventListener('click', functio
  let i = site_spp_array.findIndex(itm => itm.id === current_spp_item_id);
  site_spp_array.splice(i, 1);
  bkupSpeciesList();
- showSites();
+ showMainScreen();
 });
 
 document.getElementById('btn-mark-uncertain-spp').addEventListener('click', function (e) {
@@ -1459,7 +1453,7 @@ document.getElementById('btn-mark-uncertain-spp').addEventListener('click', func
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "species";
  bkupSpeciesList();
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
- showSites();
+ showMainScreen();
 });
 
 document.getElementById('btn-mark-uncertain-genus').addEventListener('click', function (e) {
@@ -1467,7 +1461,7 @@ document.getElementById('btn-mark-uncertain-genus').addEventListener('click', fu
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "genus";
  bkupSpeciesList();
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
- showSites();
+ showMainScreen();
 });
 
 document.getElementById('btn-mark-not-uncertain').addEventListener('click', function (e) {
@@ -1475,7 +1469,7 @@ document.getElementById('btn-mark-not-uncertain').addEventListener('click', func
  site_spp_array.find(itm => itm.id === current_spp_item_id).uncertainty = "";
  bkupSpeciesList();
  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppDetailScreen')).hide();
- showSites();
+ showMainScreen();
 });
 
 // Why does the following work? Is 'vnPhListScreen' and object readable by its ID?
@@ -1573,7 +1567,7 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   placeholder_state = ""
   cur_placeholder = undefined;
   current_ph_code = "";
-  showSites();
+  showMainScreen();
 });
 
 function showPhPix() {
@@ -1698,7 +1692,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     }
   } // end of placeholder_state === "new"
   // trigger to refresh site list
-  shwSitesTimeout = setTimeout(showSites, 10);
+  shwMainScreenTimeout = setTimeout(showMainScreen, 10);
   // clear the keywords
   document.getElementById('placeholder_keywords').value = "";
 
@@ -1986,7 +1980,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 
 vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
   document.getElementById('auxdata_entry_inputs').innerHTML = "";
-  shwSitesTimeout = setTimeout(showSites, 10);
+  shwMainScreenTimeout = setTimeout(showMainScreen, 10);
 });
 
 document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
@@ -2075,7 +2069,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
   // console.log("aux_data_array");
   // console.log(aux_data_array);
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
-  // shwSitesTimeout = setTimeout(showSites, 10);
+  // shwMainScreenTimeout = setTimeout(showMainScreen, 10);
 });
 
 document.getElementById('btn-cancel-auxdata').addEventListener('click', function (e) {
@@ -2096,7 +2090,7 @@ document.getElementById('btn-cancel-auxdata').addEventListener('click', function
       break;
     default:
   }
-  // showSites(); on this modal hide
+  // showMainScreen(); on this modal hide
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataEntryScreen')).hide();
 });
 
@@ -2131,7 +2125,7 @@ sites_available_to_send_list.addEventListener('click', function (e) {
     // any other elements) followed by the index number in the Sites array
     //
     site_chosen_to_send = parseInt((target.id).split("_")[1]);
-//      console.log("site_chosen_to_send = " + site_chosen_to_send);
+    console.log("site_chosen_to_send = " + site_chosen_to_send);
     document.getElementById('siteChosenToSend').innerHTML =
         '<h3>' + target.textContent + '</h3>'
   }
@@ -2273,7 +2267,7 @@ document.getElementById('btn-reset-app').addEventListener('click', function () {
     site_info_array = [];
     bkupSiteList();
     // trigger to refresh site list and species
-    shwSitesTimeout = setTimeout(showSites, 200);
+    shwMainScreenTimeout = setTimeout(showMainScreen, 200);
     alert("Data erased, and app reset to defaults");
   } else {
     // drop through to dismissing this screen
