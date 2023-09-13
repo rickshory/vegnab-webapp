@@ -1348,6 +1348,9 @@ function showSites() {
   // for testing, run this
  // findRegion();
 
+  console.log("in 'showSites()', about to display current site name");
+
+  
   console.log("in 'showSites()', about to generate list of sites");
   // for testing, 'new...' first
   let sites_listitems = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
@@ -1356,7 +1359,7 @@ function showSites() {
       console.log('current_site_id is ' + current_site_id + ', for site "' + obj.name + '"');
       site_card_hdr.innerHTML = '' + obj.name;
     }
-    sites_listitems += '<li class="dropdown-item" id = "st_' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
+    sites_listitems += '<li class="dropdown-item" id = "' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
   });
   sitesNewOrAddList.innerHTML = sites_listitems;
 
