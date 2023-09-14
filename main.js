@@ -1345,7 +1345,7 @@ function showMainScreen() {
   };
 
   site_info_array.forEach((obj, index) => {
-    // prfix 'siteToShow-' assures unique ID, of all objects in site
+    // prefix 'siteToShow-' assures unique ID, of all objects in site
     let lstItm = '<li class="dropdown-item" id = "siteToShow-' 
         + obj.id + '"><h3>' +  obj.name + '</h3></li>';
     sites_listitems += lstItm;
@@ -2436,6 +2436,48 @@ settingsFormRegionsList.addEventListener('click', function (e) {
     );
   }
 });
+
+// Why does the following work? Is 'vnDeleteSitesScreen' and object readable by its ID?
+vnDeleteSitesScreen.addEventListener('shown.bs.modal', function (event) {
+  let old_sites_list_html = "";
+  if (site_info_array.length == 0) {
+    old_sites_list_html = '<li id = "siteToNix-noSites">(No sites yet)</li>';
+  } else {
+    site_info_array.forEach(st => {
+      // prefix 'siteToNix-' assures unique ID, of all objects in site
+      let lstItm = '<li class="st_nix_title" id = "siteToNix-' 
+        + st.id + '"><h3>' +  st.name + ', ' +  st.notes + ', ' +  st.date + '</h3></li>';
+      old_sites_list_html += lstItm;
+    });
+  };
+  document.getElementById("old_sites_list").innerHTML = old_sites_list_html;
+});
+
+
+document.getElementById('old_sites_list').addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== document.getElementById('old_sites_list')) {
+    target = target.parentNode; // If the clicked element isn't a direct child
+    if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    // the element ID is the string 'siteToNix-' followed by the site ID, which has its
+    // own prefix 'st_ followed by a number generated from the creation timestamp
+    let site_id_nix = (target.id).split("-")[1];
+    if (site_id_nix == 'noSites') {
+      // ignore click on 'no sites...' message
+      return;
+    }
+    if (confirm("Delete the following site, and all data for it?\n\n" + target.textContent)) {
+
+      alert("Not implemented yet")
+      shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnDeleteSitesScreen')).hide();
+    }
+  }
+});
+
 
 vnHelpAboutScreen.addEventListener('shown.bs.modal', function () {
   // following can't work because 'cacheName' is defined inside of 'sw.js', 
