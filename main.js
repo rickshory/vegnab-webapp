@@ -1330,11 +1330,13 @@ var this_site_spp_list = document.getElementById('sppListForCurSite');
 var add_spp_button = document.getElementById('btnAddSiteSpecies');
 
 function showMainScreen() {
-  let sites_listitems = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
+  let sites_listitems = '';
+  let lstItmAddNew = '<li class="dropdown-item" id = "siteAddNew"><h3>(Add new site)</h3></li>';
+  let newIsInList = false;
   // show the current site data
   if (site_info_array.length == 0) {
     console.log("in 'showMainScreen()', no sites yet");
-    sitesChooseOrAddList.innerHTML = sites_listitems;
+    sitesChooseOrAddList.innerHTML = lstItmAddNew; // only 'add new'
     site_card_hdr.innerHTML = '(No sites yet)';
     current_site_id = "";
     add_spp_button.style.display = "none";
@@ -1342,17 +1344,26 @@ function showMainScreen() {
     return;
   };
 
-  // for testing, 'new site' default remains first
   site_info_array.forEach((obj, index) => {
     // prfix 'siteToShow-' assures unique ID, of all objects in site
-    sites_listitems += '<li class="dropdown-item" id = "siteToShow-' + obj.id + '"><h3>' +  obj.name + '</h3></li>';
+    let lstItm = '<li class="dropdown-item" id = "siteToShow-' 
+        + obj.id + '"><h3>' +  obj.name + '</h3></li>';
+    sites_listitems += lstItm;
+    // put the 'add new' item after the 3rd site, if there are that many, and older sites after that
+    if (index == 2) {
+      sites_listitems += lstItmAddNew;
+      newIsInList = true;
+    }
   });
+  if (!newIsInList) {
+    sites_listitems += lstItmAddNew;
+  };
   sitesChooseOrAddList.innerHTML = sites_listitems;  
 
   if (current_site_id === '') {
     console.log("in 'showMainScreen()', no site chosen yet");
     sitesChooseOrAddList.innerHTML = sites_listitems;
-    site_card_hdr.innerHTML = '(Choose site)';
+    site_card_hdr.innerHTML = '(no site chosen)';
     add_spp_button.style.display = "none";
     this_site_spp_list.style.display = "none";
     return;  
