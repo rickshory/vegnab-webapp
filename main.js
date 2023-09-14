@@ -2443,7 +2443,10 @@ vnDeleteSitesScreen.addEventListener('shown.bs.modal', function (event) {
   if (site_info_array.length == 0) {
     old_sites_list_html = '<li id = "siteToNix-noSites">(No sites yet)</li>';
   } else {
-    site_info_array.forEach(st => {
+    // deep copy to protect original
+    let old_site_array = JSON.parse(JSON.stringify(site_info_array));
+    old_site_array.reverse(); // oldest first
+    old_site_array.forEach(st => {
       // prefix 'siteToNix-' assures unique ID, of all objects in site
       let lstItm = '<li class="st_nix_title" id = "siteToNix-' 
         + st.id + '"><h3>' +  st.name + ', ' +  st.notes + ', ' +  st.date + '</h3></li>';
@@ -2470,8 +2473,27 @@ document.getElementById('old_sites_list').addEventListener('click', function (e)
       return;
     }
     if (confirm("Delete the following site, and all data for it?\n\n" + target.textContent)) {
-
-      alert("Not implemented yet")
+      // don't allow this site to be current
+      if (current_site_id === site_id_nix) {
+        current_site_id = '';
+      }
+      // delete any aux data for the site
+      aux_data_array = aux_data_array.filter(d => !((d.for == 'sites') && (d.parent_id == site_id_nix)));
+      bkupAuxData();
+      // get any species for this site
+      let spp_to_nix_array = site_spp_array.filter(s =>
+        s.site_id === site_id_nix);
+      // delete any aux data for these species
+      aux_data_array = aux_data_array.filter(ad => 
+        !((ad.for == 'spp_items') && (spp_to_nix_array.find(rm => (rm.id === ad.parent_id)))));
+      bkupAuxData();
+      // delete the species items
+      site_spp_array = site_spp_array.filter(sp => !(sp.site_id === site_id_nix));
+      bkupSpeciesList();
+      // delete the site
+      site_info_array = site_info_array.filter(si => !(si.id === site_id_nix));
+      bkupSiteList();
+      alert("Site deleted")
       shwMainScreenTimeout = setTimeout(showMainScreen, 10);
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnDeleteSitesScreen')).hide();
     }
