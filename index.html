@@ -60,7 +60,7 @@
             <ul class="dropdown-menu" aria-labelledby="navbarCorrectionsDropdown">
               <li><a class="dropdown-item" href="#vnDeleteSitesScreen" data-bs-toggle="modal">
                 <h3>Old sites</h3></a></a></li>
-              <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
+              <li><a class="dropdown-item" href="#vnForgetSppScreen" data-bs-toggle="modal">
                 <h3>Remembered species</h3></a></a></li>
               <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
                 <h3>Spellings</h3></a></li>
@@ -872,6 +872,30 @@
       </div>
     </div>
     <!-- end of modal, delete old sites -->
+
+    <!-- begin modal, forget found species -->
+    <div id="vnForgetSppScreen" class="modal forget_spp_screen">
+      <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Forget found species. Tap an item to remove it from the app's priority list</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="forget_spp_list">
+              <!-- list will be filled on-the-fly -->
+              <ul id="forget_spp_list" class="list-unstyled">
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, forget found species -->
 
     <!-- begin modal, Help, About -->
     <div id="vnHelpAboutScreen" class="modal">

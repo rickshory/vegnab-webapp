@@ -2501,6 +2501,48 @@ document.getElementById('old_sites_list').addEventListener('click', function (e)
 });
 
 
+// Why does the following work? Is 'vnForgetSppScreen' and object readable by its ID?
+vnForgetSppScreen.addEventListener('shown.bs.modal', function (event) {
+  let found_spp_list_html = "";
+  if (found_spp_array.length == 0) {
+    found_spp_list_html = '<li id = "sppToFgt-noSpp">(No species found yet)</li>';
+  } else {
+    // array should already be sorted
+    found_spp_array.forEach(sp => {
+      // prefix 'sppToFgt-' assures unique ID, of all objects in site
+      let lstItm = '<li class="sp_fgt_title" id = "sppToFgt-' 
+        + sp.item_code + '"><h3>' +  sp.item_code + ': ' +  sp.item_description + '</h3></li>\n';
+      found_spp_list_html += lstItm;
+    });
+  };
+  document.getElementById("forget_spp_list").innerHTML = found_spp_list_html;
+});
+
+document.getElementById('forget_spp_list').addEventListener('click', function (e) {
+  // list is parent of all the list items
+  var target = e.target; // Clicked element
+  while (target && target.parentNode !== document.getElementById('forget_spp_list')) {
+    target = target.parentNode; // If the clicked element isn't a direct child
+    if(!target) { return; } // If element doesn't exist
+  }
+  if (target.tagName === 'LI') { // tagName returns uppercase
+    // the element ID is the string 'sppToFgt-' followed by the item code
+    let sp_id_fgt = (target.id).split("-")[1];
+    if (sp_id_fgt == 'noSpp') {
+      // ignore click on 'no species...' message
+      return;
+    }
+    if (confirm("Forget the following species from the priority list?\n\n" + target.textContent)) {
+      // delete the species
+      found_spp_array = found_spp_array.filter(sp => !(sp.item_code === sp_id_fgt));
+      bkupSpeciesList();
+      alert("Species forgotten")
+      shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnForgetSppScreen')).hide();
+    }
+  }
+});
+
 vnHelpAboutScreen.addEventListener('shown.bs.modal', function () {
   // following can't work because 'cacheName' is defined inside of 'sw.js', 
   //  which is in a different environment
