@@ -76,13 +76,11 @@
               Help
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarHelpDropdown">
-              <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
-                <h3>Help</h3></a></a></li>
-              <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
-                <h3>Tutorial</h3></a></li>
-              <li><hr class="dropdown-divider"></li>
+  <!--               <li><hr class="dropdown-divider"></li> -->
               <li><a class="dropdown-item" href="#vnHelpAboutScreen" data-bs-toggle="modal">
                 <h3>About</h3></a></li>
+              <li><a class="dropdown-item" href="#vnHelpVersionScreen" data-bs-toggle="modal">
+                <h3>Version</h3></a></li>
             </ul>
           </li>
         </ul>
@@ -910,6 +908,61 @@
           </div>
           <!-- Modal body -->
           <div class="modal-body">
+            <div id="about_text">
+              <p>
+                VegNab is a web app for collecting vegetation data. It's like a notebook, that 
+                helps you out in various ways: It lets you quickly enter correct spellings, 
+                by searching on scientific name or common name. It automatically gets a 
+                timestamp and GPS location for each item. It puts species from your local 
+                region (e.g., state or province) at the top of the search order.
+              </p>
+              <p>
+                VegNab does not track you in any way. Everything is in your browser, on your 
+                private mobile device. There is no login, and no cloud storage. You get your 
+                data sets by emailing them to yourself.
+              </p>
+              <p>
+                Data are organized by "sites". A site is just a name, under which you enter 
+                plant species. By default, VegNab makes only a species list for each site. 
+                However, you can set up VegNab to ask you for "auxiliary data" for each site, 
+                and/or each species item.
+              </p>
+              <p>
+                VegNab does not identify plants, but it allows you to defer identification by 
+                using your own "placeholder" names. You start a placeholder by typing a code, 
+                up to ten characters, that has at least one space in it. You can attach a 
+                gallery of photos to a placeholder, for later visual identification or 
+                reference. VegNab puts your auxiliary data onto your placeholders, the same as 
+                on known species. In this way, you could do an entire vegetation survey 
+                without knowing what any of the plants are -- as long as you can tell them apart.
+              </p>
+              <p>
+                After initial load, VegNab works entirely offline. VegNab remembers your data 
+                through page reloads, within certain limitation. Since all data are stored in 
+                the browser, they are under the browser's storage policy, which may "evict" data 
+                sets that become too large. The only way this is likely to happen is if you 
+                record many sites, without every clearing off old ones you have finished.
+              </p>
+            </div>
+          </div> <!-- end of modal body -->
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, Help, About -->
+
+    <!-- begin modal, Help, Version -->
+    <div id="vnHelpVersionScreen" class="modal">
+      <div class="modal-dialog modal-fullscreen-sm-down">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Version
+            </h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <!-- Modal body -->
+          <div class="modal-body">
             <div id="serviceworker-version">
 
             </div>
@@ -917,7 +970,7 @@
         </div>
       </div>
     </div>
-    <!-- end of modal, Help, About -->
+    <!-- end of modal, Help, Verion -->
 
     <!-- begin modal, under construction -->
     <div id="vnUnderConstructionScreen" class="modal">
