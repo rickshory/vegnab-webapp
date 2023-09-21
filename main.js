@@ -2195,7 +2195,23 @@ function sendData() {
 
   let emailBodyStr = "";
 
-  emailBodyStr = getEmailBodyHumanReadable(siteObj.id);
+  switch(sentDataFormat) {
+    case "fmtHumanReadable":
+      emailBodyStr = getEmailBodyHumanReadable(siteObj.id);
+      break;
+    case "fmtCsv":
+      emailBodyStr = getEmailBodyAsCsv(siteObj.id);
+      break;
+    // case "fmtXml":
+    //   emailBodyStr = getEmailBodyAsXml(siteObj.id);
+    //   break;
+    // case "fmtJson":
+    //   emailBodyStr = getEmailBodyAsJson(siteObj.id);
+    //   break;
+    default:
+      alert("Format not implemented yet, defaulting to Human Readable")
+      emailBodyStr = getEmailBodyHumanReadable(siteObj.id);
+    }
 
   console.log(emailBodyStr);
     //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
@@ -2213,6 +2229,96 @@ function sendData() {
 } // end of fn sendData
 
 function getEmailBodyHumanReadable(siteID) {
+  let st = "";
+  let siteObj = site_info_array.find(s => s.id == siteID);
+  st += 'Site name: ' + siteObj.name + '\n'
+    + 'Notes: ' + siteObj.notes + '\n'
+    + 'Date: ' + siteObj.date.toISOString() + '\n';
+  if (false) { // // TODO: validate here
+    st += 'Location unknown\n';
+  } else {
+    st += 'Location: (' + siteObj.latitude
+        + ', ' + siteObj.longitude
+        + ') accuracy ' + siteObj.accuracy + ' meters\n';
+  }
+  // add any auxiliary data for the site
+  let this_site_aux_data_array = aux_data_array.filter(d => d.parent_id === siteObj.id);
+  this_site_aux_data_array.forEach(ad => {
+    st += ad.name + ': ' + ad.value + '\n';
+  });
+  
+  let this_site_spp_array = site_spp_array.filter(spp_obj =>
+    spp_obj.site_id === siteID)
+    .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
+  if (this_site_spp_array.length == 0) {
+    st += '\n(No species yet)';
+  } else {
+    console.log(this_site_spp_array);
+    let descr_string = "";
+    this_site_spp_array.forEach((itm, spp_index) => {
+      // both real species and placeholders have a 'species' field for display
+      if (itm.type === "ph") { // a placeholder
+        descr_string = itm.species;
+        // placeholders do not have Uncertainty
+      } else { // a real species
+        let sst = itm.species;
+        if (itm.uncertainty == "species") {
+          sst = "Probably " + itm.species + ", but can't determine species"
+        }
+        if (itm.uncertainty == "genus") {
+          sst = "Look like " + itm.species + ", but unsure at genus level"
+        }
+        descr_string = sst;
+      }
+      // add any auxiliary data
+      let this_aux_data_array = aux_data_array.filter(d => d.parent_id === itm.id);
+      this_aux_data_array.forEach(ad => {
+        descr_string += '; "' + ad.name + '" = ' + ad.value;
+      });
+      st += '\n' + descr_string
+          + '; ' + itm.date.toISOString()
+          + '; ' + '(' + itm.latitude + ', ' + itm.longitude
+              + ') accuracy ' + itm.accuracy + ' meters';
+
+    });
+    // done with species items, add the info for any placeholders used
+    let this_site_ph_array = placeholders_array.filter(ph_obj =>
+      this_site_spp_array.find(itm => (itm.code === ph_obj.code)));
+    if (this_site_ph_array.length > 0) {
+      console.log(this_site_ph_array);
+      st += '\n\n Placeholders used:';
+      this_site_ph_array.forEach(ph_obj => {
+        st += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
+        st += '\nrecorded ' + ph_obj.date.toISOString();
+        st += ' on site "'
+          + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
+        st += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
+                + ') accuracy ' + ph_obj.accuracy + ' meters';
+        // reference any photos
+        if (ph_obj.photos.length > 0) {
+          st += '\nPhotos:'
+          ph_obj.photos.forEach(img => {
+            st += '\nFilename: ' + img.name
+              + '\n    lastModified: ' + img.lastModified
+              + '\n    bytes: ' + img.size;
+              // test if a photo requested from the camera, not already stored,
+              // and therefore exists only as a blob in the browser
+              if (img.name.length > 30) {
+                // TODO find a more reliable test than length of filename
+                st += '\n      This photo cannot be saved on your phone ';
+                // TODO try to find a way to upload it, and make it available
+              }
+          }); // end of referencing this photo
+        }; // end of referencing this placeholder's photos
+      }); // end of inserting this placeholder
+    }; // end of inserting placeholders
+//    console.log(st);
+  }
+  return st;
+}
+
+function getEmailBodyAsCsv(siteID) {
+  console.log("in getEmailBodyAsCsv");
   let st = "";
   let siteObj = site_info_array.find(s => s.id == siteID);
   st += 'Site name: ' + siteObj.name + '\n'
@@ -2359,13 +2465,16 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
   // set input value as string, even if numeric
   document.getElementById("inputSiteTargetAccuracy").value = "" + siteLocTargetAccuracy;
   document.getElementById("ckWaitSiteAcc").checked = waitForSiteLocTarget;
-  // set up Species accurady section
+  // set up Species accuracy section
   document.getElementById("inputSppTargetAccuracy").value = "" + sppLocTargetAccuracy;
   document.getElementById("ckWaitSppAcc").checked = waitForSppLocTarget;
   // set up 'data format' section
   switch(sentDataFormat) {
     case "fmtHumanReadable":
       document.getElementById('sendDataHumanReadable').checked = true;
+      break;
+    case "fmtCsv":
+      document.getElementById('sendDataAsCSV').checked = true;
       break;
     case "fmtXml":
       document.getElementById('sendDataAsXML').checked = true;
@@ -2419,6 +2528,9 @@ document.getElementById("ckWaitSppAcc").addEventListener('click', function (e) {
 
 // klunky, separate listeners for each radio button
 document.getElementById("sendDataHumanReadable").addEventListener('change', function (e) {
+  if (this.checked) { sentDataFormat = this.value; }});
+
+document.getElementById("sendDataAsCSV").addEventListener('change', function (e) {
   if (this.checked) { sentDataFormat = this.value; }});
 
 document.getElementById("sendDataAsXML").addEventListener('change', function (e) {
