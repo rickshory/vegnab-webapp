@@ -2192,24 +2192,11 @@ function sendData() {
   let siteObj = site_info_array[site_chosen_to_send];
   let emailSubjectStr = "VegNab webapp data, " + siteObj.name;
   console.log('siteObj: ' + siteObj);
-  let emailBodyStr = 'Site name: ' + siteObj.name + '\n'
-    + 'Notes: ' + siteObj.notes + '\n'
-    + 'Date: ' + siteObj.date.toISOString() + '\n';
-  if (false) { // // TODO: validate here
-    emailBodyStr += 'Location unknown\n';
-  } else {
-    emailBodyStr += 'Location: (' + siteObj.latitude
-        + ', ' + siteObj.longitude
-        + ') accuracy ' + siteObj.accuracy + ' meters\n';
-  }
-  // add any auxiliary data for the site
-  let this_site_aux_data_array = aux_data_array.filter(d => d.parent_id === siteObj.id);
-  this_site_aux_data_array.forEach(ad => {
-    emailBodyStr += ad.name + ': ' + ad.value + '\n';
-  });
 
-  emailBodyStr += getEmailBodyHumanReadable(siteObj.id);
-  
+  let emailBodyStr = "";
+
+  emailBodyStr = getEmailBodyHumanReadable(siteObj.id);
+
   console.log(emailBodyStr);
     //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
   // spaces, linebreaks and tabs get correctly encoded
@@ -2227,6 +2214,22 @@ function sendData() {
 
 function getEmailBodyHumanReadable(siteID) {
   let st = "";
+  let siteObj = site_info_array.find(s => s.id == siteID);
+  st += 'Site name: ' + siteObj.name + '\n'
+    + 'Notes: ' + siteObj.notes + '\n'
+    + 'Date: ' + siteObj.date.toISOString() + '\n';
+  if (false) { // // TODO: validate here
+    st += 'Location unknown\n';
+  } else {
+    st += 'Location: (' + siteObj.latitude
+        + ', ' + siteObj.longitude
+        + ') accuracy ' + siteObj.accuracy + ' meters\n';
+  }
+  // add any auxiliary data for the site
+  let this_site_aux_data_array = aux_data_array.filter(d => d.parent_id === siteObj.id);
+  this_site_aux_data_array.forEach(ad => {
+    st += ad.name + ': ' + ad.value + '\n';
+  });
   
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteID)
