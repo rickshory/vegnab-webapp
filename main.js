@@ -2207,11 +2207,32 @@ function sendData() {
   this_site_aux_data_array.forEach(ad => {
     emailBodyStr += ad.name + ': ' + ad.value + '\n';
   });
+
+  emailBodyStr += getEmailBodyHumanReadable(siteObj.id);
+  
+  console.log(emailBodyStr);
+    //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
+  // spaces, linebreaks and tabs get correctly encoded
+  // spaces and linebreaks come through in Gmail, but tabs turn into spaces
+  let emailMsg = 'mailto:' + emailAddrString
+    + '?subject=' + encodeURIComponent(emailSubjectStr)
+    + '&body=' +  encodeURIComponent(emailBodyStr);
+  // check message is not too long, etc.
+
+  window.open(emailMsg); // works on phone, not on laptop
+
+  console.log('About to hide the Send Data modal');
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
+} // end of fn sendData
+
+function getEmailBodyHumanReadable(siteID) {
+  let st = "";
+  
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
-    spp_obj.site_id === siteObj.id)
+    spp_obj.site_id === siteID)
     .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
   if (this_site_spp_array.length == 0) {
-    emailBodyStr += '\n(No species yet)';
+    st += '\n(No species yet)';
   } else {
     console.log(this_site_spp_array);
     let descr_string = "";
@@ -2235,7 +2256,7 @@ function sendData() {
       this_aux_data_array.forEach(ad => {
         descr_string += '; "' + ad.name + '" = ' + ad.value;
       });
-      emailBodyStr += '\n' + descr_string
+      st += '\n' + descr_string
           + '; ' + itm.date.toISOString()
           + '; ' + '(' + itm.latitude + ', ' + itm.longitude
               + ') accuracy ' + itm.accuracy + ' meters';
@@ -2246,47 +2267,36 @@ function sendData() {
       this_site_spp_array.find(itm => (itm.code === ph_obj.code)));
     if (this_site_ph_array.length > 0) {
       console.log(this_site_ph_array);
-      emailBodyStr += '\n\n Placeholders used:';
+      st += '\n\n Placeholders used:';
       this_site_ph_array.forEach(ph_obj => {
-        emailBodyStr += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
-        emailBodyStr += '\nrecorded ' + ph_obj.date.toISOString();
-        emailBodyStr += ' on site "'
+        st += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
+        st += '\nrecorded ' + ph_obj.date.toISOString();
+        st += ' on site "'
           + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
-        emailBodyStr += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
+        st += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
                 + ') accuracy ' + ph_obj.accuracy + ' meters';
         // reference any photos
         if (ph_obj.photos.length > 0) {
-          emailBodyStr += '\nPhotos:'
+          st += '\nPhotos:'
           ph_obj.photos.forEach(img => {
-            emailBodyStr += '\nFilename: ' + img.name
+            st += '\nFilename: ' + img.name
               + '\n    lastModified: ' + img.lastModified
               + '\n    bytes: ' + img.size;
               // test if a photo requested from the camera, not already stored,
               // and therefore exists only as a blob in the browser
               if (img.name.length > 30) {
                 // TODO find a more reliable test than length of filename
-                emailBodyStr += '\n      This photo cannot be saved on your phone ';
+                st += '\n      This photo cannot be saved on your phone ';
                 // TODO try to find a way to upload it, and make it available
               }
           }); // end of referencing this photo
         }; // end of referencing this placeholder's photos
       }); // end of inserting this placeholder
     }; // end of inserting placeholders
-    console.log(emailBodyStr);
+//    console.log(st);
   }
-    //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
-  // spaces, linebreaks and tabs get correctly encoded
-  // spaces and linebreaks come through in Gmail, but tabs turn into spaces
-  let emailMsg = 'mailto:' + emailAddrString
-    + '?subject=' + encodeURIComponent(emailSubjectStr)
-    + '&body=' +  encodeURIComponent(emailBodyStr);
-  // check message is not too long, etc.
-
-  window.open(emailMsg); // works on phone, not on laptop
-
-  console.log('About to hide the Send Data modal');
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSendDataScreen')).hide();
-} // end of fn sendData
+  return st;
+}
 
 document.getElementById('btn-reset-app').addEventListener('click', function () {
   if (confirm("This will erase all your data. Are you sure?")) {
