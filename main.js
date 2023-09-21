@@ -2148,6 +2148,27 @@ vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
   })
   sites_available_to_send_list.innerHTML = strSitesAvaiableList;
   document.getElementById('siteChosenToSend').innerHTML = '';
+
+  // remind which data format is selected
+  let stMsg = "";
+  switch(sentDataFormat) {
+    case "fmtHumanReadable":
+      stMsg = 'Human Readable';
+      break;
+    case "fmtCsv":
+      stMsg = 'CSV';
+      break;
+    case "fmtXml":
+      stMsg = 'XML';
+      break;
+    case "fmtJson":
+      stMsg = 'JSON';
+      break;
+    default:
+      stMsg = 'not known';
+      // code block
+    };
+  document.getElementById('msgSentDataFormat').innerHTML = stMsg;
 });
 
 sites_available_to_send_list.addEventListener('click', function (e) {
