@@ -2340,91 +2340,98 @@ function getEmailBodyHumanReadable(siteID) {
 
 function getEmailBodyAsCsv(siteID) {
   console.log("in getEmailBodyAsCsv");
-  let st = "";
+  let st = '';
   let siteObj = site_info_array.find(s => s.id == siteID);
-  st += 'Site name: ' + siteObj.name + '\n'
-    + 'Notes: ' + siteObj.notes + '\n'
-    + 'Date: ' + siteObj.date.toISOString() + '\n';
+  st += '"Site name","' + siteObj.name + '"\n'
+    + '"Notes","' + siteObj.notes + '"\n'
+    + '"Date","' + siteObj.date.toISOString() + '"\n';
   if (false) { // // TODO: validate here
-    st += 'Location unknown\n';
+    st += '"Location","unknown"\n';
   } else {
-    st += 'Location: (' + siteObj.latitude
-        + ', ' + siteObj.longitude
-        + ') accuracy ' + siteObj.accuracy + ' meters\n';
+    st += '"Location","' + siteObj.latitude
+        + ', ' + siteObj.longitude 
+        + '"\n"Accuracy","' + siteObj.accuracy + '","meters"\n';
   }
   // add any auxiliary data for the site
   let this_site_aux_data_array = aux_data_array.filter(d => d.parent_id === siteObj.id);
   this_site_aux_data_array.forEach(ad => {
-    st += ad.name + ': ' + ad.value + '\n';
+    st += '"' + ad.name + '","' + ad.value + '"\n';
   });
   
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
     spp_obj.site_id === siteID)
     .sort((s1, s2) => (s1.date < s2.date) ? 1 : (s1.date > s2.date) ? -1 : 0);
   if (this_site_spp_array.length == 0) {
-    st += '\n(No species yet)';
-  } else {
-    console.log(this_site_spp_array);
-    let descr_string = "";
-    this_site_spp_array.forEach((itm, spp_index) => {
-      // both real species and placeholders have a 'species' field for display
-      if (itm.type === "ph") { // a placeholder
-        descr_string = itm.species;
-        // placeholders do not have Uncertainty
-      } else { // a real species
-        let sst = itm.species;
-        if (itm.uncertainty == "species") {
-          sst = "Probably " + itm.species + ", but can't determine species"
-        }
-        if (itm.uncertainty == "genus") {
-          sst = "Look like " + itm.species + ", but unsure at genus level"
-        }
-        descr_string = sst;
-      }
-      // add any auxiliary data
-      let this_aux_data_array = aux_data_array.filter(d => d.parent_id === itm.id);
-      this_aux_data_array.forEach(ad => {
-        descr_string += '; "' + ad.name + '" = ' + ad.value;
-      });
-      st += '\n' + descr_string
-          + '; ' + itm.date.toISOString()
-          + '; ' + '(' + itm.latitude + ', ' + itm.longitude
-              + ') accuracy ' + itm.accuracy + ' meters';
+    st += '\n"No species yet"';
+    return st;
+  };
+  
+  console.log(this_site_spp_array);
+  // add headers
+  st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacualar","Uncertainty",'
+    + '"Timestamp (UT)","Location","Accuracy (m)","Auxiliary data"'
 
+  let descr_string = "";
+  this_site_spp_array.forEach((itm) => {
+    // real species and placeholders have different fields
+    let arDsc = (itm.species).split(":");
+    if (itm.type === "ph") { // a placeholder
+      st += '\n"' + itm.code + '","' + arDsc[1].trim() + '","","","","",""'
+      // placeholders do not have "Genus","Species","Subspecies or Variety","Vernacualar","Uncertainty"
+    } else { // a real species
+      // arDsc is ["Code", " Description"]
+      let arNms = arDsc[1].split(",");
+      // arNms is [" Scientific name", " Common names"]
+      let arSci = arNms[0].trim().split(" ");
+      // arSci is ["Genus", "Species", "subspp/var (if exists)"]
+      let stSub = arSci.length > 2 ? arSci.slice(2).join(" ") : '';
+      let stVrn = arNms.length > 1 ? arNms[1].trim() : '';
+      st += '\n"' + arDsc[0] + '","' + arDsc[1].trim() + '","' + arSci[0] + '","' + arSci[1] + '","' 
+          + stSub + '","' + stVrn + '","' + itm.uncertainty + '"';
+    }
+    st += ',"' + itm.date.toISOString()
+        + '","' + itm.latitude + ', ' + itm.longitude + '","' + itm.accuracy + '"';
+    // add any auxiliary data
+    let this_aux_data_array = aux_data_array.filter(d => d.parent_id === itm.id);
+    this_aux_data_array.forEach(ad => {
+      // TODO: make these into columns
+      st += ',"' + ad.name + ': ' + ad.value + '"';
     });
-    // done with species items, add the info for any placeholders used
-    let this_site_ph_array = placeholders_array.filter(ph_obj =>
-      this_site_spp_array.find(itm => (itm.code === ph_obj.code)));
-    if (this_site_ph_array.length > 0) {
-      console.log(this_site_ph_array);
-      st += '\n\n Placeholders used:';
-      this_site_ph_array.forEach(ph_obj => {
-        st += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
-        st += '\nrecorded ' + ph_obj.date.toISOString();
-        st += ' on site "'
-          + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
-        st += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
-                + ') accuracy ' + ph_obj.accuracy + ' meters';
-        // reference any photos
-        if (ph_obj.photos.length > 0) {
-          st += '\nPhotos:'
-          ph_obj.photos.forEach(img => {
-            st += '\nFilename: ' + img.name
-              + '\n    lastModified: ' + img.lastModified
-              + '\n    bytes: ' + img.size;
-              // test if a photo requested from the camera, not already stored,
-              // and therefore exists only as a blob in the browser
-              if (img.name.length > 30) {
-                // TODO find a more reliable test than length of filename
-                st += '\n      This photo cannot be saved on your phone ';
-                // TODO try to find a way to upload it, and make it available
-              }
-          }); // end of referencing this photo
-        }; // end of referencing this placeholder's photos
-      }); // end of inserting this placeholder
-    }; // end of inserting placeholders
+
+  });
+  // done with species items, add the info for any placeholders used
+  let this_site_ph_array = placeholders_array.filter(ph_obj =>
+    this_site_spp_array.find(itm => (itm.code === ph_obj.code)));
+  if (this_site_ph_array.length > 0) {
+    console.log(this_site_ph_array);
+    st += '\n\n Placeholders used:';
+    this_site_ph_array.forEach(ph_obj => {
+      st += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
+      st += '\nrecorded ' + ph_obj.date.toISOString();
+      st += ' on site "'
+        + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
+      st += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
+              + ') accuracy ' + ph_obj.accuracy + ' meters';
+      // reference any photos
+      if (ph_obj.photos.length > 0) {
+        st += '\nPhotos:'
+        ph_obj.photos.forEach(img => {
+          st += '\nFilename: ' + img.name
+            + '\n    lastModified: ' + img.lastModified
+            + '\n    bytes: ' + img.size;
+            // test if a photo requested from the camera, not already stored,
+            // and therefore exists only as a blob in the browser
+            if (img.name.length > 30) {
+              // TODO find a more reliable test than length of filename
+              st += '\n      This photo cannot be saved on your phone ';
+              // TODO try to find a way to upload it, and make it available
+            }
+        }); // end of referencing this photo
+      }; // end of referencing this placeholder's photos
+    }); // end of inserting this placeholder
+  }; // end of inserting placeholders
 //    console.log(st);
-  }
+
   return st;
 }
 
