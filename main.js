@@ -2404,26 +2404,26 @@ function getEmailBodyAsCsv(siteID) {
     this_site_spp_array.find(itm => (itm.code === ph_obj.code)));
   if (this_site_ph_array.length > 0) {
     console.log(this_site_ph_array);
-    st += '\n\n Placeholders used:';
+    st += '\n\n"Placeholders used"';
     this_site_ph_array.forEach(ph_obj => {
-      st += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
-      st += '\nrecorded ' + ph_obj.date.toISOString();
-      st += ' on site "'
-        + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
-      st += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
-              + ') accuracy ' + ph_obj.accuracy + ' meters';
+      st += '\n\n"' + ph_obj.code + '","' + ph_obj.keywords.join(" ") + '"';
+      st += '\n"recorded","' + ph_obj.date.toISOString() + '"';
+      st += '"on site","'
+        + site_info_array.find(site => site.id === ph_obj.site_id).name 
+        + '","at","' + ph_obj.latitude + ', ' + ph_obj.longitude
+        + '","accuracy","' + ph_obj.accuracy + '","meters"';
       // reference any photos
       if (ph_obj.photos.length > 0) {
-        st += '\nPhotos:'
+        st += '\n"Photos"'
         ph_obj.photos.forEach(img => {
-          st += '\nFilename: ' + img.name
-            + '\n    lastModified: ' + img.lastModified
-            + '\n    bytes: ' + img.size;
+          st += '\n"Filename","' + img.name + '"'
+            + '\n" ","lastModified","' + img.lastModified + '"'
+            + '\n" ","bytes","' + img.size + '"';
             // test if a photo requested from the camera, not already stored,
             // and therefore exists only as a blob in the browser
             if (img.name.length > 30) {
               // TODO find a more reliable test than length of filename
-              st += '\n      This photo cannot be saved on your phone ';
+              st += '\n" "," ","This photo cannot be saved on your phone"';
               // TODO try to find a way to upload it, and make it available
             }
         }); // end of referencing this photo
@@ -2431,7 +2431,6 @@ function getEmailBodyAsCsv(siteID) {
     }); // end of inserting this placeholder
   }; // end of inserting placeholders
 //    console.log(st);
-
   return st;
 }
 
