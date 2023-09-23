@@ -334,7 +334,7 @@ var aux_data_array = [];
 //   "id": numeric text from timestamp when created
 //   "for": 'sites' or 'species_items'; may not be needed
 //   "parent_id": the id of the site or speecies item record
-//   "spec_id": for looking up the name, and for validation
+//   "spec_id": for updating naame, if spec edited later
 //   "name": maybe store here instead of lookup
 //   "value": the value
 // };
@@ -1939,6 +1939,14 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
       a.min = "" + document.getElementById("inputAuxSpecMin").value.toString().trim();
       a.max = "" + document.getElementById("inputAuxSpecMax").value.toString().trim();
       a.required = document.getElementById("ckAuxSpecRequired").checked;
+      // update the name in all findable aux data
+      aux_data_array.forEach(d => {
+        if (d.spec_id == current_aux_spec_id) {
+          d.name = auxSpecNameString;
+        }
+      });
+      bkupAuxData();
+      bkupAuxSpecs();
       break;
     default:
       // do nothing
@@ -1956,6 +1964,14 @@ document.getElementById('btn-delete-auxdata-spec').addEventListener('click', fun
   } else {
     aux_specs_array.splice(ix, 1);
     bkupAuxSpecs();
+      // blank the spec in any data for this spec, but retain the data
+    aux_data_array.forEach(d => {
+      if (d.spec_id == current_aux_spec_id) {
+        d.spec_id = "";
+      }
+    });
+    bkupAuxData();
+    current_aux_spec_id = "";
   }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
 });
@@ -2092,7 +2108,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         "id": 'ad_' + new Date().getTime().toString(),
         "for": sp.for, // may be redundant
         "parent_id": parID, // id of the site or species item
-        "spec_id": sp.id, // may be redundant
+        "spec_id": sp.id, // parent spec may get deleted
         "name": sp.name,
         "value": stVal
       };
