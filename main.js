@@ -1964,13 +1964,6 @@ document.getElementById('btn-delete-auxdata-spec').addEventListener('click', fun
   } else {
     aux_specs_array.splice(ix, 1);
     bkupAuxSpecs();
-      // blank the spec in any data for this spec, but retain the data
-    aux_data_array.forEach(d => {
-      if (d.spec_id == current_aux_spec_id) {
-        d.spec_id = "";
-      }
-    });
-    bkupAuxData();
     current_aux_spec_id = "";
   }
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnAuxDataSpecInfoScreen')).hide();
@@ -2108,7 +2101,8 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         "id": 'ad_' + new Date().getTime().toString(),
         "for": sp.for, // may be redundant
         "parent_id": parID, // id of the site or species item
-        "spec_id": sp.id, // parent spec may get deleted
+        "spec_id": sp.id, // parent spec may get deleted, but
+        // spec id retained here to distinguish columns in case user names two specs the same
         "name": sp.name,
         "value": stVal
       };
