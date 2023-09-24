@@ -271,7 +271,7 @@ current_site_id
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
 // todo: automatically acquire or input region
-// var region_code = "OR";
+ var region_code = "OR";
 // default, ignore subspecies and varieties
 // can change in 'Options' screen
 //var include_subspp_var = false;
@@ -518,9 +518,8 @@ function polygonContainsPt(bounds, lng, lat) {
 function showAppStatus(rtn_ok) {
   if (rtn_ok) {
     try {
-      let rc = app_settings_array[0].region_code;
       document.getElementById("info_footer").innerHTML =
-        "Region: " + (regions_array.find(r => r.code == rc).name);
+        "Region: " + (regions_array.find(r => r.code == region_code).name);
       // more status later
     } catch(err) {
       document.getElementById("info_footer").innerHTML = err.message;
@@ -573,7 +572,7 @@ async function makeLocalAndNonlocalSppArrays() {
   // retain separate fields in original array but concatenate in local and
   //  nonlocal for easier searching
 	let tmp_local_array = nrcs_spp_array.filter(spp_obj =>
-		((spp_obj.distribution.includes(app_settings_array[0].region_code + ",")) &&
+		((spp_obj.distribution.includes(region_code + ",")) &&
     (app_settings_array[0].include_subspp_var ? true : (spp_obj.subspp_var == ""))));
 	local_spp_array = tmp_local_array.map(orig_obj => {
 		let new_properties = {
@@ -599,8 +598,6 @@ async function makeLocalAndNonlocalSppArrays() {
 		};
 		return new_properties;
 	});
-//	console.log(nonlocal_spp_array);
-//  return "Region: " + (regions_array.find(r => r.code == app_settings_array[0].region_code).name);
   return true;
 };
 
@@ -2558,7 +2555,7 @@ document.getElementById('btn-reset-app').addEventListener('click', function () {
 vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSettingsScreen 'shown.bs.modal'");
   // set up Regions section
-  let region_item = regions_array.find(itm => itm.code === app_settings_array[0].region_code);
+  let region_item = regions_array.find(itm => itm.code === region_code);
   if (region_item === "undefined") {
     document.getElementById('regionChosen').innerHTML
         = "no region chosen";
@@ -2685,8 +2682,7 @@ settingsFormRegionsList.addEventListener('click', function (e) {
     // the element id is the string "regionCode_" (to avoid confusion with
     // any other elements) followed by the two-letter code of the region
     //
-    app_settings_array[0].region_code = (target.id).split("_")[1];
-//      console.log("app_settings_array[0].region_code = " + app_settings_array[0].region_code);
+    region_code = (target.id).split("_")[1];
     document.getElementById('regionChosen').innerHTML =
         '<h3>' + target.textContent + '</h3>';
     bkupAppSettings();
