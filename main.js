@@ -333,9 +333,10 @@ var aux_data_array = [];
 //  = {
 //   "id": numeric text from timestamp when created
 //   "for": 'sites' or 'species_items'; may not be needed
-//   "parent_id": the id of the site or speecies item record
-//   "spec_id": for updating naame, if spec edited later
-//   "name": maybe store here instead of lookup
+//   "parent_id": the id of the site or species item record
+//   "spec_id": for updating name if spec edited later, and distinguishing columns if 
+//      user named multiple specs the same
+//   "name": store here instead of lookup, spec may be deleted
 //   "value": the value
 // };
 
@@ -2102,7 +2103,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
         "for": sp.for, // may be redundant
         "parent_id": parID, // id of the site or species item
         "spec_id": sp.id, // parent spec may get deleted, but
-        // spec id retained here to distinguish columns in case user names two specs the same
+        // spec_id retained here to distinguish columns in case user names two specs the same
         "name": sp.name,
         "value": stVal
       };
@@ -2375,13 +2376,32 @@ function getEmailBodyAsCsv(siteID) {
     st += '\n"No species yet"';
     return st;
   };
-  
   console.log(this_site_spp_array);
+
   // add headers
   st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacualar","Uncertainty",'
-    + '"Timestamp (UT)","Location","Accuracy (m)","Auxiliary data"'
+    + '"Timestamp (UT)","Location","Accuracy (m)"';
+  // get any auxiliary data headers
+  let aux_columns_array = [];
+  // look through the auxdata and extract columns
+  this_site_spp_array.forEach(s =>  {
+    aux_data_array.filter(d => d.parent_id === s.id).forEach(ad => {
+      // spec_id is unique for each 'kind' of aux data; if multiple are spelled the same
+      // they will break out into separate columns, no consistent way to aggregate them
+      if (!(aux_columns_array.some(c => c.col_id === ad.spec_id))) {
+        let newColumn = {
+          "col_id": ad.spec_id,
+          "col_text": ad.name
+        };
+        aux_columns_array.push(newColumn);       
+      };
+    });
+  });
+  // write any aux data column heads
+  aux_columns_array.forEach(c => {
+    st += ',"' + c.col_text + '"';
+  });
 
-  let descr_string = "";
   this_site_spp_array.forEach((itm) => {
     // real species and placeholders have different fields
     let arDsc = (itm.species).split(":");
@@ -2402,12 +2422,23 @@ function getEmailBodyAsCsv(siteID) {
     st += ',"' + itm.date.toISOString()
         + '","' + itm.latitude + ', ' + itm.longitude + '","' + itm.accuracy + '"';
     // add any auxiliary data
-    let this_aux_data_array = aux_data_array.filter(d => d.parent_id === itm.id);
-    this_aux_data_array.forEach(ad => {
-      // TODO: make these into columns
-      st += ',"' + ad.name + ': ' + ad.value + '"';
+    // lay out the values array, empty at first
+    let aux_values_array = [];
+    // as many columns as the header
+    aux_columns_array.forEach(c => {
+      aux_values_array.push('');
     });
-
+    aux_data_array.filter(d => d.parent_id === itm.id).forEach(ad => {
+      // drop the values in the correct slots
+      let i = aux_columns_array.findIndex(c => c.col_id === ad.spec_id);
+      if (i > -1) { // should always be, since we just created it
+        aux_values_array[i] = '' + ad.value;
+      };
+    });
+    // write the values on the end of the row, under their correct columns
+    aux_values_array.forEach(av => {
+      st += ',"' + av + '"';
+    });
   });
   // done with species items, add the info for any placeholders used
   let this_site_ph_array = placeholders_array.filter(ph_obj =>
