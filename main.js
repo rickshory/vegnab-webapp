@@ -2169,12 +2169,12 @@ vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
     case "fmtCsv":
       stMsg = 'CSV';
       break;
-    case "fmtXml":
-      stMsg = 'XML';
-      break;
-    case "fmtJson":
-      stMsg = 'JSON';
-      break;
+    // case "fmtXml":
+    //   stMsg = 'XML';
+    //   break;
+    // case "fmtJson":
+    //   stMsg = 'JSON';
+    //   break;
     default:
       stMsg = 'not known';
       // code block
@@ -2544,12 +2544,12 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
     case "fmtCsv":
       document.getElementById('sendDataAsCSV').checked = true;
       break;
-    case "fmtXml":
-      document.getElementById('sendDataAsXML').checked = true;
-      break;
-    case "fmtJson":
-      document.getElementById('sendDataAsJSON').checked = true;
-      break;
+    // case "fmtXml":
+    //   document.getElementById('sendDataAsXML').checked = true;
+    //   break;
+    // case "fmtJson":
+    //   document.getElementById('sendDataAsJSON').checked = true;
+    //   break;
     default:
       // code block
     }
@@ -2601,11 +2601,11 @@ document.getElementById("sendDataHumanReadable").addEventListener('change', func
 document.getElementById("sendDataAsCSV").addEventListener('change', function (e) {
   if (this.checked) { sentDataFormat = this.value; }});
 
-document.getElementById("sendDataAsXML").addEventListener('change', function (e) {
-  if (this.checked) { sentDataFormat = this.value; }});
+// document.getElementById("sendDataAsXML").addEventListener('change', function (e) {
+//   if (this.checked) { sentDataFormat = this.value; }});
 
-document.getElementById("sendDataAsJSON").addEventListener('change', function (e) {
-  if (this.checked) { sentDataFormat = this.value; }});
+// document.getElementById("sendDataAsJSON").addEventListener('change', function (e) {
+//   if (this.checked) { sentDataFormat = this.value; }});
 
 settingsFormRegionsList.addEventListener('click', function (e) {
   // list is parent of all the list items
