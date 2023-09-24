@@ -233,8 +233,7 @@ function bkupAppSettings() {
 // Possibly, there will only ever be one object in the array, which is
 // a simple Javascript object whose fields are the various settings.
 var app_settings_array = [];
-// probably don't need the following as a global, will access fields in array[0]
-// var app_settings_object = undefined;
+initializeSettingArray();
 
 function initializeSettingArray() {
   let app_settings_object = {
@@ -252,7 +251,6 @@ function initializeSettingArray() {
   } else {
     app_settings_array[0] = app_settings_object;
   };
-
 };
 
 //TODO: backup app state
@@ -271,7 +269,7 @@ current_site_id
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
 // todo: automatically acquire or input region
- var region_code = "OR";
+// var region_code = "OR";
 // default, ignore subspecies and varieties
 // can change in 'Options' screen
 //var include_subspp_var = false;
@@ -519,7 +517,7 @@ function showAppStatus(rtn_ok) {
   if (rtn_ok) {
     try {
       document.getElementById("info_footer").innerHTML =
-        "Region: " + (regions_array.find(r => r.code == region_code).name);
+        "Region: " + (regions_array.find(r => r.code == app_settings_array[0].region_code).name);
       // more status later
     } catch(err) {
       document.getElementById("info_footer").innerHTML = err.message;
@@ -572,7 +570,7 @@ async function makeLocalAndNonlocalSppArrays() {
   // retain separate fields in original array but concatenate in local and
   //  nonlocal for easier searching
 	let tmp_local_array = nrcs_spp_array.filter(spp_obj =>
-		((spp_obj.distribution.includes(region_code + ",")) &&
+		((spp_obj.distribution.includes(app_settings_array[0].region_code + ",")) &&
     (app_settings_array[0].include_subspp_var ? true : (spp_obj.subspp_var == ""))));
 	local_spp_array = tmp_local_array.map(orig_obj => {
 		let new_properties = {
@@ -2555,7 +2553,7 @@ document.getElementById('btn-reset-app').addEventListener('click', function () {
 vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSettingsScreen 'shown.bs.modal'");
   // set up Regions section
-  let region_item = regions_array.find(itm => itm.code === region_code);
+  let region_item = regions_array.find(itm => itm.code === app_settings_array[0].region_code);
   if (region_item === "undefined") {
     document.getElementById('regionChosen').innerHTML
         = "no region chosen";
@@ -2682,7 +2680,7 @@ settingsFormRegionsList.addEventListener('click', function (e) {
     // the element id is the string "regionCode_" (to avoid confusion with
     // any other elements) followed by the two-letter code of the region
     //
-    region_code = (target.id).split("_")[1];
+    app_settings_array[0].region_code = (target.id).split("_")[1];
     document.getElementById('regionChosen').innerHTML =
         '<h3>' + target.textContent + '</h3>';
     bkupAppSettings();
