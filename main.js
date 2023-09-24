@@ -103,6 +103,17 @@ dbRequest.onsuccess = (e) => {
     aux_data_array = auxDataRequest.result;
   };
 
+  const appSettingsaRequest = objectStore.get("vnAppSettingsBkup");
+  appSettingsaRequest.onerror = (event) => {
+    console.log(`error retrieving object for vnAppSettingsBkup`);
+  };
+  appSettingsaRequest.onsuccess = (event) => {
+    console.log(`retrieved vnAppSettingsBkup ${appSettingsaRequest.result}`);
+    app_settings_array = appSettingsaRequest.result;
+  };
+
+  //vnAppSettingsBkup
+
 };
 
 dbRequest.onupgradeneeded = (e) => {
@@ -112,6 +123,7 @@ dbRequest.onupgradeneeded = (e) => {
   const VnObjStore = db.createObjectStore("VNAppStates");
   // stored objects will be arrays, and keys will be explicit
   console.log("created 'VnObjStore'");
+  // the 'vn...Bkup' strings are the keys
   VnObjStore.put([], "vnSitesBkup"); // initialize to empty array
   console.log(" VnObjStore[VNAppStates], 'vnSitesBkup' initialized as empty array");
   VnObjStore.put([], "vnSpeciesBkup");
@@ -120,7 +132,8 @@ dbRequest.onupgradeneeded = (e) => {
   VnObjStore.put([], "vnFoundSppBkup");
   VnObjStore.put([], "vnAuxSpecsBkup");
   VnObjStore.put([], "vnAuxDataBkup");
-  VnObjStore.put([], "vnSettingsBkup"); // not yet used
+  initializeSettingArray();
+  VnObjStore.put(app_settings_array, "vnAppSettingsBkup");
   VnObjStore.put([], "vnAppStateBkup"); // not yet implemented
 };
 
@@ -202,8 +215,47 @@ function bkupAuxData() {
   };
 };
 
-//TODO: backup app settings and state
+function bkupAppSettings() {
+  let appSettingsRequest = db.transaction(["VNAppStates"], "readwrite")
+    .objectStore("VNAppStates")
+    .put(app_settings_array, "vnAppSettingsBkup"); // 'put' overwrites any previous
 
+  appSettingsRequest.onsuccess = (e) => {
+    console.log(" in object store 'VNAppStates', 'app_settings_array' backed up under key 'vnAppSettingsBkup' " + e);
+  };
+  appSettingsRequest.onerror = (e) => {
+    console.log(" in object store 'VNAppStates', 'app_settings_array' failed to back up under key 'vnAppSettingsBkup' " + e);
+  };
+};
+
+//TODO: finish backup app settings
+// For consistency with other backups, app settings are in an array.
+// Possibly, there will only ever be one object in the array, which is
+// a simple Javascript object whose fields are the various settings.
+var app_settings_array = [];
+// probably don't need the following as a global, will access fields in array[0]
+// var app_settings_object = undefined;
+
+function initializeSettingArray() {
+  let app_settings_object = {
+    include_subspp_var: false,
+    siteLocTargetAccuracy: 7,
+    waitForSiteLocTarget: true,
+    sppLocTargetAccuracy: 7,
+    waitForSppLocTarget: true,
+    sentDataFormat: "fmtHumanReadable",
+    emailToSendTo: "",
+    region_code: "OR"
+  };
+  if (app_settings_array.length == 0) {
+    app_settings_array.push(app_settings_object);
+  } else {
+    app_settings_array[0] = app_settings_object;
+  };
+
+};
+
+//TODO: backup app state
 /* under 'vnAppStateBkup' building a list of items to store:
 current_site_id
 */
@@ -219,10 +271,10 @@ current_site_id
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
 // todo: automatically acquire or input region
-var region_code = "OR";
+// var region_code = "OR";
 // default, ignore subspecies and varieties
 // can change in 'Options' screen
-var include_subspp_var = false;
+//var include_subspp_var = false;
 
 // value returned by setInterval, for periocally checking the location
 // used to clear the ticker using clearInterval
@@ -248,10 +300,10 @@ var locationsGranted = false; // when true, flags that location reading has been
 
 // keep acquiring site location until accuracy is <= this
 // user can manually accept greater inaccuracty
-var siteLocTargetAccuracy = 7;
-var waitForSiteLocTarget = true;
-var sppLocTargetAccuracy = 7;
-var waitForSppLocTarget = true;
+// var siteLocTargetAccuracy = 7;
+// var waitForSiteLocTarget = true;
+// var sppLocTargetAccuracy = 7;
+// var waitForSppLocTarget = true;
 
 var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enough
 var accuracyAccepted = true; // 'false' = waiting for manual acceptance
@@ -259,7 +311,7 @@ var accuracyAccepted = true; // 'false' = waiting for manual acceptance
 var locationDeferred = false; // new item has been saved, but will update location when acc OK
 var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 
-var sentDataFormat = "fmtHumanReadable"; // default until changed
+// var sentDataFormat = "fmtHumanReadable"; // default until changed
 
 var siteScreenComplete = false; // flag to distinguish screen simply
   // dismissed, and so to stop the location ticker
@@ -466,8 +518,9 @@ function polygonContainsPt(bounds, lng, lat) {
 function showAppStatus(rtn_ok) {
   if (rtn_ok) {
     try {
+      let rc = app_settings_array[0].region_code;
       document.getElementById("info_footer").innerHTML =
-        "Region: " + (regions_array.find(r => r.code == region_code).name);
+        "Region: " + (regions_array.find(r => r.code == rc).name);
       // more status later
     } catch(err) {
       document.getElementById("info_footer").innerHTML = err.message;
@@ -520,8 +573,8 @@ async function makeLocalAndNonlocalSppArrays() {
   // retain separate fields in original array but concatenate in local and
   //  nonlocal for easier searching
 	let tmp_local_array = nrcs_spp_array.filter(spp_obj =>
-		((spp_obj.distribution.includes(region_code + ",")) &&
-    (include_subspp_var ? true : (spp_obj.subspp_var == ""))));
+		((spp_obj.distribution.includes(app_settings_array[0].region_code + ",")) &&
+    (app_settings_array[0].include_subspp_var ? true : (spp_obj.subspp_var == ""))));
 	local_spp_array = tmp_local_array.map(orig_obj => {
 		let new_properties = {
 			"item_code": orig_obj.nrcs_code,
@@ -534,7 +587,7 @@ async function makeLocalAndNonlocalSppArrays() {
 	});
 	let tmp_nonlocal_array = nrcs_spp_array.filter(spp_obj =>
 		((!tmp_local_array.includes(spp_obj)) &&
-    (include_subspp_var ? true : (spp_obj.subspp_var == ""))));
+    (app_settings_array[0].include_subspp_var ? true : (spp_obj.subspp_var == ""))));
 //	console.log(local_spp_array);
 	nonlocal_spp_array = tmp_nonlocal_array.map(orig_obj => {
 		let new_properties = {
@@ -547,7 +600,7 @@ async function makeLocalAndNonlocalSppArrays() {
 		return new_properties;
 	});
 //	console.log(nonlocal_spp_array);
-//  return "Region: " + (regions_array.find(r => r.code == region_code).name);
+//  return "Region: " + (regions_array.find(r => r.code == app_settings_array[0].region_code).name);
   return true;
 };
 
@@ -714,7 +767,7 @@ match_list.addEventListener('click', function (e) {
       }
 
       // if flagged, check that target accuracy was met
-      if (waitForSppLocTarget && !targetAccuracyOK) {
+      if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) {
         current_spp_item_id = new_spp_item.id;
         accuracyAccepted = false; // can be manually accepted
         locationDeferred = true;
@@ -777,7 +830,7 @@ match_list.addEventListener('click', function (e) {
           current_spp_item_id = insertPlHolderItm(); // uses globals
 
           // if flagged to, check that target accuracy was met
-          if (waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
+          if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
             accuracyAccepted = false; // can be manually accepted
             locationDeferred = true;
             whatIsAwaitingAccuracy = "new_plholder";
@@ -817,7 +870,7 @@ match_list.addEventListener('click', function (e) {
           // has been identified
           current_spp_item_id = insertPlHolderItm(); // uses globals
           // if flagged, check that target accuracy was met
-          if (waitForSppLocTarget && (!targetAccuracyOK)) {
+          if (app_settings_array[0].waitForSppLocTarget && (!targetAccuracyOK)) {
             // for the lat/lon/acc fields are the same as for a species
 //            current_spp_item_id = new_ph_item.id;
             accuracyAccepted = false; // can be manually accepted
@@ -1081,31 +1134,31 @@ function checkPositionAccuracy() {
   let targetAcc = 0;
   switch(whatIsAwaitingAccuracy) {
     case "site":
-      targetAcc = siteLocTargetAccuracy;
-      if (latestLocation.coords.accuracy <= siteLocTargetAccuracy) {
+      targetAcc = app_settings_array[0].siteLocTargetAccuracy;
+      if (latestLocation.coords.accuracy <= targetAcc) {
         targetAccuracyOK = true;
       }
       if (!locationDeferred) {
         let stLoc = "Latitude: " + latestLocation.coords.latitude +
             "<br>Longitude: " + latestLocation.coords.longitude;
         if (!targetAccuracyOK) {
-          stLoc += "<br>Target accuracy: " + siteLocTargetAccuracy + " meters";
+          stLoc += "<br>Target accuracy: " + targetAcc + " meters";
         }
         stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
         vnSiteLocation.innerHTML = stLoc;
       }
       break;
     case "spp_itm":
-      targetAcc = sppLocTargetAccuracy;
-      if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
+      targetAcc = app_settings_array[0].sppLocTargetAccuracy;
+      if (latestLocation.coords.accuracy <= targetAcc) {
         targetAccuracyOK = true;
       }
       // don't display anything for species
       break;
     case "new_plholder":
       // use same target accuracy as for species
-      targetAcc = sppLocTargetAccuracy;
-      if (latestLocation.coords.accuracy <= sppLocTargetAccuracy) {
+      targetAcc = app_settings_array[0].sppLocTargetAccuracy;
+      if (latestLocation.coords.accuracy <= targetAcc) {
         targetAccuracyOK = true;
       }
       if (placeholder_state === "new" && !locationDeferred) {
@@ -1223,7 +1276,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   siteScreenComplete = true; // flag, don't need to stop the ticker when this screen hidden
 
   // if flagged, check that target accuracy was met
-  if (waitForSiteLocTarget && !targetAccuracyOK) {
+  if (app_settings_array[0].waitForSiteLocTarget && !targetAccuracyOK) {
     accuracyAccepted = false; // can be manually accepted
     locationDeferred = true;
     whatIsAwaitingAccuracy = "site"; // redundant? set in Show event
@@ -1707,7 +1760,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
 
-    if (waitForSppLocTarget && !targetAccuracyOK) {
+    if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) {
       current_ph_id = cur_placeholder.id; // current_ph_id is the general placeholder
       // current_spp_item_id is the instance of the placeholder
       accuracyAccepted = false; // can be manually accepted
@@ -2162,7 +2215,7 @@ vnSendDataScreen.addEventListener('shown.bs.modal', function (event) {
 
   // remind which data format is selected
   let stMsg = "";
-  switch(sentDataFormat) {
+  switch(app_settings_array[0].sentDataFormat) {
     case "fmtHumanReadable":
       stMsg = 'Human Readable';
       break;
@@ -2227,7 +2280,7 @@ function sendData() {
 
   let emailBodyStr = "";
 
-  switch(sentDataFormat) {
+  switch(app_settings_array[0].sentDataFormat) {
     case "fmtHumanReadable":
       emailBodyStr = getEmailBodyHumanReadable(siteObj.id);
       break;
@@ -2490,6 +2543,8 @@ document.getElementById('btn-reset-app').addEventListener('click', function () {
     bkupSpeciesList();
     site_info_array = [];
     bkupSiteList();
+    initializeSettingArray();
+    bkupAppSettings();
     // trigger to refresh site list and species
     shwMainScreenTimeout = setTimeout(showMainScreen, 200);
     alert("Data erased, and app reset to defaults");
@@ -2503,7 +2558,7 @@ document.getElementById('btn-reset-app').addEventListener('click', function () {
 vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSettingsScreen 'shown.bs.modal'");
   // set up Regions section
-  let region_item = regions_array.find(itm => itm.code === region_code);
+  let region_item = regions_array.find(itm => itm.code === app_settings_array[0].region_code);
   if (region_item === "undefined") {
     document.getElementById('regionChosen').innerHTML
         = "no region chosen";
@@ -2524,20 +2579,20 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
   // Regions section done
   // set up "simple spp" vs "all subspp and varieties" section
   // evidently, button group is held together by them all having the same "name"
-  if (include_subspp_var) {
+  if (app_settings_array[0].include_subspp_var) {
     document.getElementById('allSubsppVars').checked = true;
   } else {
     document.getElementById('simpleSppOnly').checked = true;
   }
   // set up Site accuracy section
   // set input value as string, even if numeric
-  document.getElementById("inputSiteTargetAccuracy").value = "" + siteLocTargetAccuracy;
-  document.getElementById("ckWaitSiteAcc").checked = waitForSiteLocTarget;
+  document.getElementById("inputSiteTargetAccuracy").value = "" + app_settings_array[0].siteLocTargetAccuracy;
+  document.getElementById("ckWaitSiteAcc").checked = app_settings_array[0].waitForSiteLocTarget;
   // set up Species accuracy section
-  document.getElementById("inputSppTargetAccuracy").value = "" + sppLocTargetAccuracy;
-  document.getElementById("ckWaitSppAcc").checked = waitForSppLocTarget;
+  document.getElementById("inputSppTargetAccuracy").value = "" + app_settings_array[0].sppLocTargetAccuracy;
+  document.getElementById("ckWaitSppAcc").checked = app_settings_array[0].waitForSppLocTarget;
   // set up 'data format' section
-  switch(sentDataFormat) {
+  switch(app_settings_array[0].sentDataFormat) {
     case "fmtHumanReadable":
       document.getElementById('sendDataHumanReadable').checked = true;
       break;
@@ -2558,54 +2613,66 @@ vnSettingsScreen.addEventListener('shown.bs.modal', function (event) {
 // klunky, separate listeners for each radio button
 document.getElementById("simpleSppOnly").addEventListener('change', function (e) {
   if (this.checked) {
-    include_subspp_var = false;
+    app_settings_array[0].include_subspp_var = false;
     // see if the following takes too long
     makeLocalAndNonlocalSppArrays().then(
       function(value) {showAppStatus(value);},
       function(error) {showListsError(error);}
     );
   }
+  bkupAppSettings();
 });
 
 document.getElementById("allSubsppVars").addEventListener('change', function (e) {
   if (this.checked) {
-    include_subspp_var = true;
+    app_settings_array[0].include_subspp_var = true;
     // see if the following takes too long
     makeLocalAndNonlocalSppArrays().then(
       function(value) {showAppStatus(value);},
       function(error) {showListsError(error);}
     );
   }
+  bkupAppSettings();
 });
 
 document.getElementById("inputSiteTargetAccuracy").addEventListener("change", function (e) {
-  siteLocTargetAccuracy = e.target.value;
+  app_settings_array[0].siteLocTargetAccuracy = e.target.value;
+  bkupAppSettings();
 });
 
 document.getElementById("ckWaitSiteAcc").addEventListener('click', function (e) {
-  waitForSiteLocTarget = e.target.checked;
+  app_settings_array[0].waitForSiteLocTarget = e.target.checked;
+  bkupAppSettings();
 });
 
 document.getElementById("inputSppTargetAccuracy").addEventListener("change", function (e) {
-  sppLocTargetAccuracy = e.target.value;
+  app_settings_array[0].sppLocTargetAccuracy = e.target.value;
+  bkupAppSettings();
 });
 
 document.getElementById("ckWaitSppAcc").addEventListener('click', function (e) {
-  waitForSppLocTarget = e.target.checked;
+  app_settings_array[0].waitForSppLocTarget = e.target.checked;
+  bkupAppSettings();
 });
 
 // klunky, separate listeners for each radio button
 document.getElementById("sendDataHumanReadable").addEventListener('change', function (e) {
-  if (this.checked) { sentDataFormat = this.value; }});
+  if (this.checked) {
+    app_settings_array[0].sentDataFormat = this.value;
+    bkupAppSettings();
+  }});
 
 document.getElementById("sendDataAsCSV").addEventListener('change', function (e) {
-  if (this.checked) { sentDataFormat = this.value; }});
+  if (this.checked) {
+    app_settings_array[0].sentDataFormat = this.value;
+    bkupAppSettings();
+  }});
 
 // document.getElementById("sendDataAsXML").addEventListener('change', function (e) {
-//   if (this.checked) { sentDataFormat = this.value; }});
+//   if (this.checked) { app_settings_array[0].sentDataFormat = this.value; }});
 
 // document.getElementById("sendDataAsJSON").addEventListener('change', function (e) {
-//   if (this.checked) { sentDataFormat = this.value; }});
+//   if (this.checked) { app_settings_array[0].sentDataFormat = this.value; }});
 
 settingsFormRegionsList.addEventListener('click', function (e) {
   // list is parent of all the list items
@@ -2618,10 +2685,11 @@ settingsFormRegionsList.addEventListener('click', function (e) {
     // the element id is the string "regionCode_" (to avoid confusion with
     // any other elements) followed by the two-letter code of the region
     //
-    region_code = (target.id).split("_")[1];
-//      console.log("region_code = " + region_code);
+    app_settings_array[0].region_code = (target.id).split("_")[1];
+//      console.log("app_settings_array[0].region_code = " + app_settings_array[0].region_code);
     document.getElementById('regionChosen').innerHTML =
         '<h3>' + target.textContent + '</h3>';
+    bkupAppSettings();
 //    const updateRegionTimeout = setTimeout(makeLocalAndNonlocalSppArrays, 10);
     makeLocalAndNonlocalSppArrays().then(
       function(value) {showAppStatus(value);},
