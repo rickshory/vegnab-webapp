@@ -33,6 +33,17 @@ if ('serviceWorker' in navigator) {
 
 (function () {
 
+// set up flags for app state retrieved
+var timeCtRetrieve = 0;
+var sitesRetrieved = false;
+var sppRetrieved = false;
+var phsRetrieved = false;
+var foundSppRetrieved = false;
+var auxSpecsRetrieved = false;
+var auxDataRetrieved = false;
+var appSettingsRetrieved = false;
+
+
 // set up persistent storage
 let db;
 const dbRequest = indexedDB.open("VnDatabase", 1);
@@ -49,6 +60,7 @@ dbRequest.onsuccess = (e) => {
   };
   const transaction = db.transaction(["VNAppStates"]);
   const objectStore = transaction.objectStore("VNAppStates");
+
   const sitesRequest = objectStore.get("vnSitesBkup");
   sitesRequest.onerror = (event) => {
     console.log(`error retrieving object for vnSitesBkup`);
@@ -56,6 +68,7 @@ dbRequest.onsuccess = (e) => {
   sitesRequest.onsuccess = (event) => {
     console.log(`retrieved vnSitesBkup ${sitesRequest.result}`);
     site_info_array = sitesRequest.result;
+    sitesRetrieved = true;
   };
 
   const sppRequest = objectStore.get("vnSpeciesBkup");
@@ -65,6 +78,7 @@ dbRequest.onsuccess = (e) => {
   sppRequest.onsuccess = (event) => {
     console.log(`retrieved vnSpeciesBkup ${sppRequest.result}`);
     site_spp_array = sppRequest.result;
+    sppRetrieved = true;
   };
 
   const phRequest = objectStore.get("vnPlaceholdersBkup");
@@ -74,6 +88,7 @@ dbRequest.onsuccess = (e) => {
   phRequest.onsuccess = (event) => {
     console.log(`retrieved vnPlaceholdersBkup ${phRequest.result}`);
     placeholders_array = phRequest.result;
+    phsRetrieved = true;
   };
 
   const foundSppRequest = objectStore.get("vnFoundSppBkup");
@@ -83,6 +98,7 @@ dbRequest.onsuccess = (e) => {
   foundSppRequest.onsuccess = (event) => {
     console.log(`retrieved vnFoundSppBkup ${foundSppRequest.result}`);
     found_spp_array = foundSppRequest.result;
+    foundSppRetrieved = true
   };
 
   const auxSpecsRequest = objectStore.get("vnAuxSpecsBkup");
@@ -92,6 +108,7 @@ dbRequest.onsuccess = (e) => {
   auxSpecsRequest.onsuccess = (event) => {
     console.log(`retrieved vnAuxSpecsBkup ${auxSpecsRequest.result}`);
     aux_specs_array = auxSpecsRequest.result;
+    auxSpecsRetrieved = true;
   };
 
   const auxDataRequest = objectStore.get("vnAuxDataBkup");
@@ -101,6 +118,7 @@ dbRequest.onsuccess = (e) => {
   auxDataRequest.onsuccess = (event) => {
     console.log(`retrieved vnAuxDataBkup ${auxDataRequest.result}`);
     aux_data_array = auxDataRequest.result;
+    auxDataRetrieved = true;
   };
 
   const appSettingsaRequest = objectStore.get("vnAppSettingsBkup");
@@ -110,9 +128,8 @@ dbRequest.onsuccess = (e) => {
   appSettingsaRequest.onsuccess = (event) => {
     console.log(`retrieved vnAppSettingsBkup ${appSettingsaRequest.result}`);
     app_settings_array = appSettingsaRequest.result;
+    appSettingsRetrieved = true;
   };
-
-  //vnAppSettingsBkup
 
 };
 
@@ -244,7 +261,8 @@ function initializeSettingArray() {
     waitForSppLocTarget: true,
     sentDataFormat: "fmtHumanReadable",
     emailToSendTo: "",
-    region_code: "OR"
+    region_code: "OR",
+    current_site_id: ""
   };
   if (app_settings_array.length == 0) {
     app_settings_array.push(app_settings_object);
@@ -262,9 +280,25 @@ current_site_id
 //  the arrays not being retrieved before the UI gets refreshed
  document.addEventListener("DOMContentLoaded", function() {
    console.log('DOMContentLoaded');
-   // trigger to refresh site list and species
-   shwMainScreenTimeout = setTimeout(showMainScreen, 200);
+   // check if app state fully retrieved
+   ckIfAppStateRetrieved();
  });
+ 
+ function ckIfAppStateRetrieved() {
+  console.log(timeCtRetrieve + "ms, sitesRetrieved=" + sitesRetrieved + " sppRetrieved=" + sppRetrieved 
+    + " phsRetrieved=" + phsRetrieved + " foundSppRetrieved=" + foundSppRetrieved
+    + " auxSpecsRetrieved=" + auxSpecsRetrieved + " auxDataRetrieved=" + auxDataRetrieved
+    + " appSettingsRetrieved=" + appSettingsRetrieved );
+  let allStatesRetrieved = (sitesRetrieved && sppRetrieved && phsRetrieved && foundSppRetrieved 
+      && auxSpecsRetrieved && auxDataRetrieved && appSettingsRetrieved);
+  if(allStatesRetrieved) {
+    showMainScreen();
+  } else {
+    timeCtRetrieve += 100;
+    window.setTimeout(ckIfAppStateRetrieved, 100); // checks every 100 milliseconds
+  }
+}
+  
 
 // for testing, region is "OR" (Oregon)
 // user can change it 'Options' screen
@@ -291,7 +325,7 @@ const locationOptions = {
 };
 
 // flag first, to notify user they need to 'Allow' locations
-var firstLocRequest = true; // this can be reset to 'true' when app reloaded,
+var firstLocRequest = true; // this may be reset to 'true' when app reloaded,
   // but by then the user will likely have either granted or denied locations
 var locationsGranted = false; // when true, flags that location reading has been allowed, 
   // and app can skip checking the state
@@ -314,7 +348,7 @@ var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 var siteScreenComplete = false; // flag to distinguish screen simply
   // dismissed, and so to stop the location ticker
 var site_info_array = [];
-var current_site_id = "";
+// var current_site_id = "";
 var site_chosen_to_send = -1;
 var sppScreenComplete = false; // flag to distinguish screen simply
   // dismissed, and so to stop the location ticker
@@ -390,7 +424,9 @@ var aux_data_array = [];
 //   "value": the value
 // };
 
-var shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+// var shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+// create the variable, but don't run setTimeout here
+var shwMainScreenTimeout;
 var match_list = document.getElementById("match-list");
 var sites_available_to_send_list = document.getElementById("sendFormSitesList");
 
@@ -425,11 +461,11 @@ function findRegion() {
   // for testing, just check if the current location is in the test region Oregon, and
   // show an alert for diagnostics
   console.log("In fn 'findRegion'");
-  if (current_site_id === undefined) {
+  if (app_settings_array[0].current_site_id === "") {
     alert("No site yet");
     return;
   }
-  let curSite = site_info_array.find(s => s.id == current_site_id);
+  let curSite = site_info_array.find(s => s.id == app_settings_array[0].current_site_id);
   let lat = parseFloat(curSite.latitude);
   let lng = parseFloat(curSite.longitude);
   let bounds = region_bounds_array[0].vertexes;
@@ -553,7 +589,8 @@ sitesChooseOrAddList.addEventListener('click', function (e) {
       // own prefix 'st_ followed by a number generated from the creation timestamp
       let site_id_chosen = (target.id).split("-")[1];
         console.log("ID of site chosen = " + site_id_chosen);
-        current_site_id = site_id_chosen;
+        app_settings_array[0].current_site_id = site_id_chosen;
+        bkupAppSettings();
         showMainScreen();
     }
   }
@@ -738,7 +775,7 @@ match_list.addEventListener('click', function (e) {
       let new_spp_item = {
         // if 'id' used as HTML element id, prefix assures it does not start with a number
         "id": 'sp_' + spp_entry_date.getTime().toString(),
-        "site_id": current_site_id,
+        "site_id": app_settings_array[0].current_site_id,
         "type": 'sp', // a real species, vs. 'ph' for placeholders
         "species": spp,
         "uncertainty": "",
@@ -803,7 +840,7 @@ match_list.addEventListener('click', function (e) {
           let new_ph = {
             // if 'id' used as HTML element id, prefix assures it does not start with a number
             "id": 'ph_' + ph_create_date.getTime().toString(),
-            "site_id": current_site_id,
+            "site_id": app_settings_array[0].current_site_id,
             "code": current_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
@@ -1264,7 +1301,8 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     "longitude": "" + latestLocation.coords.longitude,
     "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
   };
-  current_site_id = site_obj.id;
+  app_settings_array[0].current_site_id = site_obj.id;
+  bkupAppSettings();
   // new item at the beginning
   site_info_array.unshift(site_obj);
   bkupSiteList();
@@ -1304,7 +1342,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   let itmToUpdate = undefined;
   switch(whatIsAwaitingAccuracy) {
     case "site":
-      itmToUpdate = site_info_array.find(i => i.id == current_site_id);
+      itmToUpdate = site_info_array.find(i => i.id == app_settings_array[0].current_site_id);
       aux_spec_for = "sites"; // in case we need this
       break;
     case "spp_itm":
@@ -1387,7 +1425,18 @@ function showMainScreen() {
     console.log("in 'showMainScreen()', no sites yet");
     sitesChooseOrAddList.innerHTML = lstItmAddNew; // only 'add new'
     site_card_hdr.innerHTML = '(No sites yet)';
-    current_site_id = "";
+    app_settings_array[0].current_site_id = "";
+    if (typeof db === 'undefined') {
+      console.log("'db' is not defined yet");
+    } else {
+      bkupAppSettings();
+    }
+    try {
+      bkupAppSettings();
+    } catch(err) {
+      console.log("failed 'bkupAppSettings': " + err.message);
+    }
+  //  bkupAppSettings();
     add_spp_button.style.display = "none";
     this_site_spp_list.style.display = "none";
     return;
@@ -1409,7 +1458,7 @@ function showMainScreen() {
   };
   sitesChooseOrAddList.innerHTML = sites_listitems;  
 
-  if (current_site_id === '') {
+  if (app_settings_array[0].current_site_id === '') {
     console.log("in 'showMainScreen()', no site chosen yet");
     sitesChooseOrAddList.innerHTML = sites_listitems;
     site_card_hdr.innerHTML = '(no site chosen)';
@@ -1421,10 +1470,10 @@ function showMainScreen() {
   // for testing, run this
  // findRegion();
 
-  let cur_site_obj = site_info_array.find(site => site.id === current_site_id);
+  let cur_site_obj = site_info_array.find(site => site.id === app_settings_array[0].current_site_id);
   console.log("in 'showMainScreen()', about to get current site name");
   let siName = cur_site_obj.name;
-  console.log('current_site_id is ' + current_site_id + ', for site "' + siName + '"');
+  console.log('current_site_id is ' + app_settings_array[0].current_site_id + ', for site "' + siName + '"');
   site_card_hdr.innerHTML = '' + siName;
   
   console.log("in 'showMainScreen()', about to generate info for current site");
@@ -1435,7 +1484,7 @@ function showMainScreen() {
 
   // fill in species list for this site
   let this_site_spp_array = site_spp_array.filter(spp_obj =>
-      spp_obj.site_id === current_site_id)
+      spp_obj.site_id === app_settings_array[0].current_site_id)
       .sort((s1, s2) => (s1.date < s2.date) ? 1 : ((s1.date > s2.date) ? -1 : 0));
   let spp_listitems_string = "";
   if (this_site_spp_array.length == 0) {
@@ -1796,7 +1845,7 @@ function insertPlHolderItm() {
   let new_ph_item = {
     // if 'id' used as HTML element id, prefix assures it does not start with a number
     "id": 'ph_' + ph_entry_date.getTime().toString(),
-    "site_id": current_site_id,
+    "site_id": app_settings_array[0].current_site_id,
     "type": 'ph', // a placeholder, vs. 'sp' for a real species
     "ph_id": cur_placeholder.id, // allows for lookup
     "code": cur_placeholder.code,
@@ -2036,7 +2085,7 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
   var auxHdr = "";
   switch (aux_spec_for) {
     case "sites":
-      auxHdr = 'For Site &quot;' + site_info_array.find(s => s.id == current_site_id).name + '&quot;';
+      auxHdr = 'For Site &quot;' + site_info_array.find(s => s.id == app_settings_array[0].current_site_id).name + '&quot;';
       break;
     case "spp_items":
       auxHdr = 'For &quot;' + site_spp_array.find(s => s.id == current_spp_item_id).species + '&quot;';
@@ -2135,7 +2184,7 @@ document.getElementById('btn-save-auxdata').addEventListener('click', function (
       var parID = "";
       switch (sp.for) {
         case "sites":
-          parID = current_site_id;
+          parID = app_settings_array[0].current_site_id;
           break;
         case "spp_items":
           parID = current_spp_item_id;
@@ -2175,7 +2224,7 @@ document.getElementById('btn-cancel-auxdata').addEventListener('click', function
   var i;
   switch (aux_spec_for) {
     case "sites":
-      i = site_info_array.findIndex(itm => itm.id === current_site_id);
+      i = site_info_array.findIndex(itm => itm.id === app_settings_array[0].current_site_id);
       site_info_array.splice(i, 1);
       bkupSiteList();
       break;
@@ -2729,8 +2778,9 @@ document.getElementById('old_sites_list').addEventListener('click', function (e)
     }
     if (confirm("Delete the following site, and all data for it?\n\n" + target.textContent)) {
       // don't allow this site to be current
-      if (current_site_id === site_id_nix) {
-        current_site_id = '';
+      if (app_settings_array[0].current_site_id === site_id_nix) {
+        app_settings_array[0].current_site_id = '';
+        bkupAppSettings();
       }
       // delete any aux data for the site
       aux_data_array = aux_data_array.filter(d => !((d.for == 'sites') && (d.parent_id == site_id_nix)));
