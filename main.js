@@ -1792,7 +1792,8 @@ document.getElementById('btn-add-ph-pix').addEventListener('click', () => {
 
 document.getElementById('btn-save-placeholder-info').addEventListener('click', function (e) {
   let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
-  let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 2);
+  // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
+  let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
   if (phKeywordsArray.length < 2) {
     alert("Need a few keywords, to find this placeholder later");
     document.getElementById('placeholder_keywords').focus();
