@@ -847,7 +847,11 @@ match_list.addEventListener('click', function (e) {
             "date": ph_create_date,
             "latitude": "" + latestLocation.coords.latitude,
             "longitude": "" + latestLocation.coords.longitude,
-            "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+            "accuracy": "" + latestLocation.coords.accuracy.toFixed(1),
+            "species": "", // until determined
+            "uncertainty": "" // any uncertainty that it is this species
+            // should never be any uncertainty that what is observed this placeholder
+            // if unsure, create a new placeholder
           };
           current_ph_id = new_ph.id; // remember the ID
           // put this placeholder, at least temporarily, into the placeholders array
