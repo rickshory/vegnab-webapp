@@ -292,6 +292,10 @@ current_site_id
   let allStatesRetrieved = (sitesRetrieved && sppRetrieved && phsRetrieved && foundSppRetrieved 
       && auxSpecsRetrieved && auxDataRetrieved && appSettingsRetrieved);
   if(allStatesRetrieved) {
+    makeLocalAndNonlocalSppArrays().then(
+      function(value) {showAppStatus(value);},
+      function(error) {showListsError(error);}
+    );
     showMainScreen();
   } else {
     timeCtRetrieve += 100;
@@ -595,11 +599,6 @@ sitesChooseOrAddList.addEventListener('click', function (e) {
     }
   }
 });
-
-makeLocalAndNonlocalSppArrays().then(
-  function(value) {showAppStatus(value);},
-  function(error) {showListsError(error);}
-);
 
 async function makeLocalAndNonlocalSppArrays() {
 	// for performance, create these two smaller arrays, each seldom updated,
