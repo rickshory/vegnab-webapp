@@ -557,7 +557,8 @@ function showAppStatus(rtn_ok) {
   if (rtn_ok) {
     try {
       document.getElementById("info_footer").innerHTML =
-        "Region: " + (regions_array.find(r => r.code == app_settings_array[0].region_code).name);
+        "Region: " + (regions_array.find(r => r.code == app_settings_array[0].region_code).name) 
+          + '(change in Settings)';
       // more status later
     } catch(err) {
       document.getElementById("info_footer").innerHTML = err.message;
