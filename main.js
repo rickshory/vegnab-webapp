@@ -838,10 +838,15 @@ match_list.addEventListener('click', function (e) {
           current_ph_code = decodeURIComponent(target.id.slice(8));
           console.log("new placeholder code: " + current_ph_code);
           let ph_create_date = new Date();
+          let cur_site_id = app_settings_array[0].current_site_id;
           let new_ph = {
             // if 'id' used as HTML element id, prefix assures it does not start with a number
             "id": 'ph_' + ph_create_date.getTime().toString(),
-            "site_id": app_settings_array[0].current_site_id,
+            "site_id": cur_site_id,
+            // need name in case site has been deleted
+            "site_name":  site_info_array.find(s => s.id == cur_site_id).name,
+            // may never use notes
+            "site_notes":  site_info_array.find(s => s.id == cur_site_id).notes,
             "code": current_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
@@ -2425,8 +2430,7 @@ function getEmailBodyHumanReadable(siteID) {
       this_site_ph_array.forEach(ph_obj => {
         st += '\n\n' + ph_obj.code + ": " + ph_obj.keywords.join(" ");
         st += '\nrecorded ' + ph_obj.date.toISOString();
-        st += ' on site "'
-          + site_info_array.find(site => site.id === ph_obj.site_id).name + '"';
+        st += ' on site "' + ph_obj.site_name + '"';
         st += ' at (' + ph_obj.latitude + ', ' + ph_obj.longitude
                 + ') accuracy ' + ph_obj.accuracy + ' meters';
         // reference any photos
@@ -2552,8 +2556,7 @@ function getEmailBodyAsCsv(siteID) {
     this_site_ph_array.forEach(ph_obj => {
       st += '\n\n"' + ph_obj.code + '","' + ph_obj.keywords.join(" ") + '"';
       st += '\n"recorded","' + ph_obj.date.toISOString() + '"';
-      st += '"on site","'
-        + site_info_array.find(site => site.id === ph_obj.site_id).name 
+      st += '"on site","' + ph_obj.site_name 
         + '","at","' + ph_obj.latitude + ', ' + ph_obj.longitude
         + '","accuracy","' + ph_obj.accuracy + '","meters"';
       // reference any photos
