@@ -2048,12 +2048,17 @@ document.getElementById('btn-save-auxdata-spec').addEventListener('click', funct
       a.min = "" + document.getElementById("inputAuxSpecMin").value.toString().trim();
       a.max = "" + document.getElementById("inputAuxSpecMax").value.toString().trim();
       a.required = document.getElementById("ckAuxSpecRequired").checked;
-      // update the name in all findable aux data
-      aux_data_array.forEach(d => {
-        if (d.spec_id == current_aux_spec_id) {
-          d.name = auxSpecNameString;
-        }
-      });
+      // don't update names
+      // user may edit what this item reads as, to something completely different
+      // all previously recorded should not change
+      // if user intended the edit to only be a tweak, will appear in a separate column and
+      // user can manually combine them
+      // 
+      // aux_data_array.forEach(d => {
+      //   if (d.spec_id == current_aux_spec_id) {
+      //     d.name = auxSpecNameString;
+      //   }
+      // });
       bkupAuxData();
       bkupAuxSpecs();
       break;
