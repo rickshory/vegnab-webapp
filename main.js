@@ -260,7 +260,7 @@ function initializeSettingArray() {
     waitForSiteLocTarget: true,
     sppLocTargetAccuracy: 7,
     waitForSppLocTarget: true,
-    sentDataFormat: "fmtHumanReadable",
+    sentDataFormat: "fmtCsv",
     emailToSendTo: "",
     region_code: "OR",
     current_site_id: ""
@@ -348,7 +348,7 @@ var accuracyAccepted = true; // 'false' = waiting for manual acceptance
 var locationDeferred = false; // new item has been saved, but will update location when acc OK
 var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 
-// var sentDataFormat = "fmtHumanReadable"; // default until changed
+// var sentDataFormat = "fmtCsv"; // default until changed
 
 var siteScreenComplete = false; // flag to distinguish screen simply
   // dismissed, and so to stop the location ticker
@@ -2352,6 +2352,8 @@ function sendData() {
     //   break;
     // case "fmtJson":
     //   emailBodyStr = getEmailBodyAsJson(siteObj.id);
+    // maybe use this as default and then
+    // stringify to CSV using something like Papa.unparse(jsonString)
     //   break;
     default:
       alert("Format not implemented yet, defaulting to Human Readable")
