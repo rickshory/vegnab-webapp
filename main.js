@@ -2495,26 +2495,44 @@ function getEmailBodyAsCsv(siteID) {
   // add headers
   st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacualar","Uncertainty",'
     + '"Timestamp (UT)","Location","Accuracy (m)"';
-  // get any auxiliary data headers
-  let aux_columns_array = [];
-  // look through the auxdata and extract columns
+  // get any auxiliary data headers and items
+  const adColumnKeys = new Map();
+  const adRowDataMap = new Map();
+    // look through the auxdata and extract columns
   this_site_spp_array.forEach(s =>  {
     aux_data_array.filter(d => d.parent_id === s.id).forEach(ad => {
-      // spec_id is unique for each 'kind' of aux data; if multiple are spelled the same
-      // they will break out into separate columns, no consistent way to aggregate them
-      if (!(aux_columns_array.some(c => c.col_id === ad.spec_id))) {
-        let newColumn = {
-          "col_id": ad.spec_id,
-          "col_text": ad.name
-        };
-        aux_columns_array.push(newColumn);       
-      };
+      // multiple column heads may be spelled the same
+      // disambiguate and break out into separate columns by spec_id
+      const adColKey = `${ad.name}__${ad.spec_id}`;
+      if (!adColumnKeys.has(adColKey)) {
+        // build display name not showing spec_id, but using spec_id to disambiguate if needed
+        let adDisplayName = ad.name;
+        let count = [...adColumnKeys.values()].filter(name => name === adDisplayName).length;
+        if (count > 0) adDisplayName += ` (${count + 1})`;
+        adColumnKeys.set(adColKey, adDisplayName);
+      }
+      if (!adRowDataMap.has(ad.parent_id)) {
+        adRowDataMap.set(ad.parent_id, {});
+      }
+      adRowDataMap.get(ad.parent_id)[adColKey] = ad.value;
+      // if (!(aux_columns_array.some(c => c.col_id === ad.spec_id))) {
+      //   let newColumn = {
+      //     "col_id": ad.spec_id,
+      //     "col_text": ad.name
+      //   };
+      //   aux_columns_array.push(newColumn);       
+      // };
     });
   });
+  // let aux_columns_array = [];
+  // // write any aux data column heads
+  // aux_columns_array.forEach(c => {
+  //   st += ',"' + c.col_text + '"';
+  // });
   // write any aux data column heads
-  aux_columns_array.forEach(c => {
-    st += ',"' + c.col_text + '"';
-  });
+  for (const [adKey, adDisplayName] of adColumnKeys.entries()) {
+    st += ',"' + adDisplayName + '"';
+  }
 
   this_site_spp_array.forEach((itm) => {
     // real species and placeholders have different fields
@@ -2536,23 +2554,29 @@ function getEmailBodyAsCsv(siteID) {
     st += ',"' + itm.date.toISOString()
         + '","' + itm.latitude + ', ' + itm.longitude + '","' + itm.accuracy + '"';
     // add any auxiliary data
-    // lay out the values array, empty at first
-    let aux_values_array = [];
-    // as many columns as the header
-    aux_columns_array.forEach(c => {
-      aux_values_array.push('');
-    });
-    aux_data_array.filter(d => d.parent_id === itm.id).forEach(ad => {
-      // drop the values in the correct slots
-      let i = aux_columns_array.findIndex(c => c.col_id === ad.spec_id);
-      if (i > -1) { // should always be, since we just created it
-        aux_values_array[i] = '' + ad.value;
-      };
-    });
-    // write the values on the end of the row, under their correct columns
-    aux_values_array.forEach(av => {
-      st += ',"' + av + '"';
-    });
+    const itmAdValsObj = adRowDataMap.get(itm.id) || {};
+    // add each aux data value, or empty string if none
+    for (const [key, displayName] of adColumnKeys.entries()) {
+      let stVal = "" + (itmAdValsObj[key] !== undefined) ? itmAdValsObj[key] : "";
+      st += ',"' + stVal + '"';
+    }    
+    // // lay out the values array, empty at first
+    // let aux_values_array = [];
+    // // as many columns as the header
+    // aux_columns_array.forEach(c => {
+    //   aux_values_array.push('');
+    // });
+    // aux_data_array.filter(d => d.parent_id === itm.id).forEach(ad => {
+    //   // drop the values in the correct slots
+    //   let i = aux_columns_array.findIndex(c => c.col_id === ad.spec_id);
+    //   if (i > -1) { // should always be, since we just created it
+    //     aux_values_array[i] = '' + ad.value;
+    //   };
+    // });
+    // // write the values on the end of the row, under their correct columns
+    // aux_values_array.forEach(av => {
+    //   st += ',"' + av + '"';
+    // });
   });
   // done with species items, add the info for any placeholders used
   let this_site_ph_array = placeholders_array.filter(ph_obj =>
