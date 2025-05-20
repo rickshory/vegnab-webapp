@@ -2557,7 +2557,7 @@ function getEmailBodyAsCsv(siteID) {
     const itmAdValsObj = adRowDataMap.get(itm.id) || {};
     // add each aux data value, or empty string if none
     for (const [key, displayName] of adColumnKeys.entries()) {
-      let stVal = "" + (itmAdValsObj[key] !== undefined) ? itmAdValsObj[key] : "";
+      let stVal = "" + ((itmAdValsObj[key] == null) ? "" : itmAdValsObj[key]);
       st += ',"' + stVal + '"';
     }    
     // // lay out the values array, empty at first
