@@ -2589,7 +2589,7 @@ function getEmailBodyAsCsv(siteID) {
     this_site_ph_array.forEach(ph_obj => {
       st += '\n\n"' + ph_obj.code + '","' + ph_obj.keywords.join(" ") + '"';
       st += '\n"recorded","' + ph_obj.date.toISOString() + '"';
-      st += '"on site","' + ph_obj.site_name 
+      st += '","on site","' + ph_obj.site_name 
         + '","at","' + ph_obj.latitude + ', ' + ph_obj.longitude
         + '","accuracy","' + ph_obj.accuracy + '","meters"';
       // reference any photos
