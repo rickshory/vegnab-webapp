@@ -936,6 +936,8 @@ match_list.addEventListener('click', function (e) {
             bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
             // trigger to refresh site list
             shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+            aux_spec_for = "spp_items";
+            enterAnyAuxData();
           }
           // end of processing an existing placeholder
         }
