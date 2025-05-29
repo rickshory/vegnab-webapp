@@ -1415,6 +1415,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   // refresh data, no matter what
   shwMainScreenTimeout = setTimeout(showMainScreen, 10);
   // ask for AuxData, if any
+  aux_spec_for = "spp_items";
   enterAnyAuxData();
 });
 
