@@ -263,7 +263,12 @@ function initializeSettingArray() {
     sentDataFormat: "fmtCsv",
     emailToSendTo: "",
     region_code: "OR",
-    current_site_id: ""
+    current_site_id: "",
+    immediate_awating_accuracy: "", // what, if anything is awaiting location accuracy
+    immediate_item_id: "", // the item awaiting accuracy
+    immediate_accuracy_ok: true,
+    immediate_ph_state: "", // will be 'new' or 'edit'
+    immediate_ph_id: ""
   };
   if (app_settings_array.length == 0) {
     app_settings_array.push(app_settings_object);
@@ -276,6 +281,45 @@ function initializeSettingArray() {
 /* under 'vnAppStateBkup' building a list of items to store:
 current_site_id
 */
+
+// query current page visibility state: prerender, visible, hidden
+var pageVisibility = document.visibilityState;
+
+// subscribe to visibility change events
+document.addEventListener('visibilitychange', function() {
+  // fires when user switches tabs, apps, goes to homescreen, etc.
+    if (document.visibilityState == 'hidden') { 
+      // store app state
+      app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
+      app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
+      switch (whatIsAwaitingAccuracy) {
+        case "site":
+          app_settings_array[0].immediate_item_id = cur_site_id;
+          break;
+        case "spp_itm":
+          app_settings_array[0].immediate_item_id = current_spp_item_id;
+          break;
+        case "new_plholder":
+          app_settings_array[0].immediate_item_id = current_ph_id;
+          break;
+        default:
+          // do nothing
+      }
+      
+      // at this point, only check if a placeholder is in the midst of being edited
+      if ((placeholder_state === "new" ) || (placeholder_state === "edit")) {
+        app_settings_array[0].immediate_ph_state = placeholder_state;
+        app_settings_array[0].immediate_ph_id = current_ph_id;
+
+        bkupAppSettings();
+      }
+     }
+
+    // fires when app transitions from prerender, user returns to the app / tab.
+    if (document.visibilityState == 'visible') { 
+      // not implemented yet
+     }
+});
 
 // TODO: possibly change the following, to avoid any possible race conditions of
 //  the arrays not being retrieved before the UI gets refreshed
@@ -1216,6 +1260,7 @@ function checkPositionAccuracy() {
     default:
       // do nothing
   }
+  // end of switch(whatIsAwaitingAccuracy)
   if (targetAccuracyOK) { // done getting location
     console.log("Target accuracy of " + targetAcc + " meters achieved");
     clearInterval(periodicLocationCheckFlag);
@@ -1555,7 +1600,7 @@ this_site_spp_list.addEventListener('click', function (e) {
   };
 }); 
 
-// Why does the following work? Is 'vnSppDetailScreen' and object readable by its ID?
+// Why does the following work? Is 'vnSppDetailScreen' an object readable by its ID?
 vnSppDetailScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnSppDetailScreen 'shown.bs.modal'");
   let detailed_spp_item = site_spp_array.find(itm => itm.id === current_spp_item_id);
@@ -1619,7 +1664,7 @@ document.getElementById('btn-mark-not-uncertain').addEventListener('click', func
  showMainScreen();
 });
 
-// Why does the following work? Is 'vnPhListScreen' and object readable by its ID?
+// Why does the following work? Is 'vnPhListScreen' an object readable by its ID?
 vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
   let ph_list_html = "";
   if (placeholders_array.length == 0) {
@@ -1634,7 +1679,7 @@ vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
   document.getElementById("ph_list").innerHTML = ph_list_html;
 });
 
-// Why does the following work? Is 'vnPlaceholderInfoScreen' and object readable by its ID?
+// Why does the following work? Is 'vnPlaceholderInfoScreen' an object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 //  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
   if (current_ph_code === "" || cur_placeholder === undefined) {
@@ -1837,6 +1882,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       locationDeferred = false;
       latestLocation = undefined;
       whatIsAwaitingAccuracy = "";
+      placeholder_state = "";
     }
   } // end of placeholder_state === "new"
   // trigger to refresh site list
@@ -2785,7 +2831,7 @@ settingsFormRegionsList.addEventListener('click', function (e) {
   }
 });
 
-// Why does the following work? Is 'vnDeleteSitesScreen' and object readable by its ID?
+// Why does the following work? Is 'vnDeleteSitesScreen' an object readable by its ID?
 vnDeleteSitesScreen.addEventListener('shown.bs.modal', function (event) {
   let old_sites_list_html = "";
   if (site_info_array.length == 0) {
@@ -2850,7 +2896,7 @@ document.getElementById('old_sites_list').addEventListener('click', function (e)
 });
 
 
-// Why does the following work? Is 'vnForgetSppScreen' and object readable by its ID?
+// Why does the following work? Is 'vnForgetSppScreen' an object readable by its ID?
 vnForgetSppScreen.addEventListener('shown.bs.modal', function (event) {
   let found_spp_list_html = "";
   if (found_spp_array.length == 0) {
