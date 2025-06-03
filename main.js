@@ -305,16 +305,20 @@ document.addEventListener('visibilitychange', function() {
         default:
           // do nothing
       }
-      
       // at this point, only check if a placeholder is in the midst of being edited
       if ((placeholder_state === "new" ) || (placeholder_state === "edit")) {
         app_settings_array[0].immediate_ph_state = placeholder_state;
         app_settings_array[0].immediate_ph_id = current_ph_id;
-
+        // save partial placeholder
+        let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
+        // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
+        let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
+        // allow empty array
+        cur_placeholder.keywords = phKeywordsArray;
+        bkupPlaceholders();
         bkupAppSettings();
       }
      }
-
     // fires when app transitions from prerender, user returns to the app / tab.
     if (document.visibilityState == 'visible') { 
       // not implemented yet
