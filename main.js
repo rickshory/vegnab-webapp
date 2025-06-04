@@ -1743,12 +1743,12 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
     document.getElementById('placeholder_code_label').innerHTML
         = 'New placeholder "' + cur_placeholder.code + '"';
     phScreenComplete = false; // flag to delete incomplete placeholder if screen dismissed
-    // is this a good place to restart this?
-    if (!targetAccuracyOK && !accuracyAccepted) { // also test locationDeferred?
-      locationTickerInterval = 500; // every half second for Species
-      console.log("about to re-start startTrackingPosition");
-      startTrackingPosition();
-    }
+    // // is this a good place to restart this?
+    // if (!targetAccuracyOK && !accuracyAccepted) { // also test locationDeferred?
+    //   locationTickerInterval = 500; // every half second for Species
+    //   console.log("about to re-start startTrackingPosition");
+    //   startTrackingPosition();
+    // }
   }
   if (placeholder_state === "edit") {
     document.getElementById('placeholder_code_label').innerHTML
