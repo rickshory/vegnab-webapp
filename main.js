@@ -289,6 +289,7 @@ var pageVisibility = document.visibilityState;
 document.addEventListener('visibilitychange', function() {
   // fires when user switches tabs, apps, goes to homescreen, etc.
     if (document.visibilityState == 'hidden') { 
+      console.log("visibilitychange: hidden");
       // store app state
       app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
       app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
@@ -321,6 +322,7 @@ document.addEventListener('visibilitychange', function() {
      }
     // fires when app transitions from prerender, user returns to the app / tab.
     if (document.visibilityState == 'visible') { 
+      console.log("visibilitychange: visible");
       // not implemented yet
      }
 });
@@ -1578,6 +1580,7 @@ function showMainScreen() {
   this_site_spp_list.innerHTML = spp_listitems_string;
   // check if a placeholder was in progress
   if (app_settings_array[0].immediate_ph_state != "") {
+    console.log("immediate_ph_state: " + pp_settings_array[0].immediate_ph_state);
     // restore the placeholders screen
     placeholder_state = app_settings_array[0].immediate_ph_state;
     current_ph_id = app_settings_array[0].immediate_ph_id;
