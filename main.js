@@ -1787,28 +1787,30 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
         sp_elem.accuracy = (sp_elem.accuracy == "") ? cur_placeholder.accuracy : sp_elem.accuracy;
       });
   } else { //  !phScreenComplete,  occurs if screen dismissed by "X" button
-    // new placeholder was never completed, remove it from the array
-    cur_placeholder = undefined; // unattach any reference
-    // remove the incomplete placeholder
-    console.log('about to remove incomplete Placeholder "'
-      + placeholders_array.find(p => p.id === current_ph_id).code + '"');
-    placeholders_array = placeholders_array.filter(ph => ph.id != current_ph_id);
-    bkupPlaceholders();
-    // remove any species item for it
-    var i;
-    while ((i = site_spp_array.findIndex(itm => itm.ph_id === current_ph_id)) > -1) {
-      console.log('about to remove incomplete Ph item "'
-        + site_spp_array[i].species + '"');
-      site_spp_array.splice(i, 1);
-      bkupSpeciesList();
+    if (placeholder_state === "new") {
+      // new placeholder was never completed, remove it from the array
+      cur_placeholder = undefined; // unattach any reference
+      // remove the incomplete placeholder
+      console.log('about to remove incomplete Placeholder "'
+        + placeholders_array.find(p => p.id === current_ph_id).code + '"');
+      placeholders_array = placeholders_array.filter(ph => ph.id != current_ph_id);
+      bkupPlaceholders();
+      // remove any species item for it
+      var i;
+      while ((i = site_spp_array.findIndex(itm => itm.ph_id === current_ph_id)) > -1) {
+        console.log('about to remove incomplete Ph item "'
+          + site_spp_array[i].species + '"');
+        site_spp_array.splice(i, 1);
+        bkupSpeciesList();
+      }
+      // stop the locations ticker
+      clearInterval(periodicLocationCheckFlag);
+      stopTrackingPosition();
+      accuracyAccepted = true;
+      locationDeferred = false;
+      latestLocation = undefined;
+      whatIsAwaitingAccuracy = "";
     }
-    // stop the locations ticker
-    clearInterval(periodicLocationCheckFlag);
-    stopTrackingPosition();
-    accuracyAccepted = true;
-    locationDeferred = false;
-    latestLocation = undefined;
-    whatIsAwaitingAccuracy = "";
   }
   // flag that work is finished
   placeholder_state = ""
