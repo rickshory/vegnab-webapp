@@ -1722,8 +1722,8 @@ vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
 
 // Why does the following work? Is 'vnPlaceholderInfoScreen' an object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
-  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
-  if (current_ph_code === "" || cur_placeholder === undefined) {
+  console.log("in vnPlaceholderInfoScreen 'shown.bs.modal'");
+  if (cur_placeholder === undefined || current_ph_id == "" || cur_placeholder.code == "") {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').value = "";
     document.getElementById('placeholder_location').innerHTML = "(no location)";
