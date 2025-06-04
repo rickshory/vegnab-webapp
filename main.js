@@ -267,6 +267,7 @@ function initializeSettingArray() {
     immediate_awating_accuracy: "", // what, if anything is awaiting location accuracy
     immediate_item_id: "", // the item awaiting accuracy
     immediate_accuracy_ok: true,
+    immediate_loc_deferred: false,
     immediate_ph_state: "", // will be 'new' or 'edit'
     immediate_ph_id: ""
   };
@@ -293,6 +294,7 @@ document.addEventListener('visibilitychange', function() {
       // store app state
       app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
       app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
+      app_settings_array[0].immediate_loc_deferred = locationDeferred;
       switch (whatIsAwaitingAccuracy) {
         case "site":
           app_settings_array[0].immediate_item_id = cur_site_id;
@@ -1589,8 +1591,11 @@ function showMainScreen() {
     app_settings_array[0].immediate_ph_id = ""; // reset
     targetAccuracyOK = app_settings_array[0].immediate_accuracy_ok;
     app_settings_array[0].immediate_accuracy_ok = true; // reset
+    locationDeferred = app_settings_array[0].immediate_loc_deferred;
+    app_settings_array[0].immediate_loc_deferred = false; // reset
     whatIsAwaitingAccuracy = app_settings_array[0].immediate_awating_accuracy;
     app_settings_array[0].immediate_awating_accuracy = "";  // reset
+
     // may not need the following here
     switch (whatIsAwaitingAccuracy) {
       case "site":
