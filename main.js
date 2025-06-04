@@ -945,7 +945,7 @@ match_list.addEventListener('click', function (e) {
           });
           vnPhInfoModal.show();
           // end of initiating a new placeholder
-        } else { // an existing placeholer
+        } else { // an existing placeholder
           // insert it as item for this site, similar to a real species
           // a placeholder code will contain spaces, and thus was encoded to make a valid ID
           console.log("target.id for existing placeholder: " + target.id);
@@ -1580,12 +1580,16 @@ function showMainScreen() {
   });
   this_site_spp_list.innerHTML = spp_listitems_string;
   // check if a placeholder was in progress
-  console.log("immediate_ph_state: " + app_settings_array[0].immediate_ph_state);
+  console.log("in showMainScreen, immediate_ph_state: " + app_settings_array[0].immediate_ph_state);
   if (app_settings_array[0].immediate_ph_state != "") {
     // restore the placeholders screen
     placeholder_state = app_settings_array[0].immediate_ph_state;
+    app_settings_array[0].immediate_ph_state = ""; // reset
     current_ph_id = app_settings_array[0].immediate_ph_id;
+    app_settings_array[0].immediate_ph_id = ""; // reset
+    bkupAppSettings();
     cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
+    current_ph_code = cur_placeholder.code;
     var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
       keyboard: false
     });
@@ -1718,7 +1722,7 @@ vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
 
 // Why does the following work? Is 'vnPlaceholderInfoScreen' an object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
-//  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
+  alert("in vnPlaceholderInfoScreen 'shown.bs.modal'");
   if (current_ph_code === "" || cur_placeholder === undefined) {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').value = "";
