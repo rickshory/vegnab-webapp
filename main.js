@@ -322,7 +322,7 @@ document.addEventListener('visibilitychange', function() {
       bkupPlaceholders();
       bkupAppSettings();
     }
-    }
+  }
   // fires when app transitions from prerender, user returns to the app / tab.
   if (document.visibilityState == 'visible') { 
 //    console.log("visibilitychange: visible");
@@ -1743,6 +1743,12 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
     document.getElementById('placeholder_code_label').innerHTML
         = 'New placeholder "' + cur_placeholder.code + '"';
     phScreenComplete = false; // flag to delete incomplete placeholder if screen dismissed
+    // is this a good place to restart this?
+    if (!targetAccuracyOK && !accuracyAccepted) { // also test locationDeferred?
+      locationTickerInterval = 500; // every half second for Species
+      console.log("about to re-start startTrackingPosition");
+      startTrackingPosition();
+    }
   }
   if (placeholder_state === "edit") {
     document.getElementById('placeholder_code_label').innerHTML
