@@ -308,6 +308,7 @@ document.addEventListener('visibilitychange', function() {
       }
       // at this point, only check if a placeholder is in the midst of being edited
       if ((placeholder_state === "new" ) || (placeholder_state === "edit")) {
+        console.log("in 'visibilitychange', placeholder_state: " + placeholder_state);
         app_settings_array[0].immediate_ph_state = placeholder_state;
         app_settings_array[0].immediate_ph_id = current_ph_id;
         // save partial placeholder
@@ -1579,8 +1580,8 @@ function showMainScreen() {
   });
   this_site_spp_list.innerHTML = spp_listitems_string;
   // check if a placeholder was in progress
+  console.log("immediate_ph_state: " + app_settings_array[0].immediate_ph_state);
   if (app_settings_array[0].immediate_ph_state != "") {
-    console.log("immediate_ph_state: " + pp_settings_array[0].immediate_ph_state);
     // restore the placeholders screen
     placeholder_state = app_settings_array[0].immediate_ph_state;
     current_ph_id = app_settings_array[0].immediate_ph_id;
