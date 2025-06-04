@@ -1587,6 +1587,25 @@ function showMainScreen() {
     app_settings_array[0].immediate_ph_state = ""; // reset
     current_ph_id = app_settings_array[0].immediate_ph_id;
     app_settings_array[0].immediate_ph_id = ""; // reset
+    targetAccuracyOK = app_settings_array[0].immediate_accuracy_ok;
+    app_settings_array[0].immediate_accuracy_ok = true; // reset
+    whatIsAwaitingAccuracy = app_settings_array[0].immediate_awating_accuracy;
+    app_settings_array[0].immediate_awating_accuracy = "";  // reset
+    // may not need the following here
+    switch (whatIsAwaitingAccuracy) {
+      case "site":
+        cur_site_id = app_settings_array[0].immediate_item_id;
+        break;
+      case "spp_itm":
+        current_spp_item_id = app_settings_array[0].immediate_item_id;
+        break;
+      case "new_plholder":
+        current_ph_id = app_settings_array[0].immediate_item_id;
+        break;
+      default:
+        // do nothing
+    }
+    app_settings_array[0].immediate_item_id = ""; // reset
     bkupAppSettings();
     cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
     current_ph_code = cur_placeholder.code;
@@ -1595,22 +1614,7 @@ function showMainScreen() {
     });
     vnPhInfoModal.show();
 
-    // // may not need the following here
-    // whatIsAwaitingAccuracy = app_settings_array[0].immediate_awating_accuracy;
-    // targetAccuracyOK = app_settings_array[0].immediate_accuracy_ok;
-    // switch (whatIsAwaitingAccuracy) {
-    //   case "site":
-    //     cur_site_id = app_settings_array[0].immediate_item_id;
-    //     break;
-    //   case "spp_itm":
-    //     current_spp_item_id = app_settings_array[0].immediate_item_id;
-    //     break;
-    //   case "new_plholder":
-    //     current_ph_id = app_settings_array[0].immediate_item_id;
-    //     break;
-    //   default:
-    //     // do nothing
-    // }
+
   }
 
 }; // end of fn showMainScreen
