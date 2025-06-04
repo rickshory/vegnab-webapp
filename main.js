@@ -1576,6 +1576,35 @@ function showMainScreen() {
     spp_listitems_string += '</li>'; // finish the list item
   });
   this_site_spp_list.innerHTML = spp_listitems_string;
+  // check if a placeholder was in progress
+  if (app_settings_array[0].immediate_ph_state != "") {
+    // restore the placeholders screen
+    placeholder_state = app_settings_array[0].immediate_ph_state;
+    current_ph_id = app_settings_array[0].immediate_ph_id;
+    cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
+    var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
+      keyboard: false
+    });
+    vnPhInfoModal.show();
+
+    // // may not need the following here
+    // whatIsAwaitingAccuracy = app_settings_array[0].immediate_awating_accuracy;
+    // targetAccuracyOK = app_settings_array[0].immediate_accuracy_ok;
+    // switch (whatIsAwaitingAccuracy) {
+    //   case "site":
+    //     cur_site_id = app_settings_array[0].immediate_item_id;
+    //     break;
+    //   case "spp_itm":
+    //     current_spp_item_id = app_settings_array[0].immediate_item_id;
+    //     break;
+    //   case "new_plholder":
+    //     current_ph_id = app_settings_array[0].immediate_item_id;
+    //     break;
+    //   default:
+    //     // do nothing
+    // }
+  }
+
 }; // end of fn showMainScreen
 
 this_site_spp_list.addEventListener('click', function (e) {
