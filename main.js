@@ -1810,6 +1810,13 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
       locationDeferred = false;
       latestLocation = undefined;
       whatIsAwaitingAccuracy = "";
+      // reset flags
+      app_settings_array[0].immediate_ph_state = ""; // reset
+      app_settings_array[0].immediate_ph_id = ""; // reset
+      app_settings_array[0].immediate_accuracy_ok = true; // reset
+      app_settings_array[0].immediate_loc_deferred = false; // reset
+      app_settings_array[0].immediate_awating_accuracy = "";  // reset
+      bkupAppSettings();
     }
   }
   // flag that work is finished
