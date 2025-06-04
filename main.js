@@ -289,45 +289,45 @@ var pageVisibility = document.visibilityState;
 // subscribe to visibility change events
 document.addEventListener('visibilitychange', function() {
   // fires when user switches tabs, apps, goes to homescreen, etc.
-    if (document.visibilityState == 'hidden') { 
-      console.log("visibilitychange: hidden");
-      // store app state
-      app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
-      app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
-      app_settings_array[0].immediate_loc_deferred = locationDeferred;
-      switch (whatIsAwaitingAccuracy) {
-        case "site":
-          app_settings_array[0].immediate_item_id = cur_site_id;
-          break;
-        case "spp_itm":
-          app_settings_array[0].immediate_item_id = current_spp_item_id;
-          break;
-        case "new_plholder":
-          app_settings_array[0].immediate_item_id = current_ph_id;
-          break;
-        default:
-          // do nothing
-      }
-      // at this point, only check if a placeholder is in the midst of being edited
-      if ((placeholder_state === "new" ) || (placeholder_state === "edit")) {
-        console.log("in 'visibilitychange', placeholder_state: " + placeholder_state);
-        app_settings_array[0].immediate_ph_state = placeholder_state;
-        app_settings_array[0].immediate_ph_id = current_ph_id;
-        // save partial placeholder
-        let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
-        // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
-        let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
-        // allow empty array
-        cur_placeholder.keywords = phKeywordsArray;
-        bkupPlaceholders();
-        bkupAppSettings();
-      }
-     }
-    // fires when app transitions from prerender, user returns to the app / tab.
-    if (document.visibilityState == 'visible') { 
-      console.log("visibilitychange: visible");
-      // not implemented yet
-     }
+  console.log("in 'visibilitychange': " + document.visibilityState);
+  if (document.visibilityState == 'hidden') { 
+    // store app state
+    app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
+    app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
+    app_settings_array[0].immediate_loc_deferred = locationDeferred;
+    switch (whatIsAwaitingAccuracy) {
+      case "site":
+        app_settings_array[0].immediate_item_id = app_settings_array[0].current_site_id;
+        break;
+      case "spp_itm":
+        app_settings_array[0].immediate_item_id = current_spp_item_id;
+        break;
+      case "new_plholder":
+        app_settings_array[0].immediate_item_id = current_ph_id;
+        break;
+      default:
+        // do nothing
+    }
+    // at this point, only check if a placeholder is in the midst of being edited
+    if ((placeholder_state === "new" ) || (placeholder_state === "edit")) {
+      console.log("in 'visibilitychange', placeholder_state: " + placeholder_state);
+      app_settings_array[0].immediate_ph_state = placeholder_state;
+      app_settings_array[0].immediate_ph_id = current_ph_id;
+      // save partial placeholder
+      let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
+      // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
+      let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
+      // allow empty array
+      cur_placeholder.keywords = phKeywordsArray;
+      bkupPlaceholders();
+      bkupAppSettings();
+    }
+    }
+  // fires when app transitions from prerender, user returns to the app / tab.
+  if (document.visibilityState == 'visible') { 
+//    console.log("visibilitychange: visible");
+    // not implemented yet
+  }
 });
 
 // TODO: possibly change the following, to avoid any possible race conditions of
@@ -891,15 +891,14 @@ match_list.addEventListener('click', function (e) {
           current_ph_code = decodeURIComponent(target.id.slice(8));
           console.log("new placeholder code: " + current_ph_code);
           let ph_create_date = new Date();
-          let cur_site_id = app_settings_array[0].current_site_id;
           let new_ph = {
             // if 'id' used as HTML element id, prefix assures it does not start with a number
             "id": 'ph_' + ph_create_date.getTime().toString(),
-            "site_id": cur_site_id,
+            "site_id": app_settings_array[0].current_site_id,
             // need name in case site has been deleted
-            "site_name":  site_info_array.find(s => s.id == cur_site_id).name,
+            "site_name":  site_info_array.find(s => s.id == app_settings_array[0].current_site_id).name,
             // may never use notes
-            "site_notes":  site_info_array.find(s => s.id == cur_site_id).notes,
+            "site_notes":  site_info_array.find(s => s.id == app_settings_array[0].current_site_id).notes,
             "code": current_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
@@ -1599,7 +1598,7 @@ function showMainScreen() {
     // may not need the following here
     switch (whatIsAwaitingAccuracy) {
       case "site":
-        cur_site_id = app_settings_array[0].immediate_item_id;
+        app_settings_array[0].current_site_id = app_settings_array[0].immediate_item_id;
         break;
       case "spp_itm":
         current_spp_item_id = app_settings_array[0].immediate_item_id;
