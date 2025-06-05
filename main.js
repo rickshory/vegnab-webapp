@@ -737,8 +737,10 @@ function updateMatchList() {
 			// at least 3 characters, to include short genera such as "Poa" and "Zea"
 
       // get full-text matches
+      // fn 'getWordMatches' tests if search_term is multi-word
       let local_fulltext_spp_match_array = local_spp_array.filter(obj =>
-				obj.item_description.toLowerCase().includes(search_term));
+				obj.item_description.toLowerCase().includes(search_term))
+          .concat(getWordMatches(search_term, local_spp_array)); 
       // remove any code repeats
       local_fulltext_spp_match_array = local_fulltext_spp_match_array.filter(ar =>
         !local_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
@@ -755,7 +757,8 @@ function updateMatchList() {
 				obj.item_code.toLowerCase().startsWith(search_term));
 			// get full-text matches
 			let nonlocal_fulltext_spp_match_array = nonlocal_spp_array.filter(obj =>
-				obj.item_description.toLowerCase().includes(search_term));
+				obj.item_description.toLowerCase().includes(search_term))
+          .concat(getWordMatches(search_term, nonlocal_spp_array));
       // remove any code repeats
       nonlocal_fulltext_spp_match_array = nonlocal_fulltext_spp_match_array.filter(ar =>
         !nonlocal_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
@@ -804,6 +807,37 @@ function updateMatchList() {
   }
   match_list.innerHTML = list_string;
 };
+
+function getWordMatches(search_tm, spp_array) {
+  // spp_array must have fields 'code' and 'item_description'
+  // search_tm should be multi-word; match any of these to
+  // any words in 'item_description'
+  const word_match_array = [];
+  const search_wds = search_tm
+    .toLowerCase()
+    .split(/\s+/) // split at whitespace
+    .filter(word => word.length >= 3); // only 3 chars and longer
+  // if search term not multi-word, already got matches  
+  if (search_wds.length() > 1) {
+    const seen_codes = new Set();
+    for (const sp of spp_array) {
+      const description_wds = sp.item_description
+        .replace(/,/g, '') // remove commas
+        .toLowerCase()
+        .split(/\s+/); // split at whitespace
+
+      const has_match = search_wds.some(srch_wd =>
+        description_wds.some(descr_wd => descr_wd.startsWith(srch_wd))
+      );
+
+      if (has_match && !seen_codes.has(sp.code)) {
+        seen_codes.add(sp.code);
+        word_match_array.push(sp);
+      }
+    }    
+  }
+  return word_match_array;
+}
 
 match_list.addEventListener('click', function (e) {
   // match_list is parent of all the list items
