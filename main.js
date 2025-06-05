@@ -826,7 +826,7 @@ function getWordMatches(search_tm, spp_array) {
         .toLowerCase()
         .split(/\s+/); // split at whitespace
 
-      const has_match = search_wds.some(srch_wd =>
+      const has_match = search_wds.every(srch_wd =>
         description_wds.some(descr_wd => descr_wd.startsWith(srch_wd))
       );
 
