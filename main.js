@@ -821,16 +821,12 @@ function getWordMatches(search_tm, spp_array) {
   if (search_wds.length > 1) {
     const seen_codes = new Set();
     for (const sp of spp_array) {
-      const description_wds = sp.item_description
-        .replace(/,/g, '') // remove commas
-        .toLowerCase()
-        .split(/\s+/); // split at whitespace
-
-      const has_match = search_wds.every(srch_wd =>
-        description_wds.some(descr_wd => descr_wd.includes(srch_wd))
+      const lc_description = sp.item_description
+        .toLowerCase();
+      const all_match = search_wds.every(srch_wd =>
+        lc_description.includes(srch_wd)
       );
-
-      if (has_match && !seen_codes.has(sp.code)) {
+      if (all_match && !seen_codes.has(sp.code)) {
         seen_codes.add(sp.code);
         word_match_array.push(sp);
       }
