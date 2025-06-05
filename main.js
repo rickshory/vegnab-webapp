@@ -834,7 +834,11 @@ function getWordMatches(search_tm, spp_array) {
         seen_codes.add(sp.code);
         word_match_array.push(sp);
       }
-    }    
+    }
+  }
+  if (word_match_array.length) {
+    console.log("getWordMatches: " + word_match_array.length + " matches");
+    console.log(word_match_array);
   }
   return word_match_array;
 }
