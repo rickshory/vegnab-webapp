@@ -827,7 +827,7 @@ function getWordMatches(search_tm, spp_array) {
         .split(/\s+/); // split at whitespace
 
       const has_match = search_wds.every(srch_wd =>
-        description_wds.some(descr_wd => descr_wd.startsWith(srch_wd))
+        description_wds.some(descr_wd => descr_wd.includes(srch_wd))
       );
 
       if (has_match && !seen_codes.has(sp.code)) {
