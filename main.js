@@ -818,7 +818,7 @@ function getWordMatches(search_tm, spp_array) {
     .split(/\s+/) // split at whitespace
     .filter(word => word.length >= 3); // only 3 chars and longer
   // if search term not multi-word, already got matches  
-  if (search_wds.length() > 1) {
+  if (search_wds.length > 1) {
     const seen_codes = new Set();
     for (const sp of spp_array) {
       const description_wds = sp.item_description
