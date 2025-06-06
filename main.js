@@ -820,7 +820,7 @@ function getWordMatches(search_tm, spp_array) {
   // if search term not multi-word, already got matches  
   if (search_wds.length > 1) {
     let seen_codes = new Set();
-    for (let sp of spp_array) {
+    spp_array.forEach(sp => {
       let lc_description = sp.item_description
         .toLowerCase();
       let all_match = true;
@@ -839,7 +839,7 @@ function getWordMatches(search_tm, spp_array) {
       //   console.log("Search words:", search_wds);
       //   console.log("Match result:", search_wds.every(w => lc_description.includes(w)));
       // }
-    }
+    });
   }
   if (word_match_array.length) {
     console.log("getWordMatches: " + word_match_array.length + " matches");
