@@ -830,7 +830,7 @@ function getWordMatches(search_tm, spp_array) {
         }
       });
 
-      if (all_match && !seen_codes.has(sp.code)) {
+      if (all_match) {
         seen_codes.add(sp.code);
         word_match_array.push(sp);
       }
