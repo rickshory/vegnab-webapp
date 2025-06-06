@@ -809,7 +809,7 @@ function updateMatchList() {
 };
 
 function getWordMatches(search_tm, spp_array) {
-  // spp_array must have fields 'code' and 'item_description'
+  // spp_array must have fields 'item_code' and 'item_description'
   // search_tm should be multi-word; match any of these to
   // any part of 'item_description'
   let word_match_array = [];
@@ -826,20 +826,14 @@ function getWordMatches(search_tm, spp_array) {
       let all_match = search_wds.every(srch_wd =>
         lc_description.includes(srch_wd)
       );
-      if (all_match) {
-        if (seen_codes.has(sp.code)) {
-          console.log(`Skipping duplicate code: "${sp.code}" in ${sp}`);
+      if (all_match && !seen_codes.has(sp.item_code)) {
+        if (seen_codes.has(sp.item_code)) {
+          console.log(`Skipping duplicate code: "${sp.item_code}" in ${sp}`);
         } else {
-          seen_codes.add(sp.code);
+          seen_codes.add(sp.item_code);
         }
-      
         word_match_array.push(sp);
       }
-      // if (sp.item_description.includes("bluegrass")) {
-      //   console.log("Checking against:", sp.item_description);
-      //   console.log("Search words:", search_wds);
-      //   console.log("Match result:", search_wds.every(w => lc_description.includes(w)));
-      // }
     });
   }
   if (word_match_array.length) {
