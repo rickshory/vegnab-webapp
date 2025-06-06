@@ -815,7 +815,7 @@ function getWordMatches(search_tm, spp_array) {
   let word_match_array = [];
   let search_wds = search_tm
     .toLowerCase()
-    .split(/\s+/) // split at whitespace
+    .split(" ") // split at spaces
     .filter(word => word.length >= 3); // only 3 chars and longer
   // if search term not multi-word, already got matches  
   if (search_wds.length > 1) {
@@ -834,11 +834,11 @@ function getWordMatches(search_tm, spp_array) {
         seen_codes.add(sp.code);
         word_match_array.push(sp);
       }
-      if (sp.item_description.includes("bluegrass")) {
-        console.log("Checking against:", sp.item_description);
-        console.log("Search words:", search_wds);
-        console.log("Match result:", search_wds.every(w => lc_description.includes(w)));
-      }
+      // if (sp.item_description.includes("bluegrass")) {
+      //   console.log("Checking against:", sp.item_description);
+      //   console.log("Search words:", search_wds);
+      //   console.log("Match result:", search_wds.every(w => lc_description.includes(w)));
+      // }
     });
   }
   if (word_match_array.length) {
