@@ -826,9 +826,15 @@ function getWordMatches(search_tm, spp_array) {
       let all_match = search_wds.every(srch_wd =>
         lc_description.includes(srch_wd)
       );
+
       if (all_match && !seen_codes.has(sp.code)) {
         seen_codes.add(sp.code);
         word_match_array.push(sp);
+      }
+      if (sp.item_description.includes("bluegrass")) {
+        console.log("Checking against:", sp.item_description);
+        console.log("Search words:", search_wds);
+        console.log("Match result:", search_wds.every(w => lc_description.includes(w)));
       }
     }
   }
