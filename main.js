@@ -811,19 +811,19 @@ function updateMatchList() {
 function getWordMatches(search_tm, spp_array) {
   // spp_array must have fields 'code' and 'item_description'
   // search_tm should be multi-word; match any of these to
-  // any words in 'item_description'
-  const word_match_array = [];
-  const search_wds = search_tm
+  // any part of 'item_description'
+  let word_match_array = [];
+  let search_wds = search_tm
     .toLowerCase()
     .split(/\s+/) // split at whitespace
     .filter(word => word.length >= 3); // only 3 chars and longer
   // if search term not multi-word, already got matches  
   if (search_wds.length > 1) {
-    const seen_codes = new Set();
-    for (const sp of spp_array) {
-      const lc_description = sp.item_description
+    let seen_codes = new Set();
+    for (let sp of spp_array) {
+      let lc_description = sp.item_description
         .toLowerCase();
-      const all_match = search_wds.every(srch_wd =>
+      let all_match = search_wds.every(srch_wd =>
         lc_description.includes(srch_wd)
       );
       if (all_match && !seen_codes.has(sp.code)) {
