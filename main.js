@@ -701,8 +701,12 @@ function updateMatchList() {
   let nonlocal_spp_match_array = [];
 
   if (search_term.length > 0) {
+    //getTermMatches ignores search_term.length < 3
+    //getWordMatches ignores search_term < 2 ea 3 letter words
     found_spp_match_array = found_spp_array.filter(obj =>
-			obj.item_code.toLowerCase().startsWith(search_term));
+			obj.item_code.toLowerCase().startsWith(search_term))
+        .concat(getTermMatches(search_term, found_spp_array))
+        .concat(getWordMatches(search_term, found_spp_array));
     // treat placeholders as found species
     // standardize the placeholders array, for operations
     let ph_std_array = placeholders_array.map(ph => {
@@ -712,15 +716,18 @@ function updateMatchList() {
       };
       return ph_show;
     });
-    // first, get placeholder code matches
+    // get placeholder code matches and add term & word matches
     let placeholder_match_array = ph_std_array.filter(obj =>
-       obj.item_code.toLowerCase().startsWith(search_term));
-    if (search_term.length > 2) { // get placeholder search term matches
+       obj.item_code.toLowerCase().startsWith(search_term))
+        .concat(getTermMatches(search_term, ph_std_array))
+        .concat(getWordMatches(search_term, ph_std_array));
+
+     if (search_term.length > 2) { // get placeholder search term matches
       let placeholder_keyword_match_array = placeholders_array.filter(obj =>
          obj.keywords.join(" ").toLowerCase().includes(search_term));
 
       // remove any code repeats
-      placeholder_keyword_match_array = placeholder_keyword_match_array.filter(ar =>
+      placeholder_match_array = placeholder_match_array.filter(ar =>
         !placeholder_match_array.find(rm => (rm.code === ar.code)));
       // put search term matches with code matches
       placeholder_match_array = placeholder_match_array
@@ -833,6 +840,7 @@ function getTermMatches(search_tm, spp_array) {
   //   console.log(term_match_array);
   // }
   return term_match_array;
+}
 
 function getWordMatches(search_tm, spp_array) {
   // spp_array must have fields 'item_code' and 'item_description'
