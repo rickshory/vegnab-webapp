@@ -701,14 +701,8 @@ function updateMatchList() {
   let nonlocal_spp_match_array = [];
 
   if (search_term.length > 0) {
-    //getTermMatches ignores search_term.length < 3
-    //getWordMatches ignores search_term < 2 ea 3 letter words
-    found_spp_match_array = found_spp_array.filter(obj =>
-			obj.item_code.toLowerCase().startsWith(search_term))
-        .concat(getTermMatches(search_term, found_spp_array))
-        .concat(getWordMatches(search_term, found_spp_array));
     // treat placeholders as found species
-    // standardize the placeholders array, for operations
+    // standardize the placeholders array, for functions
     let ph_std_array = placeholders_array.map(ph => {
       let ph_show = {
         "item_code": ph.code,
@@ -716,78 +710,41 @@ function updateMatchList() {
       };
       return ph_show;
     });
-    // get placeholder code matches and add term & word matches
-    let placeholder_match_array = ph_std_array.filter(obj =>
-       obj.item_code.toLowerCase().startsWith(search_term))
-        .concat(getTermMatches(search_term, ph_std_array))
-        .concat(getWordMatches(search_term, ph_std_array));
-
-     if (search_term.length > 2) { // get placeholder search term matches
-      let placeholder_keyword_match_array = placeholders_array.filter(obj =>
-         obj.keywords.join(" ").toLowerCase().includes(search_term));
-
-      // remove any code repeats
-      placeholder_match_array = placeholder_match_array.filter(ar =>
-        !placeholder_match_array.find(rm => (rm.code === ar.code)));
-      // put search term matches with code matches
-      placeholder_match_array = placeholder_match_array
-        .concat(placeholder_keyword_match_array);
-    } // end of search_term.length > 2
-    console.log(placeholder_match_array);
-    // let ph_show_array = placeholder_match_array.map(ph => {
-    //   let ph_show = {
-    //     "item_code": ph.code,
-    //     "item_description": ph.keywords.join(" ")
-    //   };
-    //   return ph_show;
-    // });
-    found_spp_match_array = found_spp_match_array.concat(ph_show_array);
+    
+    //getCodeMatches matches search_term to start of the code
+    //getTermMatches ignores search_term.length < 3
+    //getWordMatches ignores search_term < 2 ea 3 letter words
+    //the spread operator (...) flattens the arrays into one
+    found_spp_match_array = removeAnyDuplicates([
+      ...getCodeMatches(search_term, found_spp_array),
+      ...getTermMatches(search_term, found_spp_array),
+      ...getWordMatches(search_term, found_spp_array),
+      ...getCodeMatches(search_term, ph_std_array),
+      ...getTermMatches(search_term, ph_std_array),
+      ...getWordMatches(search_term, ph_std_array)
+    ]);
     found_spp_match_array.sort();
   }
 	if (search_term.length > 1) {
-		// get the strict matches on item_code for local species
-		local_spp_match_array = local_spp_array.filter(obj =>
-			obj.item_code.toLowerCase().startsWith(search_term));
-		if (search_term.length > 2) {
-			// get local full-text matches
-			// at least 3 characters, to include short genera such as "Poa" and "Zea"
-
-      // get full-text matches
-      // fn 'getWordMatches' only runs if search_term is multi-word
-      let local_fulltext_spp_match_array = local_spp_array.filter(obj =>
-				obj.item_description.toLowerCase().includes(search_term))
-          .concat(getWordMatches(search_term, local_spp_array)); 
-      // remove any code repeats
-      local_fulltext_spp_match_array = local_fulltext_spp_match_array.filter(ar =>
-        !local_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
-      // put the code matches together with the full-text matches
-      local_spp_match_array = local_spp_match_array.concat(local_fulltext_spp_match_array);
-      // remove any previously-found repeats
-      local_spp_match_array = local_spp_match_array.filter(ar =>
-        !found_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
-			local_spp_match_array.sort(); // internally sort local spp, by code
-
-			// add matches of non-local species, CSS will color them differently
-			// get strict code matches
-			nonlocal_spp_match_array = nonlocal_spp_array.filter(obj =>
-				obj.item_code.toLowerCase().startsWith(search_term));
-			// get full-text matches
-			let nonlocal_fulltext_spp_match_array = nonlocal_spp_array.filter(obj =>
-				obj.item_description.toLowerCase().includes(search_term))
-          .concat(getWordMatches(search_term, nonlocal_spp_array));
-      // remove any code repeats
-      nonlocal_fulltext_spp_match_array = nonlocal_fulltext_spp_match_array.filter(ar =>
-        !nonlocal_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
-			// put the nonlocal code and full-text results together
-			nonlocal_spp_match_array =
-				nonlocal_spp_match_array.concat(nonlocal_fulltext_spp_match_array);
-      // remove any previously-found repeats
-      nonlocal_spp_match_array = nonlocal_spp_match_array.filter(ar =>
-        !found_spp_match_array.find(rm => (rm.item_code === ar.item_code)));
-			// internally sort
-			nonlocal_spp_match_array.sort();
-		}
-	}
+    local_spp_match_array = removeAnyDuplicates([
+      ...getCodeMatches(search_term, local_spp_array),
+      ...getTermMatches(search_term, local_spp_array),
+      ...getWordMatches(search_term, local_spp_array)
+    ]);
+    local_spp_match_array = 
+      removeAnyAlreadyIn(local_spp_match_array, found_spp_match_array);
+    local_spp_match_array.sort();
+    // add matches of non-local species, CSS will color them differently
+    nonlocal_spp_match_array = removeAnyDuplicates([
+      ...getCodeMatches(search_term, nonlocal_spp_array),
+      ...getTermMatches(search_term, nonlocal_spp_array),
+      ...getWordMatches(search_term, nonlocal_spp_array)
+    ]);
+    nonlocal_spp_match_array = 
+      removeAnyAlreadyIn(nonlocal_spp_match_array, found_spp_match_array);
+    nonlocal_spp_match_array.sort();
+  }
+	
   // build list contents, if any, then assign innerHTML all at once
   let list_string = "";
   found_spp_match_array.forEach(obj => {
@@ -823,6 +780,34 @@ function updateMatchList() {
   }
   match_list.innerHTML = list_string;
 };
+
+function removeAnyAlreadyIn (main_array, rm_array) {
+  // both arrays must have field 'item_code'
+  let nixCodes = new Set(rm_array.map(rm => rm.item_code));
+  return main_array.filter(ar => !nixCodes.has(ar.item_code));
+}
+
+function removeAnyDuplicates(spp_array) {
+  // spp_array must have field 'item_code'
+  let seen = new Set();
+  return spp_array.filter(sp => {
+    if (seen.has(sp.item_code)) return false;
+    seen.add(sp.item_code);
+    return true;
+  });
+}
+
+function getCodeMatches(search_tm, spp_array) {
+  // spp_array must have field 'item_code'
+  // match 'search_tm' to first part of 'item_code'
+  let code_match_array = spp_array.filter(sp =>
+       sp.item_code.toLowerCase().startsWith(search_tm.toLowerCase()));
+  // if (code_match_array.length) {
+  //   console.log("getTermMatches: " + code_match_array.length + " matches");
+  //   console.log(code_match_array);
+  // }
+  return code_match_array;
+}
 
 function getTermMatches(search_tm, spp_array) {
   // spp_array must have fields 'item_code' and 'item_description'
