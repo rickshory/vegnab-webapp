@@ -704,27 +704,36 @@ function updateMatchList() {
     found_spp_match_array = found_spp_array.filter(obj =>
 			obj.item_code.toLowerCase().startsWith(search_term));
     // treat placeholders as found species
-    // frst, get code matches
-    let placeholder_match_array = placeholders_array.filter(obj =>
-       obj.code.toLowerCase().startsWith(search_term));
-    if (search_term.length > 2) { // get placeholder keyword matches
-      let placeholder_keyword_match_array = placeholders_array.filter(obj =>
-         obj.keywords.join(" ").toLowerCase().includes(search_term));
-      // remove any code repeats
-      placeholder_keyword_match_array = placeholder_keyword_match_array.filter(ar =>
-        !placeholder_match_array.find(rm => (rm.code === ar.code)));
-      // put keyword matches with code matches
-      placeholder_match_array = placeholder_match_array
-        .concat(placeholder_keyword_match_array);
-    } // end of search_term.length > 2
-    console.log(placeholder_match_array);
-    let ph_show_array = placeholder_match_array.map(ph => {
+    // standardize the placeholders array, for operations
+    let ph_std_array = placeholders_array.map(ph => {
       let ph_show = {
         "item_code": ph.code,
         "item_description": ph.keywords.join(" ")
       };
       return ph_show;
     });
+    // first, get placeholder code matches
+    let placeholder_match_array = ph_std_array.filter(obj =>
+       obj.item_code.toLowerCase().startsWith(search_term));
+    if (search_term.length > 2) { // get placeholder search term matches
+      let placeholder_keyword_match_array = placeholders_array.filter(obj =>
+         obj.keywords.join(" ").toLowerCase().includes(search_term));
+
+      // remove any code repeats
+      placeholder_keyword_match_array = placeholder_keyword_match_array.filter(ar =>
+        !placeholder_match_array.find(rm => (rm.code === ar.code)));
+      // put search term matches with code matches
+      placeholder_match_array = placeholder_match_array
+        .concat(placeholder_keyword_match_array);
+    } // end of search_term.length > 2
+    console.log(placeholder_match_array);
+    // let ph_show_array = placeholder_match_array.map(ph => {
+    //   let ph_show = {
+    //     "item_code": ph.code,
+    //     "item_description": ph.keywords.join(" ")
+    //   };
+    //   return ph_show;
+    // });
     found_spp_match_array = found_spp_match_array.concat(ph_show_array);
     found_spp_match_array.sort();
   }
@@ -737,7 +746,7 @@ function updateMatchList() {
 			// at least 3 characters, to include short genera such as "Poa" and "Zea"
 
       // get full-text matches
-      // fn 'getWordMatches' tests if search_term is multi-word
+      // fn 'getWordMatches' only runs if search_term is multi-word
       let local_fulltext_spp_match_array = local_spp_array.filter(obj =>
 				obj.item_description.toLowerCase().includes(search_term))
           .concat(getWordMatches(search_term, local_spp_array)); 
@@ -808,6 +817,23 @@ function updateMatchList() {
   match_list.innerHTML = list_string;
 };
 
+function getTermMatches(search_tm, spp_array) {
+  // spp_array must have fields 'item_code' and 'item_description'
+  // search_tm should be at least 3 character; match to
+  // any part of 'item_description'
+  // results will not have code repeats unless source does
+  let term_match_array = [];
+  if (search_tm.length >= 3) { // at least 3 characters, to include short genera such as "Poa" and "Zea"
+  let search_term = search_tm.toLowerCase(); // allow spaces & puctuation for special searching 
+  term_match_array = spp_array.filter(sp =>
+      sp.item_description.toLowerCase().includes(search_term))
+  }
+  // if (term_match_array.length) {
+  //   console.log("getTermMatches: " + term_match_array.length + " matches");
+  //   console.log(term_match_array);
+  // }
+  return term_match_array;
+
 function getWordMatches(search_tm, spp_array) {
   // spp_array must have fields 'item_code' and 'item_description'
   // search_tm should be multi-word; match any of these to
@@ -836,10 +862,10 @@ function getWordMatches(search_tm, spp_array) {
       }
     });
   }
-  if (word_match_array.length) {
-    console.log("getWordMatches: " + word_match_array.length + " matches");
-    console.log(word_match_array);
-  }
+  // if (word_match_array.length) {
+  //   console.log("getWordMatches: " + word_match_array.length + " matches");
+  //   console.log(word_match_array);
+  // }
   return word_match_array;
 }
 
