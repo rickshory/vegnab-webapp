@@ -56,7 +56,7 @@
             <ul class="dropdown-menu" aria-labelledby="navbarCorrectionsDropdown">
               <li><a class="dropdown-item" href="#vnSendDataScreen" data-bs-toggle="modal">
                 <h3>Send site data</h3></a></a></li>
-              <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
+              <li><a class="dropdown-item" href="#vnSendRememberedSppScreen" data-bs-toggle="modal">
                 <h3>Send remembered species</h3></a></a></li>
               <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
                 <h3>Send placeholders list</h3></a></li>
@@ -606,7 +606,7 @@
     </div>
     <!-- end modal, wait for accuracy -->
 
-    <!-- begin modal, send data -->
+    <!-- begin modal, send site data -->
     <div id="vnSendDataScreen" class="modal send_data_screen" role="dialog">
       <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
         <div class="modal-content">
@@ -662,7 +662,7 @@
                   <div>Format chosen to send:</div>
                   <div id="msgSentDataFormat"></div>
                   <div>Change in Settings</div>
-                </div> <!-- end of 3rd row, 'Send' button -->
+                </div> <!-- end of 4th row, format message -->
 
               </div> <!-- end of form-floating -->
             </form>
@@ -670,7 +670,52 @@
         </div>
       </div>
     </div>
-    <!-- end of modal, send data-->
+    <!-- end of modal, send site data-->
+
+    <!-- begin modal, send remembered species -->
+    <div id="vnSendRememberedSppScreen" class="modal send_remem_spp_screen" role="dialog">
+      <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-scrollable">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h3>Send remembered species</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form id="send-form" autocomplete="off">
+              <div class="form-floating mb-3 mt-3">
+                <div class="row"> <!-- 1st row, email and labels -->
+                  <input type="email" class="form-control form-control-lg"
+                      id="email_spp_address_box" name="email_spp_address-box"
+                      placeholder="Email" aria-describedby="emailHelp" required>
+                  <label for="email_spp_address-box">Email address</label>
+                  <div id="emailHelp" class="form-text">
+                    <h3>Send the list of remembered species by email.</h3>
+                  </div>
+                </div> <!-- end of 1st row, email and labels -->
+                <div class="row"> <!-- 2nd row, 'Send' button -->
+                  <button type="button" class="btn btn-primary btn-xl"
+                      name="btn-send-remembered-spp"
+                      id="btn-send-remembered-spp">Send
+                  </button>
+                </div> <!-- end of 2nd row, 'Send' button -->
+                <div class="row"> <!-- 3rd row, format message -->
+                  <div>Format chosen to send:</div>
+                  <div id="msgSentRememberedSppFormat"></div>
+                  <div>Change in Settings</div>
+                </div> <!-- end of 3rd row, format messag -->
+
+              </div> <!-- end of form-floating -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end of modal, send remembered species-->
+
 
     <!-- begin modal, Settings -->
     <div id="vnSettingsScreen" class="modal">
