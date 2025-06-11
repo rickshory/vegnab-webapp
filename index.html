@@ -36,22 +36,33 @@
       <div class="navbar-collapse collapse" id="navbarsExample03" style="">
         <ul class="navbar-nav me-auto mb-2 mb-sm-0">
           <li class="nav-item">
-            <a class="nav-link" href="#vnSendDataScreen" data-bs-toggle="modal">
-              Send data</a>
+            <a class="nav-link" href="#vnAuxDataListScreen" data-bs-toggle="modal">
+              Auxiliary data</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#vnPhListScreen" data-bs-toggle="modal">
               Placeholders</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#vnAuxDataListScreen" data-bs-toggle="modal">
-              Auxiliary data</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="#vnSettingsScreen" data-bs-toggle="modal">
               Settings</a>
           </li>
-          
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" 
+              id="navbarCorrectionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Send data
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarCorrectionsDropdown">
+              <li><a class="dropdown-item" href="#vnSendDataScreen" data-bs-toggle="modal">
+                <h3>Send site data</h3></a></a></li>
+              <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
+                <h3>Send remembered species</h3></a></a></li>
+              <li><a class="dropdown-item" href="#vnUnderConstructionScreen" data-bs-toggle="modal">
+                <h3>Send placeholders list</h3></a></li>
+            </ul>
+          </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" 
               id="navbarCorrectionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
