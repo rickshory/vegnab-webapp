@@ -2783,6 +2783,38 @@ function getEmailBodyAsCsv(siteID) {
   return st;
 }
 
+vnSendRememberedSppScreen.addEventListener('shown.bs.modal', function (event) {
+//  alert("in vnSendRememberedSppScreen 'shown.bs.modal'");
+	if (found_spp_array.length == 0) {
+    emailSppHelp.innerHTML = '<h3>No remembered species yet.</h3>';
+  } else {
+    let base_msg = emailSppHelp.innerHTML;
+    emailSppHelp.innerHTML = base_msg + '<br>' + found_spp_array.length + ' species'
+  }
+
+  // remind which data format is selected
+  let stMsg = "";
+  switch(app_settings_array[0].sentDataFormat) {
+    case "fmtHumanReadable":
+      stMsg = 'Human Readable';
+      break;
+    case "fmtCsv":
+      stMsg = 'CSV';
+      break;
+    // case "fmtXml":
+    //   stMsg = 'XML';
+    //   break;
+    // case "fmtJson":
+    //   stMsg = 'JSON';
+    //   break;
+    default:
+      stMsg = 'not known';
+      // code block
+    };
+  document.getElementById('msgSentRememberedSppFormat').innerHTML = stMsg;
+});
+
+
 document.getElementById('btn-reset-app').addEventListener('click', function () {
   if (confirm("This will erase all your data. Are you sure?")) {
     // clear the arrays, in ascending order of importance, and nesting
