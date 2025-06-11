@@ -2788,7 +2788,7 @@ vnSendRememberedSppScreen.addEventListener('shown.bs.modal', function (event) {
 	if (found_spp_array.length == 0) {
     emailSppHelp.innerHTML = '<h3>No remembered species yet.</h3>';
   } else {
-    let base_msg = emailSppHelp.innerHTML;
+    let base_msg = '<h3>Send the list of remembered species by email.</h3>';
     emailSppHelp.innerHTML = base_msg + '<br>' + found_spp_array.length + ' species'
   }
 
@@ -2814,6 +2814,81 @@ vnSendRememberedSppScreen.addEventListener('shown.bs.modal', function (event) {
   document.getElementById('msgSentRememberedSppFormat').innerHTML = stMsg;
 });
 
+document.getElementById('btn-send-remembered-spp')
+  .addEventListener('click', sendRememberedSppData);
+
+function sendRememberedSppData() {
+//  alert("in sendRememberedSppData function");
+  let emailAddrString = document.getElementById('email_spp_address_box').value.toString().trim();
+  // validation here
+  if (found_spp_array.length == 0) {
+    alert("No remembered species yet. Nothing to send.");
+    return;
+  }
+
+  if (emailAddrString == "") {
+    alert("no email address");
+    return;
+  }
+
+  console.log(emailAddrString);
+
+  let emailSubjectStr = "VegNab webapp, " + found_spp_array.length + " remembered species";
+
+  let emailBodyStr = "";
+
+  switch(app_settings_array[0].sentDataFormat) {
+    case "fmtHumanReadable":
+      emailBodyStr = getEmailBodyFoundSppHumanReadable();
+      break;
+    case "fmtCsv":
+      emailBodyStr = getEmailBodyFoundSppAsCSV();
+      break;
+    // case "fmtXml":
+    //   emailBodyStr = getEmailBodyAsXml(siteObj.id);
+    //   break;
+    // case "fmtJson":
+    //   emailBodyStr = getEmailBodyAsJson(siteObj.id);
+    // maybe use this as default and then
+    // stringify to CSV using something like Papa.unparse(jsonString)
+    //   break;
+    default:
+      alert("Format not implemented yet, defaulting to Human Readable")
+      emailBodyStr = getEmailBodyFoundSppHumanReadable();
+    }
+
+  console.log(emailBodyStr);
+    //  let emailBodyStr = '"Site 1\ntoday\nABCO\tAbies concolor"';
+  // spaces, linebreaks and tabs get correctly encoded
+  // spaces and linebreaks come through in Gmail, but tabs turn into spaces
+  let emailMsg = 'mailto:' + emailAddrString
+    + '?subject=' + encodeURIComponent(emailSubjectStr)
+    + '&body=' +  encodeURIComponent(emailBodyStr);
+  // check message is not too long, etc.
+
+  window.open(emailMsg); // works on phone, not on laptop
+
+  console.log('About to hide the Send Data modal');
+  bootstrap.Modal.getOrCreateInstance(document
+      .getElementById('vnSendRememberedSppScreen')).hide();
+} // end of fn sendRememberedSppData
+
+
+function getEmailBodyFoundSppHumanReadable() {
+  let st = "";
+  found_spp_array.forEach(sp => {
+    st += sp.item_code + " " + sp.item_description + '\n';
+  });  
+  return st;
+}
+
+function getEmailBodyFoundSppAsCSV() {
+  let st = "";
+  found_spp_array.forEach(sp => {
+    st += '"' + sp.item_code + '","' + sp.item_description + '"\n';
+  });  
+  return st;
+}
 
 document.getElementById('btn-reset-app').addEventListener('click', function () {
   if (confirm("This will erase all your data. Are you sure?")) {
