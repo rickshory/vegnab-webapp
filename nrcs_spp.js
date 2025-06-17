@@ -1,4 +1,4 @@
-﻿const nrcs_spp_array = [
+const nrcs_spp_array = [
   {
     nrcs_code: "ABAB",
     genus: "Abutilon",
@@ -2708,7 +2708,7 @@
     genus: "Achlys",
     species: "californica",
     subspp_var: "",
-    common_names: ", deer's foot",
+    common_names: ", deer's foot, vanilla leaf",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -27220,7 +27220,7 @@
     genus: "Amsinckia",
     species: "menziesii",
     subspp_var: "",
-    common_names: ", Menzies' fiddleneck",
+    common_names: ", Menzies' fiddleneck, common orange fiddleneck",
     distribution: "AB,AK,AZ,BC,CA,CO,CT,HI,ID,IL,MA,MB,ME,MO,MT,NC,ND,NE,NH,NV,NY,OR,PA,SC,SK,TX,UT,VA,WA,WY,YT,",
   },
   {
@@ -54532,7 +54532,7 @@
     genus: "Aruncus",
     species: "sylvester",
     subspp_var: "",
-    common_names: ", bride's feathers",
+    common_names: ", bride's feathers, goat's beard",
     distribution: "AB,AK,BC,CA,ME,MI,NY,OR,WA,YT,",
   },
   {
@@ -100012,7 +100012,7 @@
     genus: "Bromus",
     species: "sitchensis",
     subspp_var: "",
-    common_names: ", Alaska brome",
+    common_names: ", Alaska brome, Sitka brome",
     distribution: "AB,AK,AZ,BC,CA,CO,CT,IA,ID,IL,KS,MA,ME,MT,NE,NH,NM,NV,NY,ON,OR,QC,SD,SK,UT,WA,WY,",
   },
   {
@@ -105572,7 +105572,7 @@
     genus: "Catabrosa",
     species: "aquatica",
     subspp_var: "",
-    common_names: ", water whorl grass",
+    common_names: ", water whorl grass, brookgrass",
     distribution: "AB,AK,AZ,BC,CO,GL,IA,ID,LB,MB,MT,NB,ND,NE,NF,NM,NV,ON,OR,PE,QC,SD,SK,SPM,UT,WA,WI,WY,",
   },
   {
@@ -120252,7 +120252,7 @@
     genus: "Camassia",
     species: "leichtlinii",
     subspp_var: "",
-    common_names: ", large camas",
+    common_names: ", large camas, big camas",
     distribution: "BC,CA,NV,OR,WA,",
   },
   {
@@ -124388,7 +124388,7 @@
     genus: "Cardamine",
     species: "nuttallii",
     subspp_var: "",
-    common_names: ", Nuttall's toothwort",
+    common_names: ", Nuttall's toothwort, oaks toothwort",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -124580,7 +124580,7 @@
     genus: "Cardamine",
     species: "nuttallii",
     subspp_var: "var. pulcherrima",
-    common_names: ", palmate toothwort",
+    common_names: ", palmate toothwort, oaks toothwort",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -125580,7 +125580,7 @@
     genus: "Carex",
     species: "pachystachya",
     subspp_var: "",
-    common_names: ", chamisso sedge",
+    common_names: ", chamisso sedge, thick-headed sedge, starry sedge",
     distribution: "AB,AK,BC,CA,CO,ID,MT,NV,OR,SK,UT,WA,WY,YT,",
   },
   {
@@ -143316,7 +143316,7 @@
     genus: "Ceanothus",
     species: "velutinus",
     subspp_var: "",
-    common_names: ", snowbrush ceanothus",
+    common_names: ", snowbrush ceanothus, tobacco brush",
     distribution: "AB,BC,CA,CO,ID,MT,NV,OR,SD,UT,WA,WY,",
   },
   {
@@ -145996,7 +145996,7 @@
     genus: "Chrysolepis",
     species: "chrysophylla",
     subspp_var: "",
-    common_names: ", giant chinquapin",
+    common_names: ", giant chinquapin, golden chinquapin, western chinquapin",
     distribution: "CA,OR,WA,",
   },
   {
@@ -160036,7 +160036,7 @@
     genus: "Clarkia",
     species: "amoena",
     subspp_var: "",
-    common_names: ", farewell to spring",
+    common_names: ", farewell to spring, godetia, satin flower",
     distribution: "BC,CA,NY,OR,QC,WA,",
   },
   {
@@ -169284,7 +169284,7 @@
     genus: "Conocephalum",
     species: "conicum",
     subspp_var: "",
-    common_names: "",
+    common_names: ", snakeskin liverwort",
     distribution: "",
   },
   {
@@ -178172,7 +178172,7 @@
     genus: "Cota",
     species: "tinctoria",
     subspp_var: "",
-    common_names: ", golden chamomile",
+    common_names: ", golden chamomile, golden marguerite",
     distribution: "AB,AK,AR,BC,CA,CO,CT,IA,ID,IL,MA,MB,MD,ME,MI,MN,MO,MT,NB,ND,NF,NH,NJ,NS,NY,OH,ON,OR,PA,QC,RI,SD,SK,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -186236,7 +186236,7 @@
     genus: "Crocidium",
     species: "multicaule",
     subspp_var: "",
-    common_names: ", common spring gold",
+    common_names: ", common spring gold, gold stars",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -199068,7 +199068,7 @@
     genus: "Cynoglossum",
     species: "officinale",
     subspp_var: "",
-    common_names: ", gypsyflower",
+    common_names: ", gypsyflower, houndstongue",
     distribution: "AB,AL,AR,AZ,BC,CA,CO,CT,DC,DE,GA,IA,ID,IL,IN,KS,KY,MA,MB,MD,ME,MI,MN,MO,MT,NB,NC,ND,NE,NH,NJ,NM,NS,NV,NY,OH,ON,OR,PA,QC,RI,SC,SD,SK,TN,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -209076,7 +209076,7 @@
     genus: "Delphinium",
     species: "nuttallii",
     subspp_var: "",
-    common_names: ", upland larkspur",
+    common_names: ", upland larkspur, Columbia larkspur",
     distribution: "OR,WA,",
   },
   {
@@ -246444,7 +246444,7 @@
     genus: "Erodium",
     species: "cicutarium",
     subspp_var: "",
-    common_names: ", redstem stork's bill, alfileria",
+    common_names: ", redstem stork's bill, filaree, pinweed",
     distribution: "AK,AL,AR,AZ,CA,CO,CT,DE,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,ND,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -261732,7 +261732,7 @@
     genus: "Euonymus",
     species: "americana",
     subspp_var: "",
-    common_names: ", bursting heart",
+    common_names: ", bursting heart, strawberry bush, hearts-a-bustin'",
     distribution: "AL,AR,DC,DE,FL,GA,IL,IN,KY,LA,MD,MO,MS,NC,NJ,NY,OH,OK,PA,SC,TN,TX,VA,WV,",
   },
   {
@@ -281148,7 +281148,7 @@
     genus: "Fritillaria",
     species: "pudica",
     subspp_var: "",
-    common_names: ", yellow fritillary",
+    common_names: ", yellow fritillary, yellow bells",
     distribution: "AB,BC,CA,CO,ID,MT,ND,NM,NV,OR,UT,WA,WY,",
   },
   {
@@ -281388,7 +281388,7 @@
     genus: "Frasera",
     species: "speciosa",
     subspp_var: "",
-    common_names: ", elkweed",
+    common_names: ", elkweed, monument plant, deer's ears",
     distribution: "AZ,CA,CO,ID,MT,NM,NV,OR,SD,TX,UT,WA,WY,",
   },
   {
@@ -281420,7 +281420,7 @@
     genus: "Frasera",
     species: "speciosa",
     subspp_var: "var. stenosepala",
-    common_names: ", elkweed",
+    common_names: ", elkweed, deer's ears, monument plant",
     distribution: "AZ,CA,CO,ID,MT,NM,NV,OR,SD,TX,UT,WA,WY,",
   },
   {
@@ -284652,7 +284652,7 @@
     genus: "Garrya",
     species: "fremontii",
     subspp_var: "",
-    common_names: ", bearbrush",
+    common_names: ", bearbrush, Fremont's silktassle, California fever bush",
     distribution: "CA,OR,WA,",
   },
   {
@@ -292932,7 +292932,7 @@
     genus: "Gilia",
     species: "capitata",
     subspp_var: "",
-    common_names: ", bluehead gilia",
+    common_names: ", bluehead gilia, globe gilia, blue ball gilia",
     distribution: "AK,AZ,BC,CA,HI,ID,IL,NM,NY,OH,OR,UT,VT,WA,YT,",
   },
   {
@@ -295564,7 +295564,7 @@
     genus: "Glyceria",
     species: "leptostachya",
     subspp_var: "",
-    common_names: ", davy mannagrass",
+    common_names: ", davy mannagrass, narrow mannagrass",
     distribution: "AK,BC,CA,OR,WA,",
   },
   {
@@ -323996,7 +323996,7 @@
     genus: "Hordeum",
     species: "marinum",
     subspp_var: "",
-    common_names: ", seaside barley",
+    common_names: ", seaside barley, Mediterranean barley",
     distribution: "AZ,BC,CA,ID,IL,MA,MT,NJ,NV,OH,OK,OR,PA,UT,WA,",
   },
   {
@@ -329244,7 +329244,7 @@
     genus: "Hyacinthoides",
     species: "hispanica",
     subspp_var: "",
-    common_names: ", Hispanic hyacinthoides",
+    common_names: ", Hispanic hyacinthoides, Spanish bluebells",
     distribution: "BC,CT,DE,NY,ON,VA,WA,",
   },
   {
@@ -338196,7 +338196,7 @@
     genus: "Iris",
     species: "pseudacorus",
     subspp_var: "",
-    common_names: ", paleyellow iris",
+    common_names: ", paleyellow iris, water iris",
     distribution: "AL,AR,BC,CA,CT,DC,DE,FL,GA,ID,IL,IN,KS,KY,LA,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,NE,NF,NH,NJ,NS,NV,NY,OH,ON,OR,PA,PE,QC,RI,SC,TN,TX,UT,VA,VT,WA,WI,WV,",
   },
   {
@@ -338516,7 +338516,7 @@
     genus: "Iris",
     species: "tenax",
     subspp_var: "",
-    common_names: ", toughleaf iris",
+    common_names: ", toughleaf iris, Oregon iris",
     distribution: "CA,OR,WA,",
   },
   {
@@ -343596,7 +343596,7 @@
     genus: "Juncus",
     species: "badius",
     subspp_var: "",
-    common_names: ", Sierra rush",
+    common_names: ", Sierra rush, Baltic rush, wiregrass",
     distribution: "AZ,CO,ID,MT,NM,NV,OR,UT,WA,WY,",
   },
   {
@@ -347196,7 +347196,7 @@
     genus: "Juncus",
     species: "tenuis",
     subspp_var: "",
-    common_names: ", poverty rush",
+    common_names: ", poverty rush, path rush, wiregrass",
     distribution: "AB,AK,AL,AR,AZ,BC,CA,CO,CT,DC,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NT,NV,NY,OH,OK,ON,OR,PA,PE,PR,QC,RI,SC,SD,SK,TN,TX,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -355380,7 +355380,7 @@
     genus: "Lagophylla",
     species: "ramosissima",
     subspp_var: "",
-    common_names: ", branched lagophylla",
+    common_names: ", branched hareleaf",
     distribution: "CA,ID,MT,NV,OR,UT,WA,",
   },
   {
@@ -355404,7 +355404,7 @@
     genus: "Lagophylla",
     species: "ramosissima",
     subspp_var: "ssp. congesta",
-    common_names: ", branched lagophylla",
+    common_names: ", branched hareleaf",
     distribution: "CA,",
   },
   {
@@ -355412,7 +355412,7 @@
     genus: "Lagophylla",
     species: "ramosissima",
     subspp_var: "ssp. ramosissima",
-    common_names: ", branched lagophylla",
+    common_names: ", branched hareleaf",
     distribution: "CA,ID,MT,NV,OR,UT,WA,",
   },
   {
@@ -376444,7 +376444,7 @@
     genus: "Lithophragma",
     species: "glabrum",
     subspp_var: "",
-    common_names: ", bulbous woodland star",
+    common_names: ", bulbous woodland star, bulbous prairie star",
     distribution: "AB,BC,CA,CO,ID,MT,NV,OR,SD,SK,UT,WA,WY,",
   },
   {
@@ -378836,7 +378836,7 @@
     genus: "Lithophragma",
     species: "parviflorum",
     subspp_var: "",
-    common_names: ", smallflower woodland star",
+    common_names: ", smallflower woodland star, smallflower prairie star",
     distribution: "AB,BC,CA,CO,ID,MT,NE,NV,OR,SD,UT,WA,WY,",
   },
   {
@@ -379396,7 +379396,7 @@
     genus: "Lilium",
     species: "pudicum",
     subspp_var: "",
-    common_names: ", yellow fritillary",
+    common_names: ", yellow fritillary, yellowbells",
     distribution: "AB,BC,CA,CO,ID,MT,ND,NM,NV,OR,UT,WA,WY,",
   },
   {
@@ -380228,7 +380228,7 @@
     genus: "Liriope",
     species: "spicata",
     subspp_var: "",
-    common_names: ", creeping liriope",
+    common_names: ", creeping liriope, lilyturf, monkey grass",
     distribution: "AL,DC,FL,IL,MD,MS,VA,",
   },
   {
@@ -382644,7 +382644,7 @@
     genus: "Lonicera",
     species: "conjugialis",
     subspp_var: "",
-    common_names: ", purpleflower honeysuckle",
+    common_names: ", purpleflower honeysuckle, double-flowered honeysuckle",
     distribution: "CA,ID,NV,OR,WA,",
   },
   {
@@ -385580,7 +385580,7 @@
     genus: "Lomatium",
     species: "nudicaule",
     subspp_var: "",
-    common_names: ", barestem biscuitroot",
+    common_names: ", barestem biscuitroot, pestle lomatium, desert parsley, Indian celery",
     distribution: "BC,CA,ID,NV,OR,UT,WA,",
   },
   {
@@ -386052,7 +386052,7 @@
     genus: "Lomatium",
     species: "piperi",
     subspp_var: "",
-    common_names: ", Indian biscuitroot",
+    common_names: ", Indian biscuitroot, salt and pepper",
     distribution: "CA,ID,OR,WA,",
   },
   {
@@ -387660,7 +387660,7 @@
     genus: "Lomatium",
     species: "triternatum",
     subspp_var: "",
-    common_names: ", nineleaf biscuitroot",
+    common_names: ", nineleaf biscuitroot, nineleaf desert parsley",
     distribution: "AB,AZ,BC,CA,CO,ID,MT,NM,NV,OR,UT,WA,WY,",
   },
   {
@@ -389556,7 +389556,7 @@
     genus: "Lupinus",
     species: "bicolor",
     subspp_var: "",
-    common_names: ", miniature lupine",
+    common_names: ", miniature lupine, Lindley's annual lupine",
     distribution: "AZ,BC,CA,OR,WA,",
   },
   {
@@ -401604,7 +401604,7 @@
     genus: "Mahonia",
     species: "aquifolium",
     subspp_var: "",
-    common_names: ", hollyleaved barberry, holly leaf Oregon grape, Shining Oregon grape",
+    common_names: ", hollyleaved barberry, holly leaf Oregon grape, shining Oregon grape",
     distribution: "AB,BC,CA,DC,GA,ID,KY,MI,MT,NJ,NY,OH,ON,OR,QC,WA,",
   },
   {
@@ -403444,7 +403444,7 @@
     genus: "Matricaria",
     species: "discoidea",
     subspp_var: "",
-    common_names: ", disc mayweed",
+    common_names: ", disc mayweed, pineappleweed, wild chamomile",
     distribution: "AK,AR,AZ,CA,CO,CT,DE,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,ND,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -406756,7 +406756,7 @@
     genus: "Marah",
     species: "oreganus",
     subspp_var: "",
-    common_names: ", coastal manroot",
+    common_names: ", coastal manroot, western wild-cucumber",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -415180,7 +415180,7 @@
     genus: "Melilotus",
     species: "officinalis",
     subspp_var: "",
-    common_names: ", sweetclover",
+    common_names: ", yellow sweetclover",
     distribution: "AK,AL,AR,AZ,CA,CO,CT,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,ND,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,PR,RI,SC,SD,TN,TX,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -415188,7 +415188,7 @@
     genus: "Melissa",
     species: "officinalis",
     subspp_var: "",
-    common_names: ", common balm",
+    common_names: ", lemon balm",
     distribution: "AR,BC,CA,CT,DC,DE,GA,ID,IL,IN,KS,KY,LA,MA,MB,MD,ME,MI,MO,MS,MT,NC,NJ,NY,OH,OK,ON,OR,PA,QC,RI,SC,TN,VA,VT,WA,WV,",
   },
   {
@@ -415196,7 +415196,7 @@
     genus: "Melilotus",
     species: "officinalis",
     subspp_var: "var. micranthus",
-    common_names: ", sweetclover",
+    common_names: ", yellow sweetclover",
     distribution: "",
   },
   {
@@ -419164,7 +419164,7 @@
     genus: "Mitellastra",
     species: "caulescens",
     subspp_var: "",
-    common_names: ", slightstemmed miterwort",
+    common_names: ", slightstemmed miterwort, leafy miterwort",
     distribution: "BC,CA,ID,MT,OR,WA,",
   },
   {
@@ -422500,7 +422500,7 @@
     genus: "Mimulus",
     species: "moschatus",
     subspp_var: "",
-    common_names: ", muskflower",
+    common_names: ", musk monkeyflower",
     distribution: "BC,CA,CO,CT,ID,MA,ME,MI,MT,NB,NC,NF,NH,NJ,NS,NV,NY,ON,OR,PA,PE,QC,SPM,UT,VA,VT,WA,WV,WY,",
   },
   {
@@ -428340,7 +428340,7 @@
     genus: "Montia",
     species: "sibirica",
     subspp_var: "",
-    common_names: ", Siberian springbeauty",
+    common_names: ", Siberian springbeauty, Siberian minerslettuce",
     distribution: "AK,BC,CA,ID,MA,MT,OR,WA,",
   },
   {
@@ -428572,7 +428572,7 @@
     genus: "Monotropa",
     species: "uniflora",
     subspp_var: "",
-    common_names: ", Indianpipe",
+    common_names: ", Indianpipe, ghost plant",
     distribution: "AB,AK,AL,AR,BC,CA,CT,DC,DE,FL,GA,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NS,NY,OH,OK,ON,OR,PA,PE,QC,RI,SC,SK,SPM,TN,TX,VA,VT,WA,WI,WV,",
   },
   {
@@ -431724,7 +431724,7 @@
     genus: "Myosotis",
     species: "laxa",
     subspp_var: "",
-    common_names: ", bay forget me not",
+    common_names: ", bay forget-me-not, small-flowered forget-me-not, tufted forget-me-not",
     distribution: "AB,AL,BC,CA,CT,DC,DE,GA,ID,IN,KY,MA,MD,ME,MI,MN,MT,NB,NC,NE,NF,NH,NJ,NS,NV,NY,OH,ON,OR,PA,PE,QC,RI,SPM,TN,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -436996,7 +436996,7 @@
     genus: "Nemophila",
     species: "parviflora",
     subspp_var: "",
-    common_names: ", smallflower nemophila",
+    common_names: ", smallflower nemophila, oak-leaved nemophila",
     distribution: "BC,CA,ID,NV,OR,UT,WA,",
   },
   {
@@ -437068,7 +437068,7 @@
     genus: "Nemophila",
     species: "pedunculata",
     subspp_var: "",
-    common_names: ", littlefoot nemophila",
+    common_names: ", littlefoot nemophila, meadow nemophila",
     distribution: "BC,CA,ID,NV,OR,WA,",
   },
   {
@@ -467012,7 +467012,7 @@
     genus: "Paxistima",
     species: "myrsinites",
     subspp_var: "",
-    common_names: ", Oregon boxleaf",
+    common_names: ", Oregon boxwood",
     distribution: "AB,AZ,BC,CA,CO,ID,MT,NM,OR,TX,UT,WA,WY,",
   },
   {
@@ -467020,7 +467020,7 @@
     genus: "Pachystima",
     species: "myrsinites",
     subspp_var: "",
-    common_names: ", Oregon boxleaf",
+    common_names: ", Oregon boxwood",
     distribution: "AB,AZ,BC,CA,CO,ID,MT,NM,OR,TX,UT,WA,WY,",
   },
   {
@@ -472948,7 +472948,7 @@
     genus: "Persicaria",
     species: "amphibia",
     subspp_var: "",
-    common_names: ", longroot smartweed",
+    common_names: ", longroot smartweed, water knotweed",
     distribution: "AB,AK,AR,AZ,BC,CA,CO,CT,DC,DE,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NT,NV,NY,OH,OK,ON,OR,PA,PE,QC,RI,SC,SD,SK,SPM,TN,TX,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -489988,7 +489988,7 @@
     genus: "Phoenicaulis",
     species: "cheiranthoides",
     subspp_var: "",
-    common_names: ", wallflower phoenicaulis",
+    common_names: ", wallflower phoenicaulis, dagger pod",
     distribution: "CA,ID,NV,OR,WA,",
   },
   {
@@ -496956,7 +496956,7 @@
     genus: "Phacelia",
     species: "nemoralis",
     subspp_var: "",
-    common_names: ", shade phacelia",
+    common_names: ", shade phacelia, woods phacelia",
     distribution: "CA,OR,WA,",
   },
   {
@@ -504628,7 +504628,7 @@
     genus: "Pieris",
     species: "japonica",
     subspp_var: "",
-    common_names: ", Japanese pieris",
+    common_names: ", Japanese pieris, Japanese andromeda",
     distribution: "",
   },
   {
@@ -514316,7 +514316,7 @@
     genus: "Poa",
     species: "ampla",
     subspp_var: "",
-    common_names: ", Sandberg bluegrass",
+    common_names: ", Sandberg bluegrass, big bluegrass",
     distribution: "AB,AK,AZ,BC,CA,CO,ID,ME,MI,MN,MT,ND,NE,NM,NT,NV,OK,ON,OR,QC,SD,SK,UT,WA,WY,YT,",
   },
   {
@@ -514412,7 +514412,7 @@
     genus: "Polygonum",
     species: "amphibium",
     subspp_var: "",
-    common_names: ", water knotweed",
+    common_names: ", water knotweed, longroot smartweed",
     distribution: "AB,AK,AR,AZ,BC,CA,CO,CT,DC,DE,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NT,NV,NY,OH,OK,ON,OR,PA,PE,QC,RI,SC,SD,SK,SPM,TN,TX,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -515404,7 +515404,7 @@
     genus: "Polygonum",
     species: "aviculare",
     subspp_var: "",
-    common_names: ", prostrate knotweed",
+    common_names: ", prostrate knotweed, common knotgrass, devil's shoestrings",
     distribution: "AB,AK,AL,AR,AZ,BC,CA,CO,CT,DC,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NV,NY,OH,OK,ON,OR,PA,PE,QC,RI,SC,SD,SK,TN,TX,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -522604,7 +522604,7 @@
     genus: "Poa",
     species: "juncifolia",
     subspp_var: "",
-    common_names: ", Sandberg bluegrass",
+    common_names: ", Sandberg bluegrass, alkali bluegrass, big bluegrass",
     distribution: "AB,AK,AZ,BC,CA,CO,ID,ME,MI,MN,MT,ND,NE,NM,NT,NV,OK,ON,OR,QC,SD,SK,UT,WA,WY,YT,",
   },
   {
@@ -524828,7 +524828,7 @@
     genus: "Poa",
     species: "nevadensis",
     subspp_var: "",
-    common_names: ", Sandberg bluegrass",
+    common_names: ", Sandberg bluegrass, Nevada bluegrass",
     distribution: "AB,AK,AZ,BC,CA,CO,ID,ME,MI,MN,MT,ND,NE,NM,NT,NV,OK,ON,OR,QC,SD,SK,UT,WA,WY,YT,",
   },
   {
@@ -535012,7 +535012,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "AK,AL,AR,AZ,BC,CA,CO,CT,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NV,NY,OH,OK,ON,OR,PA,PE,QC,RI,SC,SD,SK,TN,TX,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535020,7 +535020,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "ssp. aleutica",
-    common_names: ", Aleutian selfheal",
+    common_names: ", Aleutian selfheal, heal-all",
     distribution: "AK,",
   },
   {
@@ -535028,7 +535028,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. aleutica",
-    common_names: ", Aleutian selfheal",
+    common_names: ", Aleutian selfheal, heal-all",
     distribution: "AK,",
   },
   {
@@ -535036,7 +535036,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. atropurpurea",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535044,7 +535044,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. calvescens",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535052,7 +535052,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. elongata",
-    common_names: ", lance selfheal",
+    common_names: ", lance selfheal, heal-all",
     distribution: "",
   },
   {
@@ -535060,7 +535060,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. hispida",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535068,7 +535068,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "ssp. lanceolata",
-    common_names: ", lance selfheal",
+    common_names: ", lance selfheal, heal-all",
     distribution: "AK,AL,AR,AZ,CA,CO,CT,DE,FL,GA,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,ND,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535076,7 +535076,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. lanceolata",
-    common_names: ", lance selfheal",
+    common_names: ", lance selfheal, heal-all",
     distribution: "",
   },
   {
@@ -535084,7 +535084,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. minor",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535092,7 +535092,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. nana",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535100,7 +535100,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. parviflora",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535108,7 +535108,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. rouleauiana",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535116,7 +535116,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "ssp. vulgaris",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -535124,7 +535124,7 @@
     genus: "Prunella",
     species: "vulgaris",
     subspp_var: "var. vulgaris",
-    common_names: ", common selfheal",
+    common_names: ", common selfheal, heal-all",
     distribution: "BC,CA,CT,FL,GA,HI,IA,ID,IL,IN,KY,LA,LB,MA,MB,ME,MI,MN,MO,NB,NC,NF,NH,NS,ON,OR,PA,PE,QC,RI,SC,SK,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -542388,7 +542388,7 @@
     genus: "Pyrola",
     species: "asarifolia",
     subspp_var: "",
-    common_names: ", liverleaf wintergreen",
+    common_names: ", liverleaf wintergreen, pink wintergreen",
     distribution: "AB,AK,BC,CA,CO,CT,DC,DE,IA,ID,IL,IN,KY,LB,MA,MB,MD,ME,MI,MN,MT,NB,NC,ND,NF,NH,NJ,NM,NS,NT,NV,NY,OH,ON,OR,PA,PE,QC,RI,SD,SK,TN,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -542412,7 +542412,7 @@
     genus: "Pyrola",
     species: "asarifolia",
     subspp_var: "ssp. asarifolia",
-    common_names: ", liverleaf wintergreen",
+    common_names: ", liverleaf wintergreen, pink wintergreen",
     distribution: "AB,AK,BC,CA,CO,IA,ID,IN,LB,MA,MB,ME,MI,MN,MT,NB,ND,NF,NH,NM,NS,NT,NV,NY,OH,ON,OR,PA,PE,QC,RI,SD,SK,UT,VT,WA,WI,WY,YT,",
   },
   {
@@ -542420,7 +542420,7 @@
     genus: "Pyrola",
     species: "asarifolia",
     subspp_var: "ssp. americana",
-    common_names: ", American wintergreen",
+    common_names: ", American wintergreen, pink wintergreen",
     distribution: "CT,DC,DE,IL,IN,KY,MA,MB,MD,ME,MI,MN,NB,NC,NF,NH,NJ,NS,NY,OH,ON,PA,PE,QC,RI,SD,TN,VA,VT,WI,WV,",
   },
   {
@@ -542452,7 +542452,7 @@
     genus: "Pyrola",
     species: "asarifolia",
     subspp_var: "var. ovata",
-    common_names: ", liverleaf wintergreen",
+    common_names: ", liverleaf wintergreen, pink wintergreen",
     distribution: "AB,AK,BC,CA,CO,IA,ID,IN,LB,MA,MB,ME,MI,MN,MT,NB,ND,NF,NH,NM,NS,NT,NV,NY,OH,ON,OR,PA,PE,QC,RI,SD,SK,UT,VT,WA,WI,WY,YT,",
   },
   {
@@ -542460,7 +542460,7 @@
     genus: "Pyrola",
     species: "asarifolia",
     subspp_var: "var. purpurea",
-    common_names: ", liverleaf wintergreen",
+    common_names: ", liverleaf wintergreen, pink wintergreen",
     distribution: "AB,AK,BC,CA,CO,IA,ID,IN,LB,MA,MB,ME,MI,MN,MT,NB,ND,NF,NH,NM,NS,NT,NV,NY,OH,ON,OR,PA,PE,QC,RI,SD,SK,UT,VT,WA,WI,WY,YT,",
   },
   {
@@ -553452,7 +553452,7 @@
     genus: "Ranunculus",
     species: "triternatus",
     subspp_var: "",
-    common_names: ", obscure buttercup",
+    common_names: ", obscure buttercup, Dalles Mountain buttercup",
     distribution: "ID,NV,OR,WA,",
   },
   {
@@ -560956,7 +560956,7 @@
     genus: "Ribes",
     species: "divaricatum",
     subspp_var: "",
-    common_names: ", spreading gooseberry",
+    common_names: ", spreading gooseberry, coast black gooseberry",
     distribution: "AB,AZ,BC,CA,CO,ID,MT,NM,NV,OR,UT,WA,WY,",
   },
   {
@@ -562196,7 +562196,7 @@
     genus: "Ricciocarpos",
     species: "natans",
     subspp_var: "",
-    common_names: "",
+    common_names: ", fringed heartwort, floating crystalwort, floating liverwort",
     distribution: "",
   },
   {
@@ -562844,7 +562844,7 @@
     genus: "Ribes",
     species: "sanguineum",
     subspp_var: "",
-    common_names: ", redflower currant, red currant",
+    common_names: ", redflower currant",
     distribution: "BC,CA,ID,OR,WA,",
   },
   {
@@ -566276,7 +566276,7 @@
     genus: "Rosa",
     species: "pisocarpa",
     subspp_var: "",
-    common_names: ", cluster rose",
+    common_names: ", cluster rose, swamp rose",
     distribution: "BC,CA,ID,OR,WA,",
   },
   {
@@ -571692,7 +571692,7 @@
     genus: "Rubus",
     species: "lasiococcus",
     subspp_var: "",
-    common_names: ", roughfruit berry",
+    common_names: ", roughfruit berry, dwarf bramble",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -571820,7 +571820,7 @@
     genus: "Rubus",
     species: "leucodermis",
     subspp_var: "",
-    common_names: ", whitebark raspberry, black cap",
+    common_names: ", whitebark raspberry, blackcap",
     distribution: "AK,AZ,BC,CA,ID,MT,NM,NV,OR,UT,WA,",
   },
   {
@@ -582948,7 +582948,7 @@
     genus: "Sanicula",
     species: "graveolens",
     subspp_var: "",
-    common_names: ", northern sanicle",
+    common_names: ", northern sanicle, Sierra blacksnakeroot",
     distribution: "BC,CA,ID,MT,NV,OR,WA,WY,",
   },
   {
@@ -594884,7 +594884,7 @@
     genus: "Sclerochloa",
     species: "dura",
     subspp_var: "",
-    common_names: ", common hardgrass",
+    common_names: ", common hardgrass, fairgrounds grass",
     distribution: "AR,AZ,BC,CA,CO,GA,IA,ID,IL,IN,KS,KY,LA,MD,MI,MO,MS,MT,NE,NM,NY,OH,OK,ON,OR,PA,TN,TX,UT,VA,WA,WI,WV,",
   },
   {
@@ -604708,7 +604708,7 @@
     genus: "Senecio",
     species: "integerrimus",
     subspp_var: "",
-    common_names: ", lambstongue ragwort",
+    common_names: ", lambstongue ragwort, tall western groundsel",
     distribution: "AB,AK,BC,CA,CO,IA,ID,KS,MB,MN,MT,ND,NE,NM,NT,NV,OR,SD,SK,UT,WA,WY,YT,",
   },
   {
@@ -625252,7 +625252,7 @@
     genus: "Sparganium",
     species: "emersum",
     subspp_var: "",
-    common_names: ", European bur reed",
+    common_names: ", European bur reed, simplestem bur-reed",
     distribution: "AB,AK,AZ,BC,CA,CO,CT,GL,IA,ID,IL,IN,KY,LB,MA,MB,MD,ME,MI,MN,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NT,NU,NV,NY,OH,ON,OR,PA,PE,QC,RI,SD,SK,SPM,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -627988,7 +627988,7 @@
     genus: "Spirodela",
     species: "polyrrhiza",
     subspp_var: "",
-    common_names: ", common duckmeat",
+    common_names: ", common duckmeat, greater duckweed",
     distribution: "AL,AR,AZ,CA,CO,CT,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,ND,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,PR,RI,SC,SD,TN,TX,UT,VA,VI,VT,WA,WI,WV,WY,",
   },
   {
@@ -647996,7 +647996,7 @@
     genus: "Teesdalia",
     species: "nudicaulis",
     subspp_var: "",
-    common_names: ", barestem teesdalia",
+    common_names: ", barestem teesdalia, common shepherd's-cress",
     distribution: "BC,CT,DE,GA,ID,IN,MA,MD,MI,NC,NJ,NY,OR,PA,SC,VA,WA,",
   },
   {
@@ -652884,7 +652884,7 @@
     genus: "Thuja",
     species: "plicata",
     subspp_var: "",
-    common_names: ", western redcedar, western red cedar",
+    common_names: ", western redcedar",
     distribution: "AB,AK,BC,CA,ID,MT,OR,WA,",
   },
   {
@@ -658916,7 +658916,7 @@
     genus: "Tonella",
     species: "tenella",
     subspp_var: "",
-    common_names: ", lesser baby innocence",
+    common_names: ", lesser baby innocence, small-flowered tonella",
     distribution: "BC,CA,OR,WA,",
   },
   {
@@ -660596,7 +660596,7 @@
     genus: "Trautvetteria",
     species: "caroliniensis",
     subspp_var: "",
-    common_names: ", Carolina bugbane",
+    common_names: ", Carolina bugbane, tassel-rue",
     distribution: "AL,AR,AZ,BC,CA,CO,FL,GA,ID,IL,IN,KY,MD,MO,MS,MT,NC,NM,OR,PA,SC,TN,UT,VA,WA,WV,WY,",
   },
   {
@@ -663068,7 +663068,7 @@
     genus: "Triteleia",
     species: "grandiflora",
     subspp_var: "",
-    common_names: ", largeflower triteleia",
+    common_names: ", largeflower triteleia, wild hyacinth",
     distribution: "BC,CA,CO,ID,MT,OR,UT,WA,WY,",
   },
   {
@@ -663492,7 +663492,7 @@
     genus: "Triteleia",
     species: "hyacinthina",
     subspp_var: "",
-    common_names: ", white brodiaea",
+    common_names: ", white brodiaea, fool's onion",
     distribution: "BC,CA,ID,NV,OR,WA,",
   },
   {
@@ -664876,7 +664876,7 @@
     genus: "Trifolium",
     species: "macrocephalum",
     subspp_var: "",
-    common_names: ", largehead clover",
+    common_names: ", largehead clover, big head clover",
     distribution: "CA,ID,NV,OR,WA,",
   },
   {
@@ -668396,7 +668396,7 @@
     genus: "Trisetum",
     species: "spicatum",
     subspp_var: "",
-    common_names: ", spike trisetum",
+    common_names: ", spike trisetum, narrow false-oats",
     distribution: "AB,AK,AZ,BC,CA,CO,CT,GL,ID,LB,MA,MB,ME,MI,MN,MT,NB,NC,NF,NH,NM,NS,NT,NU,NV,NY,ON,OR,PA,QC,RI,SD,SK,SPM,TN,UT,VA,VT,WA,WI,WY,YT,",
   },
   {
@@ -668804,7 +668804,7 @@
     genus: "Trisetum",
     species: "subspicatum",
     subspp_var: "",
-    common_names: ", spike trisetum",
+    common_names: ", spike trisetum, narrow false-oats",
     distribution: "AB,AK,AZ,BC,CA,CO,CT,GL,ID,LB,MA,MB,ME,MI,MN,MT,NB,NC,NF,NH,NM,NS,NT,NU,NV,NY,ON,OR,PA,QC,RI,SD,SK,SPM,TN,UT,VA,VT,WA,WI,WY,YT,",
   },
   {
@@ -675420,7 +675420,7 @@
     genus: "Vaccinium",
     species: "membranaceum",
     subspp_var: "",
-    common_names: ", thinleaf huckleberry",
+    common_names: ", thinleaf huckleberry, mountain huckleberry",
     distribution: "AB,AZ,BC,CA,CO,ID,MI,MN,MT,NT,ON,OR,SD,UT,WA,WY,YT,",
   },
   {
@@ -676812,7 +676812,7 @@
     genus: "Veronica",
     species: "arvensis",
     subspp_var: "",
-    common_names: ", corn speedwell, common speedwell, wall speedwell",
+    common_names: ", corn speedwell, field speedwell, wall speedwell",
     distribution: "AK,AL,AR,AZ,CA,CO,CT,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NC,NE,NH,NJ,NM,NV,NY,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -677692,7 +677692,7 @@
     genus: "Ventenata",
     species: "dubia",
     subspp_var: "",
-    common_names: ", North Africa grass",
+    common_names: ", North Africa grass, windgrass",
     distribution: "AB,BC,CA,ID,ME,MT,NB,NY,ON,OR,QC,UT,WA,WI,WY,",
   },
   {
@@ -679164,7 +679164,7 @@
     genus: "Veronica",
     species: "peregrina",
     subspp_var: "",
-    common_names: ", neckweed",
+    common_names: ", neckweed, hairy purslane speedwell",
     distribution: "AB,AK,AL,AR,AZ,BC,CA,CO,CT,DC,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MB,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NH,NJ,NM,NS,NT,NV,NY,OH,OK,ON,OR,PA,PE,PR,QC,RI,SC,SD,SK,TN,TX,UT,VA,VT,WA,WI,WV,WY,YT,",
   },
   {
@@ -683292,7 +683292,7 @@
     genus: "Vicia",
     species: "hirsuta",
     subspp_var: "",
-    common_names: ", tiny vetch",
+    common_names: ", tiny vetch, hairy tare",
     distribution: "AL,AR,BC,CA,CT,DC,DE,FL,GA,LA,MA,ME,MI,MS,NB,NC,NH,NJ,NS,NY,OH,OK,ON,OR,PA,PE,QC,RI,SC,SPM,TX,VA,WA,WI,WV,",
   },
   {
@@ -686508,7 +686508,7 @@
     genus: "Vicia",
     species: "sativa",
     subspp_var: "",
-    common_names: ", garden vetch",
+    common_names: ", garden vetch, tare",
     distribution: "AK,AL,AR,AZ,BC,CA,CO,CT,DE,FL,GA,HI,IA,ID,IL,IN,KS,KY,LA,MA,MD,ME,MI,MN,MO,MS,MT,NB,NC,ND,NE,NH,NJ,NM,NS,NV,NY,OH,OK,OR,PA,PE,RI,SC,SD,TN,TX,VA,VT,WA,WI,WV,WY,",
   },
   {
@@ -693348,7 +693348,7 @@
     genus: "Yabea",
     species: "microcarpa",
     subspp_var: "",
-    common_names: ", false carrot",
+    common_names: ", false carrot, California hedge parsley",
     distribution: "AZ,BC,CA,ID,NM,NV,OR,UT,WA,",
   },
   {
