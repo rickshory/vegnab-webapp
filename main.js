@@ -1013,7 +1013,7 @@ match_list.addEventListener('click', function (e) {
           console.log(ph);
           // get the global 'cur_placeholder' the following fn needs
           cur_placeholder = placeholders_array.find(p => p.code === matched_placeholder_code);
-          // following fn fills in fields that might be redunant, but includes
+          // following fn fills in fields that might be redundant, but includes
           // "ph_id": to allow lookup back to the original placeholder definition
           // "type": 'ph' which flags this item as a placeholder, vs. a real species
           // could allow specialized processing
@@ -1875,12 +1875,12 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
       app_settings_array[0].immediate_awating_accuracy = "";  // reset
       bkupAppSettings();
     }
+    // flag that work is finished
+    placeholder_state = ""
+    cur_placeholder = undefined;
+    current_ph_code = "";
+    showMainScreen();
   }
-  // flag that work is finished
-  placeholder_state = ""
-  cur_placeholder = undefined;
-  current_ph_code = "";
-  showMainScreen();
 });
 
 function showPhPix() {
@@ -1979,10 +1979,11 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   }
   cur_placeholder.keywords = phKeywordsArray;
   bkupPlaceholders();
+  // done working in this screen, clear the keywords
+  document.getElementById('placeholder_keywords').value = "";
   if (placeholder_state === "new") {
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
-
     if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) {
       current_ph_id = cur_placeholder.id; // current_ph_id is the general placeholder
       // current_spp_item_id is the instance of the placeholder
@@ -2005,15 +2006,14 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       whatIsAwaitingAccuracy = "";
       placeholder_state = "";
     }
-  } // end of placeholder_state === "new"
-  // trigger to refresh site list
-  shwMainScreenTimeout = setTimeout(showMainScreen, 10);
-  // clear the keywords
-  document.getElementById('placeholder_keywords').value = "";
-
-  // dismiss the modal
-  console.log('About to hide the Save Placeholder modal');
-  bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+    // end of placeholder_state === "new"
+  } else { // otherwise, was just editing a placeholder
+    // trigger to refresh site list
+    shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+    // dismiss the modal
+    console.log('About to hide the Save Placeholder modal');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
+  }
 });
 
 function insertPlHolderItm() {
