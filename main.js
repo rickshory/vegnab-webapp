@@ -1829,20 +1829,16 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     console.log("in 'vnPlaceholderInfoScreen.hidden', placeholder_state = " + placeholder_state);
     console.log("in 'vnPlaceholderInfoScreen.hidden', cur_placeholder");
     console.log(cur_placeholder);
-    // get all the species items that are based on the current placeholder
-    site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
-      .map(itm => { return itm.id; }).forEach(iid => {
-        // update any fields that may have changed
-        console.log("in 'vnPlaceholderInfoScreen.hidden', updating placeholder spp item " + iid);
-        let sp_elem = site_spp_array.find(i => i.id === iid);
-        console.log("in 'vnPlaceholderInfoScreen.hidden', sp_elem");
-        console.log(sp_elem);
-        sp_elem.keywords = cur_placeholder.keywords.join(" ").split(" ");
-        sp_elem.species = cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" ");
-        sp_elem.latitude = (sp_elem.latitude == "") ? cur_placeholder.latitude : sp_elem.latitude;
-        sp_elem.longitude = (sp_elem.longitude == "") ? cur_placeholder.longitude : sp_elem.longitude;
-        sp_elem.accuracy = (sp_elem.accuracy == "") ? cur_placeholder.accuracy : sp_elem.accuracy;
-      });
+    // any species items based on the current placeholder were
+    //  updated in 'btn-save-placeholder-info.click'
+    // if placeholder_state === "edit", there would not be any pending
+    //  species item, only if "new"
+    if (placeholder_state === "new") {
+      // could be pending location, or aux data
+      // pending location launched 'vnAwaitAcc' in 'btn-save-placeholder-info.click'
+
+    }
+
   } else { //  !phScreenComplete,  occurs if screen dismissed by "X" button
     if (placeholder_state === "new") {
       // new placeholder was never completed, remove it from the array
@@ -1874,7 +1870,8 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
       app_settings_array[0].immediate_loc_deferred = false; // reset
       app_settings_array[0].immediate_awating_accuracy = "";  // reset
       bkupAppSettings();
-    }
+    } // !phScreenComplete but placeholder_state != "new"
+    // placeholder was being edited, but discard edits
     // flag that work is finished
     placeholder_state = ""
     cur_placeholder = undefined;
@@ -1981,6 +1978,22 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bkupPlaceholders();
   // done working in this screen, clear the keywords
   document.getElementById('placeholder_keywords').value = "";
+
+  // update any species items that are based on the current placeholder
+  site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
+    .map(itm => { return itm.id; }).forEach(iid => {
+      // update any fields that may have changed
+      console.log("in 'btn-save-placeholder-info.click', updating placeholder spp item " + iid);
+      let sp_elem = site_spp_array.find(i => i.id === iid);
+      console.log("in 'btn-save-placeholder-info.click', sp_elem");
+      console.log(sp_elem);
+      sp_elem.keywords = cur_placeholder.keywords.join(" ").split(" ");
+      sp_elem.species = cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" ");
+      sp_elem.latitude = (sp_elem.latitude == "") ? cur_placeholder.latitude : sp_elem.latitude;
+      sp_elem.longitude = (sp_elem.longitude == "") ? cur_placeholder.longitude : sp_elem.longitude;
+      sp_elem.accuracy = (sp_elem.accuracy == "") ? cur_placeholder.accuracy : sp_elem.accuracy;
+    });
+  bkupSpeciesList();
   if (placeholder_state === "new") {
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
