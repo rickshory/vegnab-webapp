@@ -705,11 +705,10 @@ function updateMatchList() {
         "item_code": ph.code,
         "item_description": ph.keywords.join(" ")
       };
-      console.log("ph_show");
-      console.log(ph_show);
       return ph_show;
     });
-    
+    console.log("ph_std_array");
+    console.log(ph_std_array);    
     //getCodeMatches matches search_term to start of the code
     //getTermMatches ignores search_term.length < 3
     //getWordMatches ignores search_term < 2 ea 3 letter words
