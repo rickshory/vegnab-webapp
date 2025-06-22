@@ -1833,12 +1833,10 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     //  updated in 'btn-save-placeholder-info.click'
     // if placeholder_state === "edit", there would not be any pending
     //  species item, only if "new"
-    if (placeholder_state === "new") {
-      // could be pending location, or aux data
-      // pending location launched 'vnAwaitAcc' in 'btn-save-placeholder-info.click'
-
-    }
-
+    // if (placeholder_state === "new") {
+    //   // if pending location, or aux data
+    //   // was set up in in 'btn-save-placeholder-info.click'
+    // }
   } else { //  !phScreenComplete,  occurs if screen dismissed by "X" button
     if (placeholder_state === "new") {
       // new placeholder was never completed, remove it from the array
@@ -2008,6 +2006,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
         keyboard: false
       });
       vnAwaitAcc.show();
+      // vnWaitForAccuracyScreen.hidden will set aux_spec_for = "spp_items"
       return; // don't continue with defaults below
     } else { // finish up
       // ticker may already be stopped if targetAccuracyOK
@@ -2018,6 +2017,8 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       latestLocation = undefined;
       whatIsAwaitingAccuracy = "";
       placeholder_state = "";
+      aux_spec_for = "spp_items";
+      enterAnyAuxData();      
     }
     // end of placeholder_state === "new"
   } else { // otherwise, was just editing a placeholder
