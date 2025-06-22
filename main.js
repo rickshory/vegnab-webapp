@@ -755,6 +755,7 @@ function updateMatchList() {
       + '" id="' + ((obj.item_code.includes(" ")) ?
       ("P_H_" + encodeURIComponent(obj.item_code)) : obj.item_code) + '">'
       + obj.item_code + ': ' + obj.item_description + '</li>';
+    console.log("list_string", list_string);
   });
   local_spp_match_array.forEach(obj => {
     list_string += '<li class="local" id="' + obj.item_code + '">'
