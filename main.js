@@ -2013,6 +2013,8 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       whatIsAwaitingAccuracy = "";
       placeholder_state = "";
       aux_spec_for = "spp_items";
+      console.log('About to hide the New Placeholder modal');
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
       enterAnyAuxData();      
     }
     // end of placeholder_state === "new"
@@ -2020,7 +2022,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     // trigger to refresh site list
     shwMainScreenTimeout = setTimeout(showMainScreen, 10);
     // dismiss the modal
-    console.log('About to hide the Save Placeholder modal');
+    console.log('About to hide the Save Placeholder modal, after editing');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
   }
 });
