@@ -698,8 +698,8 @@ function updateMatchList() {
   if (search_term.length > 0) {
     // treat placeholders as found species
     // standardize the placeholders array, for functions
-    console.log("placeholders_array");
-    console.log(placeholders_array);
+    // console.log("placeholders_array");
+    // console.log(placeholders_array);
     let ph_std_array = placeholders_array.map(ph => {
       let ph_show = {
         "item_code": ph.code,
@@ -708,7 +708,7 @@ function updateMatchList() {
       return ph_show;
     });
     console.log("ph_std_array");
-    console.log(ph_std_array);    
+    console.log(ph_std_array);
     //getCodeMatches matches search_term to start of the code
     //getTermMatches ignores search_term.length < 3
     //getWordMatches ignores search_term < 2 ea 3 letter words
@@ -721,7 +721,11 @@ function updateMatchList() {
       ...getTermMatches(search_term, ph_std_array),
       ...getWordMatches(search_term, ph_std_array)
     ]);
+    console.log("found_spp_match_array");
+    console.log(found_spp_match_array);    
     found_spp_match_array.sort();
+    console.log("found_spp_match_array, sorted");
+    console.log(found_spp_match_array); 
   }
 	if (search_term.length > 1) {
     local_spp_match_array = removeAnyDuplicates([
