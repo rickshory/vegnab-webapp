@@ -1,7 +1,7 @@
 
 const APP_PREFIX = 'VegNab_' 
-const VERSION = 'v0.27'
-const CACHE_NAME = APP_PREFIX + VERSION
+const APP_VERSION = 'v0.27'
+const CACHE_NAME = APP_PREFIX + APP_VERSION
 
 // const appRoot = '/vegnab-webapp';
 const appShellFiles = [
@@ -39,6 +39,12 @@ self.addEventListener('install', (e) => {
     console.log('[Service Worker install] Caching content');
     await cache.addAll(contentToCache);
   })());
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.command === 'getVersion') {
+    event.source.postMessage({ version: APP_VERSION });
+  }
 });
 
 self.onmessage = (event) => {

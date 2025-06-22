@@ -14,15 +14,18 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/vegnab-webapp/sw.js', {scope: '/vegnab-webapp/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
 
-    navigator.serviceWorker.addEventListener("message", (event) => {
-      // event is a MessageEvent object
-      console.log('Service worker sent message: ' + event.data);
-      // at this point, the only message will be the sw version
-      swVersion = event.data;
+    navigator.serviceWorker.ready.then((registration) => {
+      if (registration.active) {
+        registration.active.postMessage({ command: 'getVersion' });
+      }
     });
 
-    navigator.serviceWorker.ready.then((registration) => {
-      registration.active.postMessage("requestVersion");
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data && event.data.version) {
+        console.log('Service Worker Version:', event.data.version);
+        app_settings_array[0].app_version_from_serviceworker = event.data.version;
+        bkupAppSettings();
+      }
     });
 
   }, /*catch*/ (error) => {
@@ -255,6 +258,7 @@ initializeSettingArray();
 
 function initializeSettingArray() {
   let app_settings_object = {
+    app_version_from_serviceworker: "unknown",
     include_subspp_var: false,
     siteLocTargetAccuracy: 7,
     waitForSiteLocTarget: true,
@@ -3181,15 +3185,9 @@ document.getElementById('forget_spp_list').addEventListener('click', function (e
 });
 
 vnHelpAboutScreen.addEventListener('shown.bs.modal', function () {
-  // following can't work because 'cacheName' is defined inside of 'sw.js', 
-  //  which is in a different environment
-//  document.getElementById('serviceworker-version').innerHTML = 'ServiceWorker version: "' + cacheName + '"'
-  // on service worker registration, exchanged messages which should have set this variable
-  if (swVersion) {
-    document.getElementById('serviceworker-version').innerHTML = 'ServiceWorker version: "' + swVersion + '"'
-  } else {
-    document.getElementById('serviceworker-version').innerHTML = 'ServiceWorker version not known'
-  }
+  document.getElementById('serviceworker-version').innerHTML 
+  = 'ServiceWorker version: ' 
+  + app_settings_array[0].app_version_from_serviceworker;
 });
 
 })(); // Immediately-Invoked Function Expression (IIFE)
