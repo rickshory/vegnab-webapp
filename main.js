@@ -698,11 +698,15 @@ function updateMatchList() {
   if (search_term.length > 0) {
     // treat placeholders as found species
     // standardize the placeholders array, for functions
+    console.log("placeholders_array");
+    console.log(placeholders_array);
     let ph_std_array = placeholders_array.map(ph => {
       let ph_show = {
         "item_code": ph.code,
         "item_description": ph.keywords.join(" ")
       };
+      console.log("ph_show");
+      console.log(ph_show);
       return ph_show;
     });
     
