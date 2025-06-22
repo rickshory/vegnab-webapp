@@ -152,5 +152,6 @@ self.addEventListener('message', event => {
       type: 'APP_VERSION_RESPONSE',
       version: APP_VERSION
     });
+    console.log('[SW] Message posted:', "type: 'APP_VERSION_RESPONSE'", "version: " + APP_VERSION);
   }
 });

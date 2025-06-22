@@ -3192,11 +3192,15 @@ vnHelpVersionScreen.addEventListener('shown.bs.modal', function () {
 });
 
 function requestAppVersion() {
+  console.log('[main] entered "requestAppVersion"');
   navigator.serviceWorker.ready.then(registration => {
+    console.log('[main] in "requestAppVersion", serviceWorker.ready');
     if (registration.active) {
+      console.log('[main] in "requestAppVersion", registration.active');
       const channel = new MessageChannel();
       channel.port1.onmessage = event => {
         if (event.data?.type === 'APP_VERSION_RESPONSE') {
+          console.log('[main] Message received, event.data.version:', event.data.version);
           updateVersionUI(event.data.version);
         }
       };
@@ -3206,6 +3210,7 @@ function requestAppVersion() {
 }
 
 function updateVersionUI(version) {
+  console.log('[main] entered "updateVersionUI", version ', version);
   const versionDisplay = document.getElementById('serviceworker-version');
   if (versionDisplay) {
     versionDisplay.textContent = 'ServiceWorker version: ' + version;
