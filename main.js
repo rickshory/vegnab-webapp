@@ -14,19 +14,19 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/vegnab-webapp/sw.js', {scope: '/vegnab-webapp/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
 
-    navigator.serviceWorker.ready.then((registration) => {
-      if (registration.active) {
-        registration.active.postMessage({ command: 'getVersion' });
-      }
-    });
+    // navigator.serviceWorker.ready.then((registration) => {
+    //   if (registration.active) {
+    //     registration.active.postMessage({ command: 'getVersion' });
+    //   }
+    // });
 
-    navigator.serviceWorker.addEventListener('message', event => {
-      if (event.data && event.data.type === 'SERVICE_WORKER_VERSION') {
-        console.log('Service Worker Version:', event.data.version);
-        app_settings_array[0].app_version_from_serviceworker = event.data.version;
-        bkupAppSettings();
-      }
-    });
+    // navigator.serviceWorker.addEventListener('message', event => {
+    //   if (event.data && event.data.type === 'SERVICE_WORKER_VERSION') {
+    //     console.log('Service Worker Version:', event.data.version);
+    //     app_settings_array[0].app_version_from_serviceworker = event.data.version;
+    //     bkupAppSettings();
+    //   }
+    // });
 
   }, /*catch*/ (error) => {
     console.error(`Service worker registration failed: ${error}`);
