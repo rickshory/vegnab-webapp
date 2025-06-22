@@ -3184,7 +3184,7 @@ document.getElementById('forget_spp_list').addEventListener('click', function (e
   }
 });
 
-vnHelpAboutScreen.addEventListener('shown.bs.modal', function () {
+vnHelpVersionScreen.addEventListener('shown.bs.modal', function () {
   document.getElementById('serviceworker-version').innerHTML 
   = 'ServiceWorker version: ' 
   + app_settings_array[0].app_version_from_serviceworker;
