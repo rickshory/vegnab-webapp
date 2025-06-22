@@ -3204,6 +3204,8 @@ function requestAppVersion() {
           updateVersionUI(event.data.version);
         }
       };
+      console.log('[main] just before ' 
+        + "registration.active.postMessage({ type: 'GET_APP_VERSION' }, [channel.port2])");
       registration.active.postMessage({ type: 'GET_APP_VERSION' }, [channel.port2]);
     }
   });
@@ -3213,7 +3215,7 @@ function updateVersionUI(version) {
   console.log('[main] entered "updateVersionUI", version ', version);
   const versionDisplay = document.getElementById('serviceworker-version');
   if (versionDisplay) {
-    versionDisplay.textContent = 'ServiceWorker version: ' + version;
+    versionDisplay.innerHTML = 'ServiceWorker version: ' + version;
   }
 }
 
