@@ -9,9 +9,13 @@ if ('serviceWorker' in navigator) {
   //  Use following format to run on LocalHost
 //   navigator.serviceWorker.register('sw.js').then((registration) => {
   //  Use following format to run from GitHub
-    navigator.serviceWorker.register('/vegnab-webapp/sw.js', {scope: '/vegnab-webapp/'}).then((registration) => {
+  navigator.serviceWorker.register('/vegnab-webapp/sw.js'
+      , {scope: '/vegnab-webapp/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
-
+    if (!navigator.serviceWorker.controller) {
+      console.log('[main] No controller yet — reloading to allow control...');
+      window.location.reload();
+    }
     // following is set up where used, currently near end just before 'Version' screen
     // navigator.serviceWorker.addEventListener('message', event => {
 

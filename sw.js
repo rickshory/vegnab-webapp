@@ -5,6 +5,35 @@ const CACHE_NAME = APP_PREFIX + APP_VERSION
 
 console.log('[SW] Loaded. Version:', APP_VERSION);
 
+// Install event — forces immediate activation
+self.addEventListener('install', event => {
+  console.log('[SW] Install event');
+  self.skipWaiting(); // Activate immediately after install
+});
+
+// Activate event — takes control of all clients
+self.addEventListener('activate', event => {
+  console.log('[SW] Activate event');
+  event.waitUntil(self.clients.claim()); // Take control without waiting
+});
+
+// Handle messages from the main app
+self.addEventListener('message', event => {
+  console.log('[SW] Message received:', event.data);
+
+  if (event.data?.type === 'GET_APP_VERSION') {
+    console.log('[SW] About to post message:'
+      , "type: 'APP_VERSION_RESPONSE'", "version: " + APP_VERSION);
+    event.source.postMessage({
+      type: 'APP_VERSION_RESPONSE',
+      version: APP_VERSION
+    });
+    console.log('[SW] Message posted:'
+      , "type: 'APP_VERSION_RESPONSE'", "version: " + APP_VERSION);
+  }
+
+  // Add more message handlers here
+});
 // const appRoot = '/vegnab-webapp';
 const appShellFiles = [
 //  '/vegnab-webapp/',
@@ -141,22 +170,4 @@ self.addEventListener('activate', (e) => {
       }
     }))
   })); 
-});
-
-// Handle messages from the main app
-self.addEventListener('message', event => {
-  console.log('[SW] Message received:', event.data);
-
-  if (event.data?.type === 'GET_APP_VERSION') {
-    console.log('[SW] About to post message:'
-      , "type: 'APP_VERSION_RESPONSE'", "version: " + APP_VERSION);
-    event.source.postMessage({
-      type: 'APP_VERSION_RESPONSE',
-      version: APP_VERSION
-    });
-    console.log('[SW] Message posted:'
-      , "type: 'APP_VERSION_RESPONSE'", "version: " + APP_VERSION);
-  }
-
-  // Add more message handlers here
 });
