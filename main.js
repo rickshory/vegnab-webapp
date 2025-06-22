@@ -20,8 +20,8 @@ if ('serviceWorker' in navigator) {
       }
     });
 
-    navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data && event.data.version) {
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.data && event.data.type === 'SERVICE_WORKER_VERSION') {
         console.log('Service Worker Version:', event.data.version);
         app_settings_array[0].app_version_from_serviceworker = event.data.version;
         bkupAppSettings();
