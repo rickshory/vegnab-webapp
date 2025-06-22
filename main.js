@@ -5,8 +5,6 @@
 if ('serviceWorker' in navigator) {
   // Register a service worker hosted at the root of the
   // site using the default scope.
-  // Fails because there is no 'sw.js' yet, but console logs
-  //  indicates this code does get run
   //
   //  Use following format to run on LocalHost
 //   navigator.serviceWorker.register('sw.js').then((registration) => {
@@ -14,19 +12,8 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/vegnab-webapp/sw.js', {scope: '/vegnab-webapp/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
 
-    // navigator.serviceWorker.ready.then((registration) => {
-    //   if (registration.active) {
-    //     registration.active.postMessage({ command: 'getVersion' });
-    //   }
-    // });
-
+    // following is set up where used, currently near end just before 'Version' screen
     // navigator.serviceWorker.addEventListener('message', event => {
-    //   if (event.data && event.data.type === 'SERVICE_WORKER_VERSION') {
-    //     console.log('Service Worker Version:', event.data.version);
-    //     app_settings_array[0].app_version_from_serviceworker = event.data.version;
-    //     bkupAppSettings();
-    //   }
-    // });
 
   }, /*catch*/ (error) => {
     console.error(`Service worker registration failed: ${error}`);
@@ -3184,6 +3171,20 @@ document.getElementById('forget_spp_list').addEventListener('click', function (e
   }
 });
 
+navigator.serviceWorker.addEventListener('message', event => {
+  const data = event.data;
+  if (!data) return;
+  console.log('[main] in serviceWorker message listener');
+
+  switch (data.type) {
+    case 'APP_VERSION_RESPONSE':
+      console.log('[main] in serviceWorker message listener, case APP_VERSION_RESPONSE');
+      updateVersionUI(data.version);
+      break;
+    // handle more messages here
+  }
+});
+
 vnHelpVersionScreen.addEventListener('shown.bs.modal', function () {
   requestAppVersion();
   // document.getElementById('serviceworker-version').innerHTML 
@@ -3193,23 +3194,16 @@ vnHelpVersionScreen.addEventListener('shown.bs.modal', function () {
 
 function requestAppVersion() {
   console.log('[main] entered "requestAppVersion"');
-  navigator.serviceWorker.ready.then(registration => {
-    console.log('[main] in "requestAppVersion", serviceWorker.ready');
-    if (registration.active) {
-      console.log('[main] in "requestAppVersion", registration.active');
-      const channel = new MessageChannel();
-      channel.port1.onmessage = event => {
-        if (event.data?.type === 'APP_VERSION_RESPONSE') {
-          console.log('[main] Message received, event.data.version:', event.data.version);
-          updateVersionUI(event.data.version);
-        }
-      };
-      console.log('[main] just before ' 
-        + "registration.active.postMessage({ type: 'GET_APP_VERSION' }, [channel.port2])");
-      registration.active.postMessage({ type: 'GET_APP_VERSION' }, [channel.port2]);
-    }
-  });
+  console.log('[main] Sending GET_APP_VERSION message');
+
+  if (navigator.serviceWorker.controller) {
+    console.log('[main] in "requestAppVersion", serviceWorker.controller');
+    navigator.serviceWorker.controller.postMessage({ type: 'GET_APP_VERSION' });
+  } else {
+    console.warn('[main] No active service worker controller');
+  }
 }
+
 
 function updateVersionUI(version) {
   console.log('[main] entered "updateVersionUI", version ', version);
