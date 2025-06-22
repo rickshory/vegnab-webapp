@@ -3185,9 +3185,31 @@ document.getElementById('forget_spp_list').addEventListener('click', function (e
 });
 
 vnHelpVersionScreen.addEventListener('shown.bs.modal', function () {
-  document.getElementById('serviceworker-version').innerHTML 
-  = 'ServiceWorker version: ' 
-  + app_settings_array[0].app_version_from_serviceworker;
+  requestAppVersion();
+  // document.getElementById('serviceworker-version').innerHTML 
+  // = 'ServiceWorker version: ' 
+  // + app_settings_array[0].app_version_from_serviceworker;
 });
+
+function requestAppVersion() {
+  navigator.serviceWorker.ready.then(registration => {
+    if (registration.active) {
+      const channel = new MessageChannel();
+      channel.port1.onmessage = event => {
+        if (event.data?.type === 'APP_VERSION_RESPONSE') {
+          updateVersionUI(event.data.version);
+        }
+      };
+      registration.active.postMessage({ type: 'GET_APP_VERSION' }, [channel.port2]);
+    }
+  });
+}
+
+function updateVersionUI(version) {
+  const versionDisplay = document.getElementById('serviceworker-version');
+  if (versionDisplay) {
+    versionDisplay.textContent = 'ServiceWorker version: ' + version;
+  }
+}
 
 })(); // Immediately-Invoked Function Expression (IIFE)

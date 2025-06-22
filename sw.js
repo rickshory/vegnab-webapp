@@ -3,6 +3,8 @@ const APP_PREFIX = 'VegNab_'
 const APP_VERSION = 'v0.27'
 const CACHE_NAME = APP_PREFIX + APP_VERSION
 
+console.log('[SW] Loaded. Version:', APP_VERSION);
+
 // const appRoot = '/vegnab-webapp';
 const appShellFiles = [
 //  '/vegnab-webapp/',
@@ -138,14 +140,17 @@ self.addEventListener('activate', (e) => {
         return caches.delete(keyList[i])
       }
     }))
-  }));
-  // post the version, for the main code
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => {
-      client.postMessage({
-        type: 'SERVICE_WORKER_VERSION',
-        version: APP_VERSION
-      });
+  })); 
+});
+
+// Handle messages from the main app
+self.addEventListener('message', event => {
+  console.log('[SW] Message received:', event.data);
+
+  if (event.data?.type === 'GET_APP_VERSION') {
+    event.source.postMessage({
+      type: 'APP_VERSION_RESPONSE',
+      version: APP_VERSION
     });
-  });  
+  }
 });
