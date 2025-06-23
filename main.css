@@ -33,7 +33,13 @@ body, textarea, input[type="text"], input[type="email"], input[type="number"],
 }
 
 /* assure items don't stack horizontally */
-#match-list li {
+#match-list li,
+#sppListForCurSite li,
+#aux-specs-list-for-sites li,
+#aux-specs-list-for-spp li,
+#ph_list li,
+#old_sites_list li,
+#forget_spp_list li {
   display: block;
 }
 
