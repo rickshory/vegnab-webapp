@@ -32,6 +32,11 @@ body, textarea, input[type="text"], input[type="email"], input[type="number"],
 	}
 }
 
+/* assure items don't stack horizontally */
+#match-list li {
+  display: block;
+}
+
 #match-list li.prevfound {
   background-color: white;
 }
