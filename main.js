@@ -2008,6 +2008,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       accuracyAccepted = false; // can be manually accepted
       locationDeferred = true;
       whatIsAwaitingAccuracy = "new_plholder";
+      console.log('About to hide the New Placeholder modal, and go to awaiting location accuracy');
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
       var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
         keyboard: false
@@ -2025,9 +2026,11 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       whatIsAwaitingAccuracy = "";
       placeholder_state = "";
       aux_spec_for = "spp_items";
+      // trigger to refresh site list
+      shwMainScreenTimeout = setTimeout(showMainScreen, 10);
       console.log('About to hide the New Placeholder modal');
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
-      enterAnyAuxData();      
+      enterAnyAuxData();
     }
     // end of placeholder_state === "new"
   } else { // otherwise, was just editing a placeholder
