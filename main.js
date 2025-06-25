@@ -285,7 +285,7 @@ var pageVisibility = document.visibilityState;
 document.addEventListener('visibilitychange', function() {
   // fires when user switches tabs, apps, goes to homescreen, etc.
   console.log("in 'visibilitychange': " + document.visibilityState);
-  if (document.visibilityState == 'hidden') { 
+  if (document.visibilityState == 'hidden') {
     // store app state
     app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
     app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
@@ -1970,6 +1970,15 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bkupPlaceholders();
   // done working in this screen, clear the keywords
   document.getElementById('placeholder_keywords').value = "";
+  //clear any parameters set by visibilitychange
+  // if ever more than incomplete placeholder, make this a function
+  app_settings_array[0].immediate_awating_accuracy = "";
+  app_settings_array[0].immediate_accuracy_ok = true;
+  app_settings_array[0].immediate_loc_deferred = false;
+  app_settings_array[0].immediate_item_id = "";
+  app_settings_array[0].immediate_ph_state = "";
+  app_settings_array[0].immediate_ph_id = "";
+  bkupAppSettings();
 
   // update any species items that are based on the current placeholder
   site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
