@@ -1819,6 +1819,18 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 
 vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   bkupPlaceholders();
+  //clear any parameters set by visibilitychange
+  // regardless whether screen closed by any button or the X
+  // if ever more than incomplete placeholder, make this a function
+  console.log("in vnPlaceholderInfoScreen.hidden, clearning visibilitychange parameters");
+  app_settings_array[0].immediate_awating_accuracy = "";
+  app_settings_array[0].immediate_accuracy_ok = true;
+  app_settings_array[0].immediate_loc_deferred = false;
+  app_settings_array[0].immediate_item_id = "";
+  app_settings_array[0].immediate_ph_state = "";
+  app_settings_array[0].immediate_ph_id = "";
+  bkupAppSettings();
+
   if (phScreenComplete) { // any Placeholder edits will have to go past this point
     console.log("in 'vnPlaceholderInfoScreen.hidden', placeholder_state = " + placeholder_state);
     console.log("in 'vnPlaceholderInfoScreen.hidden', cur_placeholder");
@@ -1970,15 +1982,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bkupPlaceholders();
   // done working in this screen, clear the keywords
   document.getElementById('placeholder_keywords').value = "";
-  //clear any parameters set by visibilitychange
-  // if ever more than incomplete placeholder, make this a function
-  app_settings_array[0].immediate_awating_accuracy = "";
-  app_settings_array[0].immediate_accuracy_ok = true;
-  app_settings_array[0].immediate_loc_deferred = false;
-  app_settings_array[0].immediate_item_id = "";
-  app_settings_array[0].immediate_ph_state = "";
-  app_settings_array[0].immediate_ph_id = "";
-  bkupAppSettings();
+
 
   // update any species items that are based on the current placeholder
   site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
