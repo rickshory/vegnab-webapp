@@ -258,7 +258,16 @@ function initializeSettingArray() {
     sentDataFormat: "fmtCsv",
     emailToSendTo: "",
     region_code: "OR",
+    active_screen_id: "",
     current_site_id: "",
+    accuracy_ok: true, // 'false' = waiting for periodic acquire <= target
+    accuracy_accepted: true; // 'false' = waiting for manual acceptance
+    loc_deferred: false, // new item has been saved, but will update location when acc OK
+    what_awating_accuracy: "", // 'site', 'spp_itm', 'new_plholder'
+    item_id: "", // the item awaiting accuracy
+    ph_state: "", // 'new' or 'edit'
+    ph_id: "", // the placeholder being worked on
+    // TODO: phase out members below
     immediate_awating_accuracy: "", // what, if anything is awaiting location accuracy
     immediate_item_id: "", // the item awaiting accuracy
     immediate_accuracy_ok: true,
