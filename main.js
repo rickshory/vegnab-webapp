@@ -1428,6 +1428,8 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
   };
   app_settings_array[0].current_site_id = site_obj.id;
+  console.log("In 'btn-save-site-info.click', app_settings_array", app_settings_array[0]);
+
   bkupAppSettings();
   // new item at the beginning
   site_info_array.unshift(site_obj);
