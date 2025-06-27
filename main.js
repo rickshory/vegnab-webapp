@@ -261,20 +261,18 @@ function initializeSettingArray() {
     current_modal_id: "", // modals such as Placeholder, WaitForLocation, and AuxData that 
     // can have data in intermediate states use; other modals ignore
     current_site_id: "",
-    accuracy_ok: true, // 'false' = waiting for periodic acquire <= target
-    accuracy_accepted: true; // 'false' = waiting for manual acceptance
+    latest_loc: undefined,
+    tgt_accuracy_ok: true, // 'false' = waiting for periodic acquire <= target
+    accurcy_accepted: true; // 'false' = waiting for manual acceptance
     loc_deferred: false, // new item has been saved, but will update location when acc OK
     what_awating_accuracy: "", // 'site', 'spp_itm', 'new_plholder'
     item_id: "", // the item awaiting accuracy
     ph_state: "", // 'new' or 'edit'
-    ph_id: "", // the placeholder being worked on
-    // TODO: phase out members below
-    immediate_awating_accuracy: "", // what, if anything is awaiting location accuracy
-    immediate_item_id: "", // the item awaiting accuracy
-    immediate_accuracy_ok: true,
-    immediate_loc_deferred: false,
-    immediate_ph_state: "", // will be 'new' or 'edit'
-    immediate_ph_id: ""
+    cur_ph_id: "", // ID of the placeholder being worked on
+    cur_ph_code: "",
+    cur_plholder: undefined // the placeholder being added/edited, first created incomplete
+  // some fields filled in by user, some by GPS acquire
+  // incomplete placehold will be deleted if info screen dismissed without finishing
   };
   if (app_settings_array.length == 0) {
     app_settings_array.push(app_settings_object);
@@ -296,34 +294,16 @@ document.addEventListener('visibilitychange', function() {
   // fires when user switches tabs, apps, goes to homescreen, etc.
   console.log("in 'visibilitychange': " + document.visibilityState);
   if (document.visibilityState == 'hidden') {
-    // store app state
-    app_settings_array[0].immediate_awating_accuracy = whatIsAwaitingAccuracy;
-    app_settings_array[0].immediate_accuracy_ok = targetAccuracyOK;
-    app_settings_array[0].immediate_loc_deferred = locationDeferred;
-    switch (whatIsAwaitingAccuracy) {
-      case "site":
-        app_settings_array[0].immediate_item_id = app_settings_array[0].current_site_id;
-        break;
-      case "spp_itm":
-        app_settings_array[0].immediate_item_id = current_spp_item_id;
-        break;
-      case "new_plholder":
-        app_settings_array[0].immediate_item_id = current_ph_id;
-        break;
-      default:
-        // do nothing
-    }
     // at this point, only check if a placeholder is in the midst of being edited
-    if ((placeholder_state === "new" ) || (placeholder_state === "edit")) {
-      console.log("in 'visibilitychange', placeholder_state: " + placeholder_state);
-      app_settings_array[0].immediate_ph_state = placeholder_state;
-      app_settings_array[0].immediate_ph_id = current_ph_id;
+    if ((app_settings_array[0].ph_state === "new" ) 
+      || (app_settings_array[0].ph_state === "edit")) {
+      console.log("in 'visibilitychange', ph_state: " + app_settings_array[0].ph_state);
       // save partial placeholder
       let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
       // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
       let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
       // allow empty array
-      cur_placeholder.keywords = phKeywordsArray;
+      app_settings_array[0].cur_plholder.keywords = phKeywordsArray;
       bkupPlaceholders();
       bkupAppSettings();
     }
@@ -379,7 +359,8 @@ var browser_supports_geolocation = false; // until determined true
 // by calling clearWatch on this id
 var position_tracker_id = 0;
 var locationTickerInterval = 1000; // milliseconds, default to a reasonable average, settable by Site or Species
-var latestLocation; // latest location acquired
+//var latestLocation; // latest location acquired
+// replaced by app_settings_array[0].latest_loc
 
 const locationOptions = {
   enableHighAccuracy: true,
@@ -400,11 +381,11 @@ var locationsGranted = false; // when true, flags that location reading has been
 // var sppLocTargetAccuracy = 7;
 // var waitForSppLocTarget = true;
 
-var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enough
-var accuracyAccepted = true; // 'false' = waiting for manual acceptance
+//var targetAccuracyOK = true; // 'false' = waiting for periodic acquire good enough
+//var accuracyAccepted = true; // 'false' = waiting for manual acceptance
 // flags for treating deferred locations from "wait for target accuracy"
-var locationDeferred = false; // new item has been saved, but will update location when acc OK
-var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
+//var locationDeferred = false; // new item has been saved, but will update location when acc OK
+//var whatIsAwaitingAccuracy = ""; // 'site', 'spp_itm', 'new_plholder' or ''
 
 // var sentDataFormat = "fmtCsv"; // default until changed
 
@@ -437,10 +418,10 @@ let new_spp_item = {
 };
 */
 var placeholders_array = [];
-var placeholder_state = ""; // will be 'new' or 'edit'
-var current_ph_id = "";
-var current_ph_code = "";
-var cur_placeholder; // the placeholder being added/edited, first created incomplete
+//var placeholder_state = ""; // will be 'new' or 'edit'
+//var current_ph_id = "";
+//var current_ph_code = "";
+//var cur_placeholder; // the placeholder being added/edited, first created incomplete
   // some fields filled in by user, some by GPS acquire
   // incomplete placehold will be deleted if info screen dismissed without finishing
 var phScreenComplete = false; // flag to distinguish screen simply
@@ -876,7 +857,7 @@ match_list.addEventListener('click', function (e) {
       if(!target) { return; } // If element doesn't exist
   }
   if (target.tagName === 'LI') { // tagName returns uppercase
-    if (latestLocation === undefined) {
+    if (app_settings_array[0].latest_loc === undefined) {
       alert("Try again, still reading location");
       return;
     }
@@ -897,9 +878,9 @@ match_list.addEventListener('click', function (e) {
         "species": spp,
         "uncertainty": "",
         "date": spp_entry_date,
-        "latitude": "" + latestLocation.coords.latitude,
-        "longitude": "" + latestLocation.coords.longitude,
-        "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+        "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
+        "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
+        "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
       };
       current_spp_item_id = new_spp_item.id;
       site_spp_array.unshift(new_spp_item);
@@ -916,11 +897,11 @@ match_list.addEventListener('click', function (e) {
       }
 
       // if flagged, check that target accuracy was met
-      if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) {
+      if (app_settings_array[0].waitForSppLocTarget && !app_settings_array[0].tgt_accuracy_ok) {
         current_spp_item_id = new_spp_item.id;
-        accuracyAccepted = false; // can be manually accepted
-        locationDeferred = true;
-        whatIsAwaitingAccuracy = "spp_itm";
+        app_settings_array[0].accurcy_accepted = false; // can be manually accepted
+        app_settings_array[0].loc_deferred = true;
+        app_settings_array[0].what_awating_accuracy = "spp_itm";
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
         var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
           keyboard: false
@@ -929,13 +910,13 @@ match_list.addEventListener('click', function (e) {
         app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
         bkupAppSettings();
       } else { // finish up
-        // ticker may already be stopped if targetAccuracyOK
+        // ticker may already be stopped if app_settings_array[0].tgt_accuracy_ok
         clearInterval(periodicLocationCheckFlag);
         stopTrackingPosition();
-        latestLocation = undefined;
-        accuracyAccepted = true;
-        locationDeferred = false;
-        whatIsAwaitingAccuracy = "";
+        app_settings_array[0].latest_loc = undefined;
+        app_settings_array[0].accurcy_accepted = true;
+        app_settings_array[0].loc_deferred = false;
+        app_settings_array[0].what_awating_accuracy = "";
         // dismiss this modal
         console.log('About to hide the Species Search modal');
         bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
@@ -952,9 +933,9 @@ match_list.addEventListener('click', function (e) {
         if (target.id.startsWith("P_H_NEW_")) { // a new placeholer
           // a placeholder code contains spaces, and thus was encoded to make a valid ID
           console.log("target.id for new placeholder: " + target.id);
-          placeholder_state = "new";
-          current_ph_code = decodeURIComponent(target.id.slice(8));
-          console.log("new placeholder code: " + current_ph_code);
+          app_settings_array[0].ph_state = "new";
+          app_settings_array[0].cur_ph_code = decodeURIComponent(target.id.slice(8));
+          console.log("new placeholder code: " + app_settings_array[0].cur_ph_code);
           let ph_create_date = new Date();
           let new_ph = {
             // if 'id' used as HTML element id, prefix assures it does not start with a number
@@ -964,24 +945,26 @@ match_list.addEventListener('click', function (e) {
             "site_name":  site_info_array.find(s => s.id == app_settings_array[0].current_site_id).name,
             // may never use notes
             "site_notes":  site_info_array.find(s => s.id == app_settings_array[0].current_site_id).notes,
-            "code": current_ph_code,
+            "code": app_settings_array[0].cur_ph_code,
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
             "date": ph_create_date,
-            "latitude": "" + latestLocation.coords.latitude,
-            "longitude": "" + latestLocation.coords.longitude,
-            "accuracy": "" + latestLocation.coords.accuracy.toFixed(1),
+            "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
+            "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
+            "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1),
             "species": "", // until determined
             "uncertainty": "" // any uncertainty that it is this species
             // should never be any uncertainty that what is observed this placeholder
             // if unsure, create a new placeholder
           };
-          current_ph_id = new_ph.id; // remember the ID
+          app_settings_array[0].cur_ph_id = new_ph.id; // remember the ID
           // put this placeholder, at least temporarily, into the placeholders array
           placeholders_array.unshift(new_ph);
           bkupPlaceholders();
           // get a reference to the array element
-          cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
+          app_settings_array[0].cur_plholder = 
+            placeholders_array.find(ph => ph.id == 
+            app_settings_array[0].cur_ph_id);
 
           // add an instance of this placeholder to the site items
           // which will be deleted if the new placeholder is canceled
@@ -989,18 +972,18 @@ match_list.addEventListener('click', function (e) {
           current_spp_item_id = insertPlHolderItm(); // uses globals
 
           // if flagged to, check that target accuracy was met
-          if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) { // use same target accuracy as for species
-            accuracyAccepted = false; // can be manually accepted
-            locationDeferred = true;
-            whatIsAwaitingAccuracy = "new_plholder";
+          if (app_settings_array[0].waitForSppLocTarget && !app_settings_array[0].tgt_accuracy_ok) { // use same target accuracy as for species
+            app_settings_array[0].accurcy_accepted = false; // can be manually accepted
+            app_settings_array[0].loc_deferred = true;
+            app_settings_array[0].what_awating_accuracy = "new_plholder";
           } else { // finish up
-            // ticker may already be stopped if targetAccuracyOK
+            // ticker may already be stopped if app_settings_array[0].tgt_accuracy_ok
             clearInterval(periodicLocationCheckFlag);
             stopTrackingPosition();
-            latestLocation = undefined;
-            accuracyAccepted = true;
-            locationDeferred = false;
-            whatIsAwaitingAccuracy = "";
+            app_settings_array[0].latest_loc = undefined;
+            app_settings_array[0].accurcy_accepted = true;
+            app_settings_array[0].loc_deferred = false;
+            app_settings_array[0].what_awating_accuracy = "";
             // dismiss this modal
             console.log('About to hide the Species Search modal for a new placeholder');
           }
@@ -1021,8 +1004,9 @@ match_list.addEventListener('click', function (e) {
           console.log("parsed placeholder code: " + matched_placeholder_code);
           let ph = target.textContent;
           console.log(ph);
-          // get the global 'cur_placeholder' the following fn needs
-          cur_placeholder = placeholders_array.find(p => p.code === matched_placeholder_code);
+          // get the global 'app_settings_array[0].cur_plholder' the following fn needs
+          app_settings_array[0].cur_plholder = 
+            placeholders_array.find(p => p.code === matched_placeholder_code);
           // following fn fills in fields that might be redundant, but includes
           // "ph_id": to allow lookup back to the original placeholder definition
           // "type": 'ph' which flags this item as a placeholder, vs. a real species
@@ -1031,12 +1015,12 @@ match_list.addEventListener('click', function (e) {
           // has been identified
           current_spp_item_id = insertPlHolderItm(); // uses globals
           // if flagged, check that target accuracy was met
-          if (app_settings_array[0].waitForSppLocTarget && (!targetAccuracyOK)) {
+          if (app_settings_array[0].waitForSppLocTarget && (!app_settings_array[0].tgt_accuracy_ok)) {
             // for the lat/lon/acc fields are the same as for a species
 //            current_spp_item_id = new_ph_item.id;
-            accuracyAccepted = false; // can be manually accepted
-            locationDeferred = true;
-            whatIsAwaitingAccuracy = "spp_itm"; // for now, this works the same
+            app_settings_array[0].accurcy_accepted = false; // can be manually accepted
+            app_settings_array[0].loc_deferred = true;
+            app_settings_array[0].what_awating_accuracy = "spp_itm"; // for now, this works the same
             bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
             var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
              keyboard: false
@@ -1045,13 +1029,13 @@ match_list.addEventListener('click', function (e) {
             app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
             bkupAppSettings();
           } else { // finish up
-            // ticker may already be stopped if targetAccuracyOK
+            // ticker may already be stopped if app_settings_array[0].tgt_accuracy_ok
             clearInterval(periodicLocationCheckFlag);
             stopTrackingPosition();
-            latestLocation = undefined;
-            accuracyAccepted = true;
-            locationDeferred = false;
-            whatIsAwaitingAccuracy = "";
+            app_settings_array[0].latest_loc = undefined;
+            app_settings_array[0].accurcy_accepted = true;
+            app_settings_array[0].loc_deferred = false;
+            app_settings_array[0].what_awating_accuracy = "";
             // dismiss this modal
             console.log('About to hide the Species Search modal for a placeholder item');
             bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSppSearchScreen')).hide();
@@ -1076,11 +1060,11 @@ sppSearchModal.addEventListener('shown.bs.modal', function () {
   match_list.innerHTML = "";
   sppSearchInput.focus();
   // start acquiring location, in anticipation of the species
-  targetAccuracyOK = false;
-  accuracyAccepted = false;
-  whatIsAwaitingAccuracy = "spp_itm"; // may be overridden if placeholder, but
+  app_settings_array[0].tgt_accuracy_ok = false;
+  app_settings_array[0].accurcy_accepted = false;
+  app_settings_array[0].what_awating_accuracy = "spp_itm"; // may be overridden if placeholder, but
     // here makes screen update work correctly in checkPositionAccuracy loop
-  latestLocation = undefined; // start fresh
+  app_settings_array[0].latest_loc = undefined; // start fresh
   locationTickerInterval = 500; // every half second for Species
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
@@ -1175,7 +1159,7 @@ function startTrackingPosition() {
 function warnLocationDenied() {
   // if location denied, hide the screen that is waiting for locations,
   // and show the user an explanation
-  switch (whatIsAwaitingAccuracy) {
+  switch (app_settings_array[0].what_awating_accuracy) {
     case "site":
       // most likely, first use of location attempt
       // 'hidden' event will stop any location acquire ticker
@@ -1203,7 +1187,7 @@ function warnBadSafari() {
   // if 'PERMISSION_DENIED' error, and testing found Safari browser
   // hide the screen that is waiting for locations,
   // and show the user an explanation
-  switch (whatIsAwaitingAccuracy) {
+  switch (app_settings_array[0].what_awating_accuracy) {
     case "site":
       // most likely, first use of location attempt
       // 'hidden' event will stop any location acquire ticker
@@ -1239,7 +1223,7 @@ function stopTrackingPosition() {
 
 function trackPosition(position) {
   // called every time postion changes
-  latestLocation = position;
+  app_settings_array[0].latest_loc = position;
 }
 
 function locationError(err) {
@@ -1291,74 +1275,75 @@ function locationError(err) {
 function checkPositionAccuracy() {
   // called peridocally, until position is accurate enough
   console.log("entered checkPositionAccuracy");
-  if (latestLocation === undefined) {
-    console.log("latestLocation not yet defined");
+  if (app_settings_array[0].latest_loc === undefined) {
+    console.log("latest_loc not yet defined");
     return;
   }
-  console.log("Location accuracy " + latestLocation.coords.accuracy.toFixed(2) + " meters");
+  console.log("Location accuracy " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(2) + " meters");
   let targetAcc = 0;
-  switch(whatIsAwaitingAccuracy) {
+  switch(app_settings_array[0].what_awating_accuracy) {
     case "site":
       targetAcc = app_settings_array[0].siteLocTargetAccuracy;
-      if (latestLocation.coords.accuracy <= targetAcc) {
-        targetAccuracyOK = true;
+      if (app_settings_array[0].latest_loc.coords.accuracy <= targetAcc) {
+        app_settings_array[0].tgt_accuracy_ok = true;
       }
-      if (!locationDeferred) {
-        let stLoc = "Latitude: " + latestLocation.coords.latitude +
-            "<br>Longitude: " + latestLocation.coords.longitude;
-        if (!targetAccuracyOK) {
+      if (!app_settings_array[0].loc_deferred) {
+        let stLoc = "Latitude: " + app_settings_array[0].latest_loc.coords.latitude +
+            "<br>Longitude: " + app_settings_array[0].latest_loc.coords.longitude;
+        if (!app_settings_array[0].tgt_accuracy_ok) {
           stLoc += "<br>Target accuracy: " + targetAcc + " meters";
         }
-        stLoc += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
+        stLoc += "<br>Accuracy: " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1) + " meters";
         vnSiteLocation.innerHTML = stLoc;
       }
       break;
     case "spp_itm":
       targetAcc = app_settings_array[0].sppLocTargetAccuracy;
-      if (latestLocation.coords.accuracy <= targetAcc) {
-        targetAccuracyOK = true;
+      if (app_settings_array[0].latest_loc.coords.accuracy <= targetAcc) {
+        app_settings_array[0].tgt_accuracy_ok = true;
       }
       // don't display anything for species
       break;
     case "new_plholder":
       // use same target accuracy as for species
       targetAcc = app_settings_array[0].sppLocTargetAccuracy;
-      if (latestLocation.coords.accuracy <= targetAcc) {
-        targetAccuracyOK = true;
+      if (app_settings_array[0].latest_loc.coords.accuracy <= targetAcc) {
+        app_settings_array[0].tgt_accuracy_ok = true;
       }
-      if (placeholder_state === "new" && !locationDeferred) {
+      if (app_settings_array[0].ph_state === "new" 
+        && !app_settings_array[0].loc_deferred) {
         // display the updating location
         document.getElementById('placeholder_location').innerHTML
-             = '(' + cur_placeholder.latitude
-             + ', ' + cur_placeholder.longitude
-             + '), accuracy ' + cur_placeholder.accuracy + ' m';
+             = '(' + app_settings_array[0].cur_plholder.latitude
+             + ', ' + app_settings_array[0].cur_plholder.longitude
+             + '), accuracy ' + app_settings_array[0].cur_plholder.accuracy + ' m';
       }
       break;
     default:
       // do nothing
   }
-  // end of switch(whatIsAwaitingAccuracy)
-  if (targetAccuracyOK) { // done getting location
+  // end of switch(app_settings_array[0].what_awating_accuracy)
+  if (app_settings_array[0].tgt_accuracy_ok) { // done getting location
     console.log("Target accuracy of " + targetAcc + " meters achieved");
     clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
-    if (locationDeferred) {
+    if (app_settings_array[0].loc_deferred) {
       // 'waiting for target accuracy' has been up, hide it
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
       // that screen's 'hidden' event will update the appropriate item
     }
   } else { // keep on acquring location
     console.log("Not yet to target accuracy of " + targetAcc + " meters");
-    if (locationDeferred) {
+    if (app_settings_array[0].loc_deferred) {
         // if 'waiting for target accuracy' is up, update the display
-      let stLocInfo = "Latitude: " + latestLocation.coords.latitude +
-          "<br>Longitude: " + latestLocation.coords.longitude;
-      if (!targetAccuracyOK) {
+      let stLocInfo = "Latitude: " + app_settings_array[0].latest_loc.coords.latitude +
+          "<br>Longitude: " + app_settings_array[0].latest_loc.coords.longitude;
+      if (!app_settings_array[0].tgt_accuracy_ok) {
         stLocInfo += "<br>Target accuracy: " + targetAcc + " meters";
       }
-      stLocInfo += "<br>Accuracy: " + latestLocation.coords.accuracy.toFixed(1) + " meters";
+      stLocInfo += "<br>Accuracy: " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1) + " meters";
       document.getElementById('waiting_location_accuracy_info').innerHTML = stLocInfo;
-      let stAcceptAcc = "Accept " + latestLocation.coords.accuracy.toFixed(1) + " meters?";
+      let stAcceptAcc = "Accept " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1) + " meters?";
       document.getElementById('btn_accept_accuracy').innerHTML = stAcceptAcc;
     }
   }
@@ -1378,10 +1363,10 @@ document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', f
   vnSiteDate.innerHTML = ""; // fill in almost immediately, below
   vnSiteLocation.innerHTML = ""; // fill in by location ticker
 	vnSiteDate.innerHTML = new Date().toString();
-  targetAccuracyOK = false;
-  accuracyAccepted = false;
-  whatIsAwaitingAccuracy = "site";
-  latestLocation = undefined; // start fresh
+  app_settings_array[0].tgt_accuracy_ok = false;
+  app_settings_array[0].accurcy_accepted = false;
+  app_settings_array[0].what_awating_accuracy = "site";
+  app_settings_array[0].latest_loc = undefined; // start fresh
   locationTickerInterval = 2000; // every 2 seconds for sites
   console.log("about to call startTrackingPosition");
   startTrackingPosition();
@@ -1405,7 +1390,7 @@ document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', 
 });
 
 document.getElementById('btn-save-site-info').addEventListener('click', function () {
-  if (latestLocation === undefined) {
+  if (app_settings_array[0].latest_loc === undefined) {
     alert("Try again, still reading location");
     return;
   }
@@ -1437,9 +1422,9 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": st_create_date,
-    "latitude": "" + latestLocation.coords.latitude,
-    "longitude": "" + latestLocation.coords.longitude,
-    "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+    "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
+    "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
+    "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
   };
   app_settings_array[0].current_site_id = site_obj.id;
   bkupAppSettings();
@@ -1449,10 +1434,10 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   siteScreenComplete = true; // flag, don't need to stop the ticker when this screen hidden
 
   // if flagged, check that target accuracy was met
-  if (app_settings_array[0].waitForSiteLocTarget && !targetAccuracyOK) {
-    accuracyAccepted = false; // can be manually accepted
-    locationDeferred = true;
-    whatIsAwaitingAccuracy = "site"; // redundant? set in Show event
+  if (app_settings_array[0].waitForSiteLocTarget && !app_settings_array[0].tgt_accuracy_ok) {
+    app_settings_array[0].accurcy_accepted = false; // can be manually accepted
+    app_settings_array[0].loc_deferred = true;
+    app_settings_array[0].what_awating_accuracy = "site"; // redundant? set in Show event
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
     var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
       keyboard: false
@@ -1462,13 +1447,13 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     bkupAppSettings();
 
   } else { // finish up
-    // ticker may already be stopped if targetAccuracyOK
+    // ticker may already be stopped if app_settings_array[0].tgt_accuracy_ok
     clearInterval(periodicLocationCheckFlag);
     stopTrackingPosition();
-    accuracyAccepted = true;
-    locationDeferred = false;
-    latestLocation = undefined;
-    whatIsAwaitingAccuracy = "";
+    app_settings_array[0].accurcy_accepted = true;
+    app_settings_array[0].loc_deferred = false;
+    app_settings_array[0].latest_loc = undefined;
+    app_settings_array[0].what_awating_accuracy = "";
     // dismiss this modal
     console.log('About to hide the Site Info modal');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnSiteInfoScreen')).hide();
@@ -1484,9 +1469,9 @@ vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {
 });
 
 vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
-  console.log("In 'Wait for Accuracy' accuracyAccepted = " + accuracyAccepted);
+  console.log("In 'Wait for Accuracy' accurcy_accepted = " + app_settings_array[0].accurcy_accepted);
   let itmToUpdate = undefined;
-  switch(whatIsAwaitingAccuracy) {
+  switch(app_settings_array[0].what_awating_accuracy) {
     case "site":
       itmToUpdate = site_info_array.find(i => i.id == app_settings_array[0].current_site_id);
       aux_spec_for = "sites"; // in case we need this
@@ -1496,15 +1481,16 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
       aux_spec_for = "spp_items"; // in case we need this
       break;
     case "new_plholder":
-      itmToUpdate = placeholders_array.find(i => i.id == current_ph_id);
+      itmToUpdate = placeholders_array.find(i => i.id 
+        == app_settings_array[0].cur_ph_id);
       // For each new placeholder definition, deferred for target accuracy,
       // a site instance of the placeholder has been "riding along", its accuracy
       // also deferred. Update it now
       let phItm = site_spp_array.find(i => i.id == current_spp_item_id);
       if (phItm !== undefined) {
-        phItm.latitude = "" + latestLocation.coords.latitude;
-        phItm.longitude = "" + latestLocation.coords.longitude;
-        phItm.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
+        phItm.latitude = "" + app_settings_array[0].latest_loc.coords.latitude;
+        phItm.longitude = "" + app_settings_array[0].latest_loc.coords.longitude;
+        phItm.accuracy = "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1);
         console.log("Updated deferred placeholder item, id=" + phItm.id);
         bkupPlaceholders();
       }
@@ -1514,13 +1500,13 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
       // do nothing
   }
   if (itmToUpdate !== undefined) {
-    itmToUpdate.latitude = "" + latestLocation.coords.latitude;
-    itmToUpdate.longitude = "" + latestLocation.coords.longitude;
-    itmToUpdate.accuracy = "" + latestLocation.coords.accuracy.toFixed(1);
-    console.log("Updated latest " + whatIsAwaitingAccuracy + ", id=" + itmToUpdate.id);
+    itmToUpdate.latitude = "" + app_settings_array[0].latest_loc.coords.latitude;
+    itmToUpdate.longitude = "" + app_settings_array[0].latest_loc.coords.longitude;
+    itmToUpdate.accuracy = "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1);
+    console.log("Updated latest " + app_settings_array[0].what_awating_accuracy + ", id=" + itmToUpdate.id);
   }
 
-  switch(whatIsAwaitingAccuracy) {
+  switch(app_settings_array[0].what_awating_accuracy) {
     case "site":
       bkupSiteList();
 //      aux_spec_for = "sites"; // in case we need this
@@ -1541,11 +1527,11 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   clearInterval(periodicLocationCheckFlag);
   console.log("In 'Wait for Accuracy', about to stopTrackingPosition");
   stopTrackingPosition();
-  locationDeferred = false;
-  accuracyAccepted = false;
-  targetAccuracyOK = false;
-  latestLocation = undefined;
-  whatIsAwaitingAccuracy = "";
+  app_settings_array[0].loc_deferred = false;
+  app_settings_array[0].accurcy_accepted = false;
+  app_settings_array[0].tgt_accuracy_ok = false;
+  app_settings_array[0].latest_loc = undefined;
+  app_settings_array[0].what_awating_accuracy = "";
   // refresh data, no matter what
   shwMainScreenTimeout = setTimeout(showMainScreen, 10);
   // ask for AuxData, if any
@@ -1557,7 +1543,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
 });
 
 document.getElementById('btn_accept_accuracy').addEventListener('click', function () {
-  accuracyAccepted = true;
+  app_settings_array[0].accurcy_accepted = true;
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
 });
 
@@ -1665,40 +1651,14 @@ function showMainScreen() {
   });
   this_site_spp_list.innerHTML = spp_listitems_string;
   // check if a placeholder was in progress
-  console.log("in showMainScreen, immediate_ph_state: " + app_settings_array[0].immediate_ph_state);
+  console.log("in showMainScreen, current_modal_id = " + app_settings_array[0].current_modal_id);
   if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
     // app was closed or reloaded during placeholder work
     // restore the placeholders screen
-    // TODO; fix the following block of code
-    placeholder_state = app_settings_array[0].immediate_ph_state;
-    app_settings_array[0].immediate_ph_state = ""; // reset
-    current_ph_id = app_settings_array[0].immediate_ph_id;
-    app_settings_array[0].immediate_ph_id = ""; // reset
-    targetAccuracyOK = app_settings_array[0].immediate_accuracy_ok;
-    app_settings_array[0].immediate_accuracy_ok = true; // reset
-    locationDeferred = app_settings_array[0].immediate_loc_deferred;
-    app_settings_array[0].immediate_loc_deferred = false; // reset
-    whatIsAwaitingAccuracy = app_settings_array[0].immediate_awating_accuracy;
-    app_settings_array[0].immediate_awating_accuracy = "";  // reset
-
-    // may not need the following here
-    switch (whatIsAwaitingAccuracy) {
-      case "site":
-        app_settings_array[0].current_site_id = app_settings_array[0].immediate_item_id;
-        break;
-      case "spp_itm":
-        current_spp_item_id = app_settings_array[0].immediate_item_id;
-        break;
-      case "new_plholder":
-        current_ph_id = app_settings_array[0].immediate_item_id;
-        break;
-      default:
-        // do nothing
-    }
-    app_settings_array[0].immediate_item_id = ""; // reset
     bkupAppSettings();
-    cur_placeholder = placeholders_array.find(ph => ph.id == current_ph_id);
-    current_ph_code = cur_placeholder.code;
+    app_settings_array[0].cur_plholder = placeholders_array.find(ph => ph.id 
+      == app_settings_array[0].cur_ph_id);
+    app_settings_array[0].cur_ph_code = app_settings_array[0].cur_plholder.code;
     var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
       keyboard: false
     });
@@ -1820,7 +1780,9 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   console.log("in vnPlaceholderInfoScreen 'shown.bs.modal'");
   app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
   bkupAppSettings();
-  if (cur_placeholder === undefined || current_ph_id == "" || cur_placeholder.code == "") {
+  if (app_settings_array[0].cur_plholder === undefined 
+    || app_settings_array[0].cur_ph_id == "" 
+    || app_settings_array[0].cur_plholder.code == "") {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').value = "";
     document.getElementById('placeholder_location').innerHTML = "(no location)";
@@ -1828,30 +1790,30 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
     document.getElementById('placeholder_pix').innerHTML = "(no pix)";
     return;
   }
-  if (placeholder_state === "new") {
+  if (app_settings_array[0].ph_state === "new") {
     document.getElementById('placeholder_code_label').innerHTML
-        = 'New placeholder "' + cur_placeholder.code + '"';
+        = 'New placeholder "' + app_settings_array[0].cur_plholder.code + '"';
     phScreenComplete = false; // flag to delete incomplete placeholder if screen dismissed
     // // is this a good place to restart this?
-    // if (!targetAccuracyOK && !accuracyAccepted) { // also test locationDeferred?
+    // if (!app_settings_array[0].tgt_accuracy_ok && !app_settings_array[0].accurcy_accepted) { // also test loc_deferred?
     //   locationTickerInterval = 500; // every half second for Species
     //   console.log("about to re-start startTrackingPosition");
     //   startTrackingPosition();
     // }
   }
-  if (placeholder_state === "edit") {
+  if (app_settings_array[0].ph_state === "edit") {
     document.getElementById('placeholder_code_label').innerHTML
-        = 'Editing placeholder "' + cur_placeholder.code + '"';
+        = 'Editing placeholder "' + app_settings_array[0].cur_plholder.code + '"';
     phScreenComplete = true; // don't delete this placeholder, even if screen dismissed
   }
   document.getElementById('placeholder_keywords').value
-      = cur_placeholder.keywords.join(" ");
+      = app_settings_array[0].cur_plholder.keywords.join(" ");
   document.getElementById('placeholder_location').innerHTML
-       = '(' + cur_placeholder.latitude
-       + ', ' + cur_placeholder.longitude
-       + '), accuracy ' + cur_placeholder.accuracy + ' m';
+       = '(' + app_settings_array[0].cur_plholder.latitude
+       + ', ' + app_settings_array[0].cur_plholder.longitude
+       + '), accuracy ' + app_settings_array[0].cur_plholder.accuracy + ' m';
    document.getElementById('placeholder_date').innerHTML
-       = cur_placeholder.date;
+       = app_settings_array[0].cur_plholder.date;
   showPhPix();
 });
 
@@ -1862,38 +1824,36 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   // if ever more than incomplete placeholder, make this a function
   // TODO: fix the followind block of code
   console.log("in vnPlaceholderInfoScreen.hidden, clearning visibilitychange parameters");
-  app_settings_array[0].immediate_awating_accuracy = "";
-  app_settings_array[0].immediate_accuracy_ok = true;
-  app_settings_array[0].immediate_loc_deferred = false;
-  app_settings_array[0].immediate_item_id = "";
-  app_settings_array[0].immediate_ph_state = "";
-  app_settings_array[0].immediate_ph_id = "";
   bkupAppSettings();
 
   if (phScreenComplete) { // any Placeholder edits will have to go past this point
-    console.log("in 'vnPlaceholderInfoScreen.hidden', placeholder_state = " + placeholder_state);
-    console.log("in 'vnPlaceholderInfoScreen.hidden', cur_placeholder");
-    console.log(cur_placeholder);
+    console.log("in 'vnPlaceholderInfoScreen.hidden', ph_state = " 
+      + app_settings_array[0].ph_state);
+    console.log("in 'vnPlaceholderInfoScreen.hidden', cur_plholder");
+    console.log(app_settings_array[0].cur_plholder);
     // any species items based on the current placeholder were
     //  updated in 'btn-save-placeholder-info.click'
-    // if placeholder_state === "edit", there would not be any pending
+    // if ph_state === "edit", there would not be any pending
     //  species item, only if "new"
-    // if (placeholder_state === "new") {
+    // if (ph_state === "new") {
     //   // if pending location, or aux data
     //   // was set up in in 'btn-save-placeholder-info.click'
     // }
   } else { //  !phScreenComplete,  occurs if screen dismissed by "X" button
-    if (placeholder_state === "new") {
+    if (app_settings_array[0].ph_state === "new") {
       // new placeholder was never completed, remove it from the array
-      cur_placeholder = undefined; // unattach any reference
+      app_settings_array[0].cur_plholder = undefined; // unattach any reference
       // remove the incomplete placeholder
       console.log('about to remove incomplete Placeholder "'
-        + placeholders_array.find(p => p.id === current_ph_id).code + '"');
-      placeholders_array = placeholders_array.filter(ph => ph.id != current_ph_id);
+        + placeholders_array.find(p => p.id 
+          === app_settings_array[0].cur_ph_id).code + '"');
+      placeholders_array = placeholders_array.filter(ph => 
+        ph.id != app_settings_array[0].cur_ph_id);
       bkupPlaceholders();
       // remove any species item for it
       var i;
-      while ((i = site_spp_array.findIndex(itm => itm.ph_id === current_ph_id)) > -1) {
+      while ((i = site_spp_array.findIndex(itm => itm.ph_id 
+        === app_settings_array[0].cur_ph_id)) > -1) {
         console.log('about to remove incomplete Ph item "'
           + site_spp_array[i].species + '"');
         site_spp_array.splice(i, 1);
@@ -1902,23 +1862,17 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
       // stop the locations ticker
       clearInterval(periodicLocationCheckFlag);
       stopTrackingPosition();
-      accuracyAccepted = true;
-      locationDeferred = false;
-      latestLocation = undefined;
-      whatIsAwaitingAccuracy = "";
-      // reset flags
-      app_settings_array[0].immediate_ph_state = ""; // reset
-      app_settings_array[0].immediate_ph_id = ""; // reset
-      app_settings_array[0].immediate_accuracy_ok = true; // reset
-      app_settings_array[0].immediate_loc_deferred = false; // reset
-      app_settings_array[0].immediate_awating_accuracy = "";  // reset
+      app_settings_array[0].accurcy_accepted = true;
+      app_settings_array[0].loc_deferred = false;
+      app_settings_array[0].latest_loc = undefined;
+      app_settings_array[0].what_awating_accuracy = "";
       bkupAppSettings();
-    } // !phScreenComplete but placeholder_state != "new"
+    } // !phScreenComplete but ph_state != "new"
     // placeholder was being edited, but discard edits
     // flag that work is finished
-    placeholder_state = ""
-    cur_placeholder = undefined;
-    current_ph_code = "";
+    app_settings_array[0].ph_state = ""
+    app_settings_array[0].cur_plholder = undefined;
+    app_settings_array[0].cur_ph_code = "";
     if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
       app_settings_array[0].current_modal_id = null;
       bkupAppSettings();
@@ -1930,12 +1884,12 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
 function showPhPix() {
   let ph_pix_html = "";
   try {
-    if (cur_placeholder.photos.length == 0) {
+    if (app_settings_array[0].cur_plholder.photos.length == 0) {
       ph_pix_html = "no photos yet"
     } else {
       ph_pix_html += '    <div class="container">'
          + '\n               <div class="row imagetiles">';
-      cur_placeholder.photos.forEach(itm => {
+      app_settings_array[0].cur_plholder.photos.forEach(itm => {
         ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
            + '<img src=' + URL.createObjectURL(itm)
            + ' class="img-responsive">'
@@ -1960,11 +1914,12 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
   if (target.tagName === 'LI') { // tagName returns uppercase
     // the element id is encodeURIComponent(ph.code), to assure no spaces
     //
-    current_ph_code = decodeURIComponent(target.id);
-//    console.log("current_ph_code = " + current_ph_code);
+    app_settings_array[0].cur_ph_code = decodeURIComponent(target.id);
+//    console.log("app_settings_array[0].cur_ph_code = " + app_settings_array[0].cur_ph_code);
     // get ph record
-    cur_placeholder = placeholders_array.find(ph => ph.code == current_ph_code);
-    placeholder_state = "edit";
+    app_settings_array[0].cur_plholder = placeholders_array.find(ph => ph.code 
+      == app_settings_array[0].cur_ph_code);
+    app_settings_array[0].ph_state = "edit";
     // close this screen
     bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPhListScreen')).hide();
     // open ph for editing
@@ -2000,7 +1955,8 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
   }
 
   if (img_files.length > 0) {
-    cur_placeholder.photos = img_files.concat(cur_placeholder.photos);
+    app_settings_array[0].cur_plholder.photos 
+      = img_files.concat(app_settings_array[0].cur_plholder.photos);
     bkupPlaceholders();
     showPhPix();
   }
@@ -2023,36 +1979,36 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     document.getElementById('placeholder_keywords').focus();
     return;
   }
-  cur_placeholder.keywords = phKeywordsArray;
+  app_settings_array[0].cur_plholder.keywords = phKeywordsArray;
   bkupPlaceholders();
   // done working in this screen, clear the keywords
   document.getElementById('placeholder_keywords').value = "";
 
 
   // update any species items that are based on the current placeholder
-  site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
+  site_spp_array.filter(itm => itm.ph_id === app_settings_array[0].cur_plholder.id)
     .map(itm => { return itm.id; }).forEach(iid => {
       // update any fields that may have changed
       console.log("in 'btn-save-placeholder-info.click', updating placeholder spp item " + iid);
       let sp_elem = site_spp_array.find(i => i.id === iid);
       console.log("in 'btn-save-placeholder-info.click', sp_elem");
       console.log(sp_elem);
-      sp_elem.keywords = cur_placeholder.keywords.join(" ").split(" ");
-      sp_elem.species = cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" ");
-      sp_elem.latitude = (sp_elem.latitude == "") ? cur_placeholder.latitude : sp_elem.latitude;
-      sp_elem.longitude = (sp_elem.longitude == "") ? cur_placeholder.longitude : sp_elem.longitude;
-      sp_elem.accuracy = (sp_elem.accuracy == "") ? cur_placeholder.accuracy : sp_elem.accuracy;
+      sp_elem.keywords = app_settings_array[0].cur_plholder.keywords.join(" ").split(" ");
+      sp_elem.species = app_settings_array[0].cur_plholder.code + ': ' + app_settings_array[0].cur_plholder.keywords.join(" ");
+      sp_elem.latitude = (sp_elem.latitude == "") ? app_settings_array[0].cur_plholder.latitude : sp_elem.latitude;
+      sp_elem.longitude = (sp_elem.longitude == "") ? app_settings_array[0].cur_plholder.longitude : sp_elem.longitude;
+      sp_elem.accuracy = (sp_elem.accuracy == "") ? app_settings_array[0].cur_plholder.accuracy : sp_elem.accuracy;
     });
   bkupSpeciesList();
-  if (placeholder_state === "new") {
+  if (app_settings_array[0].ph_state === "new") {
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
-    if (app_settings_array[0].waitForSppLocTarget && !targetAccuracyOK) {
-      current_ph_id = cur_placeholder.id; // current_ph_id is the general placeholder
+    if (app_settings_array[0].waitForSppLocTarget && !app_settings_array[0].tgt_accuracy_ok) {
+      app_settings_array[0].cur_ph_id = app_settings_array[0].cur_plholder.id; // app_settings_array[0].cur_ph_id is the general placeholder
       // current_spp_item_id is the instance of the placeholder
-      accuracyAccepted = false; // can be manually accepted
-      locationDeferred = true;
-      whatIsAwaitingAccuracy = "new_plholder";
+      app_settings_array[0].accurcy_accepted = false; // can be manually accepted
+      app_settings_array[0].loc_deferred = true;
+      app_settings_array[0].what_awating_accuracy = "new_plholder";
       console.log('About to hide the New Placeholder modal, and go to awaiting location accuracy');
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
       var vnAwaitAcc = new bootstrap.Modal(document.getElementById('vnWaitForAccuracyScreen'), {
@@ -2064,14 +2020,14 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       // vnWaitForAccuracyScreen.hidden will set aux_spec_for = "spp_items"
       return; // don't continue with defaults below
     } else { // finish up
-      // ticker may already be stopped if targetAccuracyOK
+      // ticker may already be stopped if app_settings_array[0].tgt_accuracy_ok
       clearInterval(periodicLocationCheckFlag);
       stopTrackingPosition();
-      accuracyAccepted = true;
-      locationDeferred = false;
-      latestLocation = undefined;
-      whatIsAwaitingAccuracy = "";
-      placeholder_state = "";
+      app_settings_array[0].accurcy_accepted = true;
+      app_settings_array[0].loc_deferred = false;
+      app_settings_array[0].latest_loc = undefined;
+      app_settings_array[0].what_awating_accuracy = "";
+      app_settings_array[0].ph_state = "";
       aux_spec_for = "spp_items";
       // trigger to refresh site list
       shwMainScreenTimeout = setTimeout(showMainScreen, 10);
@@ -2079,7 +2035,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnPlaceholderInfoScreen')).hide();
       enterAnyAuxData();
     }
-    // end of placeholder_state === "new"
+    // end of app_settings_array[0].ph_state === "new"
   } else { // otherwise, was just editing a placeholder
     // trigger to refresh site list
     shwMainScreenTimeout = setTimeout(showMainScreen, 10);
@@ -2091,7 +2047,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
 
 function insertPlHolderItm() {
   // inserts a species item into site_spp_array for the current placeholder
-  // assumes these globals: current_site_id, cur_placeholder, latestLocation
+  // assumes these globals: current_site_id, app_settings_array[0].cur_plholder, latest_loc
   // returns the id of the newly inserted element in site_spp_array
   // use the code and keywords as one string "species"
   let ph_entry_date = new Date();
@@ -2100,14 +2056,14 @@ function insertPlHolderItm() {
     "id": 'ph_' + ph_entry_date.getTime().toString(),
     "site_id": app_settings_array[0].current_site_id,
     "type": 'ph', // a placeholder, vs. 'sp' for a real species
-    "ph_id": cur_placeholder.id, // allows for lookup
-    "code": cur_placeholder.code,
-    "keywords": cur_placeholder.keywords,
-    "species": cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" "),
+    "ph_id": app_settings_array[0].cur_plholder.id, // allows for lookup
+    "code": app_settings_array[0].cur_plholder.code,
+    "keywords": app_settings_array[0].cur_plholder.keywords,
+    "species": app_settings_array[0].cur_plholder.code + ': ' + app_settings_array[0].cur_plholder.keywords.join(" "),
     "date": ph_entry_date,
-    "latitude": "" + latestLocation.coords.latitude,
-    "longitude": "" + latestLocation.coords.longitude,
-    "accuracy": "" + latestLocation.coords.accuracy.toFixed(1)
+    "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
+    "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
+    "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
   };
   site_spp_array.unshift(new_ph_item);
   bkupSpeciesList();
