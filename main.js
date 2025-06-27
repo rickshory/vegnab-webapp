@@ -258,7 +258,8 @@ function initializeSettingArray() {
     sentDataFormat: "fmtCsv",
     emailToSendTo: "",
     region_code: "OR",
-    active_screen_id: "",
+    current_modal_id: "", // modals such as Placeholder, WaitForLocation, and AuxData that 
+    // can have data in intermediate states use; other modals ignore
     current_site_id: "",
     accuracy_ok: true, // 'false' = waiting for periodic acquire <= target
     accuracy_accepted: true; // 'false' = waiting for manual acceptance
@@ -646,6 +647,8 @@ sitesChooseOrAddList.addEventListener('click', function (e) {
         keyboard: false
       });
       vnAddSiteModal.show();
+      app_settings_array[0].current_modal_id = "vnSiteInfoScreen";
+      bkupAppSettings();
     } else {
       // use existing site
       // the element ID is the string 'siteToShow-' followed by the site ID, which has its
@@ -923,6 +926,8 @@ match_list.addEventListener('click', function (e) {
           keyboard: false
         });
         vnAwaitAcc.show();
+        app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
+        bkupAppSettings();
       } else { // finish up
         // ticker may already be stopped if targetAccuracyOK
         clearInterval(periodicLocationCheckFlag);
@@ -1005,6 +1010,8 @@ match_list.addEventListener('click', function (e) {
             keyboard: false
           });
           vnPhInfoModal.show();
+          app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
+          bkupAppSettings();
           // end of initiating a new placeholder
         } else { // an existing placeholder
           // insert it as item for this site, similar to a real species
@@ -1035,6 +1042,8 @@ match_list.addEventListener('click', function (e) {
              keyboard: false
             });
             vnAwaitAcc.show();
+            app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
+            bkupAppSettings();
           } else { // finish up
             // ticker may already be stopped if targetAccuracyOK
             clearInterval(periodicLocationCheckFlag);
@@ -1360,6 +1369,8 @@ var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
 document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', function (event) {
+  app_settings_array[0].current_modal_id = vnSiteInfoScreen;
+  bkupAppSettings();
   siteScreenComplete = false; // flag to stop the location ticker if this screen dismissed
   // start fresh
   vnSiteName.value = ""; // user entry
@@ -1386,6 +1397,10 @@ document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', 
     siteScreenComplete = true;
   } else {
     console.log("Location ticker allowed to run for normal acquire");
+  }
+  if (app_settings_array[0].current_modal_id === vnSiteInfoScreen) {
+    app_settings_array[0].current_modal_id = null;
+    bkupAppSettings();
   }
 });
 
@@ -1443,6 +1458,9 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
       keyboard: false
     });
     vnAwaitAcc.show();
+    app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
+    bkupAppSettings();
+
   } else { // finish up
     // ticker may already be stopped if targetAccuracyOK
     clearInterval(periodicLocationCheckFlag);
@@ -1460,7 +1478,10 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
   }
 });
 
-vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {});
+vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {
+    app_settings_array[0].current_modal_id = vnWaitForAccuracyScreen;
+    bkupAppSettings();
+});
 
 vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   console.log("In 'Wait for Accuracy' accuracyAccepted = " + accuracyAccepted);
@@ -1529,12 +1550,15 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   shwMainScreenTimeout = setTimeout(showMainScreen, 10);
   // ask for AuxData, if any
   enterAnyAuxData();
+  if (app_settings_array[0].current_modal_id === vnWaitForAccuracyScreen) {
+    app_settings_array[0].current_modal_id = null;
+    bkupAppSettings();
+  } 
 });
 
 document.getElementById('btn_accept_accuracy').addEventListener('click', function () {
   accuracyAccepted = true;
   bootstrap.Modal.getOrCreateInstance(document.getElementById('vnWaitForAccuracyScreen')).hide();
-
 });
 
 var site_card_hdr = document.getElementById('siteCardHeader');
@@ -1642,8 +1666,10 @@ function showMainScreen() {
   this_site_spp_list.innerHTML = spp_listitems_string;
   // check if a placeholder was in progress
   console.log("in showMainScreen, immediate_ph_state: " + app_settings_array[0].immediate_ph_state);
-  if (app_settings_array[0].immediate_ph_state != "") {
+  if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
+    // app was closed or reloaded during placeholder work
     // restore the placeholders screen
+    // TODO; fix the following block of code
     placeholder_state = app_settings_array[0].immediate_ph_state;
     app_settings_array[0].immediate_ph_state = ""; // reset
     current_ph_id = app_settings_array[0].immediate_ph_id;
@@ -1677,8 +1703,9 @@ function showMainScreen() {
       keyboard: false
     });
     vnPhInfoModal.show();
-
-
+    // for consistency, set, although already set
+    app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
+    bkupAppSettings();
   }
 
 }; // end of fn showMainScreen
@@ -1791,6 +1818,8 @@ vnPhListScreen.addEventListener('shown.bs.modal', function (event) {
 // Why does the following work? Is 'vnPlaceholderInfoScreen' an object readable by its ID?
 vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   console.log("in vnPlaceholderInfoScreen 'shown.bs.modal'");
+  app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
+  bkupAppSettings();
   if (cur_placeholder === undefined || current_ph_id == "" || cur_placeholder.code == "") {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').value = "";
@@ -1831,6 +1860,7 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   //clear any parameters set by visibilitychange
   // regardless whether screen closed by any button or the X
   // if ever more than incomplete placeholder, make this a function
+  // TODO: fix the followind block of code
   console.log("in vnPlaceholderInfoScreen.hidden, clearning visibilitychange parameters");
   app_settings_array[0].immediate_awating_accuracy = "";
   app_settings_array[0].immediate_accuracy_ok = true;
@@ -1889,6 +1919,10 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     placeholder_state = ""
     cur_placeholder = undefined;
     current_ph_code = "";
+    if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
+      app_settings_array[0].current_modal_id = null;
+      bkupAppSettings();
+    }
     showMainScreen();
   }
 });
@@ -1938,6 +1972,8 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
       keyboard: false
     });
     vnPhInfoModal.show()
+    app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
+    bkupAppSettings();
   }
 });
 
@@ -2023,6 +2059,8 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
         keyboard: false
       });
       vnAwaitAcc.show();
+      app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
+      bkupAppSettings();
       // vnWaitForAccuracyScreen.hidden will set aux_spec_for = "spp_items"
       return; // don't continue with defaults below
     } else { // finish up
@@ -2294,10 +2332,14 @@ function enterAnyAuxData() {
       keyboard: false
     });
     vnAxDat.show();
+    app_settings_array[0].current_modal_id = "vnAuxDataEntryScreen";
+    bkupAppSettings();
   }
 }
 
 vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
+  app_settings_array[0].current_modal_id = "vnAuxDataEntryScreen";
+  bkupAppSettings();  
   document.getElementById('auxdata_entry_inputs').innerHTML = "";
   let sArr = aux_specs_array.filter(a => a.for == aux_spec_for);
   // TODO sort by listing order
@@ -2345,6 +2387,10 @@ vnAuxDataEntryScreen.addEventListener('shown.bs.modal', function (event) {
 vnAuxDataEntryScreen.addEventListener('hidden.bs.modal', function (event) {
   document.getElementById('auxdata_entry_inputs').innerHTML = "";
   shwMainScreenTimeout = setTimeout(showMainScreen, 10);
+  if (app_settings_array[0].current_modal_id === "vnAuxDataEntryScreen") {
+    app_settings_array[0].current_modal_id = null;
+    bkupAppSettings();
+  }
 });
 
 document.getElementById('btn-save-auxdata').addEventListener('click', function (e) {
