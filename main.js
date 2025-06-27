@@ -263,7 +263,7 @@ function initializeSettingArray() {
     current_site_id: "",
     latest_loc: undefined,
     tgt_accuracy_ok: true, // 'false' = waiting for periodic acquire <= target
-    accurcy_accepted: true; // 'false' = waiting for manual acceptance
+    accurcy_accepted: true, // 'false' = waiting for manual acceptance
     loc_deferred: false, // new item has been saved, but will update location when acc OK
     what_awating_accuracy: "", // 'site', 'spp_itm', 'new_plholder'
     item_id: "", // the item awaiting accuracy
