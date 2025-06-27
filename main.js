@@ -270,7 +270,9 @@ function initializeSettingArray() {
     ph_state: "", // 'new' or 'edit'
     cur_ph_id: "", // ID of the placeholder being worked on
     cur_ph_code: "",
-    cur_plholder: undefined // the placeholder being added/edited, first created incomplete
+  //  cur_placeholder: // the placeholder being added/edited
+  //  retrieved as a reference from cur_ph_id
+  //  first created incomplete
   // some fields filled in by user, some by GPS acquire
   // incomplete placehold will be deleted if info screen dismissed without finishing
   };
@@ -303,7 +305,7 @@ document.addEventListener('visibilitychange', function() {
       // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
       let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
       // allow empty array
-      app_settings_array[0].cur_plholder.keywords = phKeywordsArray;
+      cur_placeholder.keywords = phKeywordsArray;
       bkupPlaceholders();
       bkupAppSettings();
     }
@@ -421,7 +423,8 @@ var placeholders_array = [];
 //var placeholder_state = ""; // will be 'new' or 'edit'
 //var current_ph_id = "";
 //var current_ph_code = "";
-//var cur_placeholder; // the placeholder being added/edited, first created incomplete
+var cur_placeholder; // the placeholder being added/edited, as a reference
+// first created incomplete
   // some fields filled in by user, some by GPS acquire
   // incomplete placehold will be deleted if info screen dismissed without finishing
 var phScreenComplete = false; // flag to distinguish screen simply
@@ -962,7 +965,7 @@ match_list.addEventListener('click', function (e) {
           placeholders_array.unshift(new_ph);
           bkupPlaceholders();
           // get a reference to the array element
-          app_settings_array[0].cur_plholder = 
+          cur_placeholder = 
             placeholders_array.find(ph => ph.id == 
             app_settings_array[0].cur_ph_id);
 
@@ -1004,8 +1007,8 @@ match_list.addEventListener('click', function (e) {
           console.log("parsed placeholder code: " + matched_placeholder_code);
           let ph = target.textContent;
           console.log(ph);
-          // get the global 'app_settings_array[0].cur_plholder' the following fn needs
-          app_settings_array[0].cur_plholder = 
+          // get the global 'cur_placeholder' the following fn needs
+          cur_placeholder = 
             placeholders_array.find(p => p.code === matched_placeholder_code);
           // following fn fills in fields that might be redundant, but includes
           // "ph_id": to allow lookup back to the original placeholder definition
@@ -1319,9 +1322,9 @@ function checkPositionAccuracy() {
         && !app_settings_array[0].loc_deferred) {
         // display the updating location
         document.getElementById('placeholder_location').innerHTML
-             = '(' + app_settings_array[0].cur_plholder.latitude
-             + ', ' + app_settings_array[0].cur_plholder.longitude
-             + '), accuracy ' + app_settings_array[0].cur_plholder.accuracy + ' m';
+             = '(' + cur_placeholder.latitude
+             + ', ' + cur_placeholder.longitude
+             + '), accuracy ' + cur_placeholder.accuracy + ' m';
       }
       break;
     default:
@@ -1663,10 +1666,10 @@ function showMainScreen() {
   if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
     // app was closed or reloaded during placeholder work
     // restore the placeholders screen
-    bkupAppSettings();
-    app_settings_array[0].cur_plholder = placeholders_array.find(ph => ph.id 
+    // bkupAppSettings();
+    cur_placeholder = placeholders_array.find(ph => ph.id 
       == app_settings_array[0].cur_ph_id);
-    app_settings_array[0].cur_ph_code = app_settings_array[0].cur_plholder.code;
+    app_settings_array[0].cur_ph_code = cur_placeholder.code;
     var vnPhInfoModal = new bootstrap.Modal(document.getElementById('vnPlaceholderInfoScreen'), {
       keyboard: false
     });
@@ -1788,9 +1791,9 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   console.log("in vnPlaceholderInfoScreen 'shown.bs.modal'");
   app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
   bkupAppSettings();
-  if (app_settings_array[0].cur_plholder === undefined 
+  if (cur_placeholder === undefined 
     || app_settings_array[0].cur_ph_id == "" 
-    || app_settings_array[0].cur_plholder.code == "") {
+    || cur_placeholder.code == "") {
     document.getElementById('placeholder_code_label').innerHTML = "(no code)";
     document.getElementById('placeholder_keywords').value = "";
     document.getElementById('placeholder_location').innerHTML = "(no location)";
@@ -1800,7 +1803,7 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   }
   if (app_settings_array[0].ph_state === "new") {
     document.getElementById('placeholder_code_label').innerHTML
-        = 'New placeholder "' + app_settings_array[0].cur_plholder.code + '"';
+        = 'New placeholder "' + cur_placeholder.code + '"';
     phScreenComplete = false; // flag to delete incomplete placeholder if screen dismissed
     // // is this a good place to restart this?
     // if (!app_settings_array[0].tgt_accuracy_ok && !app_settings_array[0].accurcy_accepted) { // also test loc_deferred?
@@ -1811,34 +1814,29 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
   }
   if (app_settings_array[0].ph_state === "edit") {
     document.getElementById('placeholder_code_label').innerHTML
-        = 'Editing placeholder "' + app_settings_array[0].cur_plholder.code + '"';
+        = 'Editing placeholder "' + cur_placeholder.code + '"';
     phScreenComplete = true; // don't delete this placeholder, even if screen dismissed
   }
   document.getElementById('placeholder_keywords').value
-      = app_settings_array[0].cur_plholder.keywords.join(" ");
+      = cur_placeholder.keywords.join(" ");
   document.getElementById('placeholder_location').innerHTML
-       = '(' + app_settings_array[0].cur_plholder.latitude
-       + ', ' + app_settings_array[0].cur_plholder.longitude
-       + '), accuracy ' + app_settings_array[0].cur_plholder.accuracy + ' m';
+       = '(' + cur_placeholder.latitude
+       + ', ' + cur_placeholder.longitude
+       + '), accuracy ' + cur_placeholder.accuracy + ' m';
    document.getElementById('placeholder_date').innerHTML
-       = app_settings_array[0].cur_plholder.date;
+       = cur_placeholder.date;
   showPhPix();
 });
 
 vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   bkupPlaceholders();
-  //clear any parameters set by visibilitychange
-  // regardless whether screen closed by any button or the X
-  // if ever more than incomplete placeholder, make this a function
-  // TODO: fix the followind block of code
-  console.log("in vnPlaceholderInfoScreen.hidden, clearning visibilitychange parameters");
   bkupAppSettings();
 
   if (phScreenComplete) { // any Placeholder edits will have to go past this point
     console.log("in 'vnPlaceholderInfoScreen.hidden', ph_state = " 
       + app_settings_array[0].ph_state);
-    console.log("in 'vnPlaceholderInfoScreen.hidden', cur_plholder");
-    console.log(app_settings_array[0].cur_plholder);
+    console.log("in 'vnPlaceholderInfoScreen.hidden', cur_placeholder");
+    console.log(cur_placeholder);
     // any species items based on the current placeholder were
     //  updated in 'btn-save-placeholder-info.click'
     // if ph_state === "edit", there would not be any pending
@@ -1850,7 +1848,7 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   } else { //  !phScreenComplete,  occurs if screen dismissed by "X" button
     if (app_settings_array[0].ph_state === "new") {
       // new placeholder was never completed, remove it from the array
-      app_settings_array[0].cur_plholder = undefined; // unattach any reference
+      cur_placeholder = undefined; // unattach any reference
       // remove the incomplete placeholder
       console.log('about to remove incomplete Placeholder "'
         + placeholders_array.find(p => p.id 
@@ -1879,7 +1877,7 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
     // placeholder was being edited, but discard edits
     // flag that work is finished
     app_settings_array[0].ph_state = ""
-    app_settings_array[0].cur_plholder = undefined;
+    cur_placeholder = undefined;
     app_settings_array[0].cur_ph_code = "";
     if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
       app_settings_array[0].current_modal_id = null;
@@ -1892,12 +1890,12 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
 function showPhPix() {
   let ph_pix_html = "";
   try {
-    if (app_settings_array[0].cur_plholder.photos.length == 0) {
+    if (cur_placeholder.photos.length == 0) {
       ph_pix_html = "no photos yet"
     } else {
       ph_pix_html += '    <div class="container">'
          + '\n               <div class="row imagetiles">';
-      app_settings_array[0].cur_plholder.photos.forEach(itm => {
+      cur_placeholder.photos.forEach(itm => {
         ph_pix_html += '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">'
            + '<img src=' + URL.createObjectURL(itm)
            + ' class="img-responsive">'
@@ -1925,7 +1923,7 @@ document.getElementById('ph_list').addEventListener('click', function (e) {
     app_settings_array[0].cur_ph_code = decodeURIComponent(target.id);
 //    console.log("app_settings_array[0].cur_ph_code = " + app_settings_array[0].cur_ph_code);
     // get ph record
-    app_settings_array[0].cur_plholder = placeholders_array.find(ph => ph.code 
+    cur_placeholder = placeholders_array.find(ph => ph.code 
       == app_settings_array[0].cur_ph_code);
     app_settings_array[0].ph_state = "edit";
     // close this screen
@@ -1963,8 +1961,8 @@ document.getElementById('ph-img-file-input').addEventListener('change', () => {
   }
 
   if (img_files.length > 0) {
-    app_settings_array[0].cur_plholder.photos 
-      = img_files.concat(app_settings_array[0].cur_plholder.photos);
+    cur_placeholder.photos 
+      = img_files.concat(cur_placeholder.photos);
     bkupPlaceholders();
     showPhPix();
   }
@@ -1987,32 +1985,32 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
     document.getElementById('placeholder_keywords').focus();
     return;
   }
-  app_settings_array[0].cur_plholder.keywords = phKeywordsArray;
+  cur_placeholder.keywords = phKeywordsArray;
   bkupPlaceholders();
   // done working in this screen, clear the keywords
   document.getElementById('placeholder_keywords').value = "";
 
 
   // update any species items that are based on the current placeholder
-  site_spp_array.filter(itm => itm.ph_id === app_settings_array[0].cur_plholder.id)
+  site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
     .map(itm => { return itm.id; }).forEach(iid => {
       // update any fields that may have changed
       console.log("in 'btn-save-placeholder-info.click', updating placeholder spp item " + iid);
       let sp_elem = site_spp_array.find(i => i.id === iid);
       console.log("in 'btn-save-placeholder-info.click', sp_elem");
       console.log(sp_elem);
-      sp_elem.keywords = app_settings_array[0].cur_plholder.keywords.join(" ").split(" ");
-      sp_elem.species = app_settings_array[0].cur_plholder.code + ': ' + app_settings_array[0].cur_plholder.keywords.join(" ");
-      sp_elem.latitude = (sp_elem.latitude == "") ? app_settings_array[0].cur_plholder.latitude : sp_elem.latitude;
-      sp_elem.longitude = (sp_elem.longitude == "") ? app_settings_array[0].cur_plholder.longitude : sp_elem.longitude;
-      sp_elem.accuracy = (sp_elem.accuracy == "") ? app_settings_array[0].cur_plholder.accuracy : sp_elem.accuracy;
+      sp_elem.keywords = cur_placeholder.keywords.join(" ").split(" ");
+      sp_elem.species = cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" ");
+      sp_elem.latitude = (sp_elem.latitude == "") ? cur_placeholder.latitude : sp_elem.latitude;
+      sp_elem.longitude = (sp_elem.longitude == "") ? cur_placeholder.longitude : sp_elem.longitude;
+      sp_elem.accuracy = (sp_elem.accuracy == "") ? cur_placeholder.accuracy : sp_elem.accuracy;
     });
   bkupSpeciesList();
   if (app_settings_array[0].ph_state === "new") {
     phScreenComplete = true; // don't delete this placeholder on modal.hide
     // may need to defer the location
     if (app_settings_array[0].waitForSppLocTarget && !app_settings_array[0].tgt_accuracy_ok) {
-      app_settings_array[0].cur_ph_id = app_settings_array[0].cur_plholder.id; // app_settings_array[0].cur_ph_id is the general placeholder
+      app_settings_array[0].cur_ph_id = cur_placeholder.id; // app_settings_array[0].cur_ph_id is the general placeholder
       // current_spp_item_id is the instance of the placeholder
       app_settings_array[0].accurcy_accepted = false; // can be manually accepted
       app_settings_array[0].loc_deferred = true;
@@ -2055,7 +2053,7 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
 
 function insertPlHolderItm() {
   // inserts a species item into site_spp_array for the current placeholder
-  // assumes these globals: current_site_id, app_settings_array[0].cur_plholder, latest_loc
+  // assumes these globals: current_site_id, cur_placeholder, latest_loc
   // returns the id of the newly inserted element in site_spp_array
   // use the code and keywords as one string "species"
   let ph_entry_date = new Date();
@@ -2064,10 +2062,10 @@ function insertPlHolderItm() {
     "id": 'ph_' + ph_entry_date.getTime().toString(),
     "site_id": app_settings_array[0].current_site_id,
     "type": 'ph', // a placeholder, vs. 'sp' for a real species
-    "ph_id": app_settings_array[0].cur_plholder.id, // allows for lookup
-    "code": app_settings_array[0].cur_plholder.code,
-    "keywords": app_settings_array[0].cur_plholder.keywords,
-    "species": app_settings_array[0].cur_plholder.code + ': ' + app_settings_array[0].cur_plholder.keywords.join(" "),
+    "ph_id": cur_placeholder.id, // allows for lookup
+    "code": cur_placeholder.code,
+    "keywords": cur_placeholder.keywords,
+    "species": cur_placeholder.code + ': ' + cur_placeholder.keywords.join(" "),
     "date": ph_entry_date,
     "latitude": "" + app_settings_array[0].latest_loc.latitude,
     "longitude": "" + app_settings_array[0].latest_loc.longitude,
