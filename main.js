@@ -1354,7 +1354,7 @@ var vnSiteName = document.getElementById('site_name');
 var vnSiteNotes = document.getElementById('site_notes');
 
 document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', function (event) {
-  app_settings_array[0].current_modal_id = vnSiteInfoScreen;
+  app_settings_array[0].current_modal_id = "vnSiteInfoScreen";
   bkupAppSettings();
   siteScreenComplete = false; // flag to stop the location ticker if this screen dismissed
   // start fresh
