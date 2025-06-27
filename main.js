@@ -878,9 +878,9 @@ match_list.addEventListener('click', function (e) {
         "species": spp,
         "uncertainty": "",
         "date": spp_entry_date,
-        "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
-        "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
-        "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
+        "latitude": "" + app_settings_array[0].latest_loc.latitude,
+        "longitude": "" + app_settings_array[0].latest_loc.longitude,
+        "accuracy": "" + app_settings_array[0].latest_loc.accuracy.toFixed(1)
       };
       current_spp_item_id = new_spp_item.id;
       site_spp_array.unshift(new_spp_item);
@@ -949,9 +949,9 @@ match_list.addEventListener('click', function (e) {
             "keywords": [], // empty until filled in
             "photos": [], // photo uris and urls
             "date": ph_create_date,
-            "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
-            "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
-            "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1),
+            "latitude": "" + app_settings_array[0].latest_loc.latitude,
+            "longitude": "" + app_settings_array[0].latest_loc.longitude,
+            "accuracy": "" + app_settings_array[0].latest_loc.accuracy.toFixed(1),
             "species": "", // until determined
             "uncertainty": "" // any uncertainty that it is this species
             // should never be any uncertainty that what is observed this placeholder
@@ -1223,7 +1223,12 @@ function stopTrackingPosition() {
 
 function trackPosition(position) {
   // called every time postion changes
-  app_settings_array[0].latest_loc = position;
+  app_settings_array[0].latest_loc = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      accuracy: position.coords.accuracy,
+      timestamp: position.timestamp
+    };
 }
 
 function locationError(err) {
@@ -1279,27 +1284,27 @@ function checkPositionAccuracy() {
     console.log("latest_loc not yet defined");
     return;
   }
-  console.log("Location accuracy " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(2) + " meters");
+  console.log("Location accuracy " + app_settings_array[0].latest_loc.accuracy.toFixed(2) + " meters");
   let targetAcc = 0;
   switch(app_settings_array[0].what_awating_accuracy) {
     case "site":
       targetAcc = app_settings_array[0].siteLocTargetAccuracy;
-      if (app_settings_array[0].latest_loc.coords.accuracy <= targetAcc) {
+      if (app_settings_array[0].latest_loc.accuracy <= targetAcc) {
         app_settings_array[0].tgt_accuracy_ok = true;
       }
       if (!app_settings_array[0].loc_deferred) {
-        let stLoc = "Latitude: " + app_settings_array[0].latest_loc.coords.latitude +
-            "<br>Longitude: " + app_settings_array[0].latest_loc.coords.longitude;
+        let stLoc = "Latitude: " + app_settings_array[0].latest_loc.latitude +
+            "<br>Longitude: " + app_settings_array[0].latest_loc.longitude;
         if (!app_settings_array[0].tgt_accuracy_ok) {
           stLoc += "<br>Target accuracy: " + targetAcc + " meters";
         }
-        stLoc += "<br>Accuracy: " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1) + " meters";
+        stLoc += "<br>Accuracy: " + app_settings_array[0].latest_loc.accuracy.toFixed(1) + " meters";
         vnSiteLocation.innerHTML = stLoc;
       }
       break;
     case "spp_itm":
       targetAcc = app_settings_array[0].sppLocTargetAccuracy;
-      if (app_settings_array[0].latest_loc.coords.accuracy <= targetAcc) {
+      if (app_settings_array[0].latest_loc.accuracy <= targetAcc) {
         app_settings_array[0].tgt_accuracy_ok = true;
       }
       // don't display anything for species
@@ -1307,7 +1312,7 @@ function checkPositionAccuracy() {
     case "new_plholder":
       // use same target accuracy as for species
       targetAcc = app_settings_array[0].sppLocTargetAccuracy;
-      if (app_settings_array[0].latest_loc.coords.accuracy <= targetAcc) {
+      if (app_settings_array[0].latest_loc.accuracy <= targetAcc) {
         app_settings_array[0].tgt_accuracy_ok = true;
       }
       if (app_settings_array[0].ph_state === "new" 
@@ -1336,14 +1341,14 @@ function checkPositionAccuracy() {
     console.log("Not yet to target accuracy of " + targetAcc + " meters");
     if (app_settings_array[0].loc_deferred) {
         // if 'waiting for target accuracy' is up, update the display
-      let stLocInfo = "Latitude: " + app_settings_array[0].latest_loc.coords.latitude +
-          "<br>Longitude: " + app_settings_array[0].latest_loc.coords.longitude;
+      let stLocInfo = "Latitude: " + app_settings_array[0].latest_loc.latitude +
+          "<br>Longitude: " + app_settings_array[0].latest_loc.longitude;
       if (!app_settings_array[0].tgt_accuracy_ok) {
         stLocInfo += "<br>Target accuracy: " + targetAcc + " meters";
       }
-      stLocInfo += "<br>Accuracy: " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1) + " meters";
+      stLocInfo += "<br>Accuracy: " + app_settings_array[0].latest_loc.accuracy.toFixed(1) + " meters";
       document.getElementById('waiting_location_accuracy_info').innerHTML = stLocInfo;
-      let stAcceptAcc = "Accept " + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1) + " meters?";
+      let stAcceptAcc = "Accept " + app_settings_array[0].latest_loc.accuracy.toFixed(1) + " meters?";
       document.getElementById('btn_accept_accuracy').innerHTML = stAcceptAcc;
     }
   }
@@ -1423,9 +1428,9 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
     "name": SiteNameString,
     "notes": SiteNotesString,
     "date": st_create_date,
-    "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
-    "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
-    "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
+    "latitude": "" + app_settings_array[0].latest_loc.latitude,
+    "longitude": "" + app_settings_array[0].latest_loc.longitude,
+    "accuracy": "" + app_settings_array[0].latest_loc.accuracy.toFixed(1)
   };
   app_settings_array[0].current_site_id = site_obj.id;
   console.log("In 'btn-save-site-info.click', app_settings_array", app_settings_array[0]);
@@ -1491,9 +1496,9 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
       // also deferred. Update it now
       let phItm = site_spp_array.find(i => i.id == current_spp_item_id);
       if (phItm !== undefined) {
-        phItm.latitude = "" + app_settings_array[0].latest_loc.coords.latitude;
-        phItm.longitude = "" + app_settings_array[0].latest_loc.coords.longitude;
-        phItm.accuracy = "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1);
+        phItm.latitude = "" + app_settings_array[0].latest_loc.latitude;
+        phItm.longitude = "" + app_settings_array[0].latest_loc.longitude;
+        phItm.accuracy = "" + app_settings_array[0].latest_loc.accuracy.toFixed(1);
         console.log("Updated deferred placeholder item, id=" + phItm.id);
         bkupPlaceholders();
       }
@@ -1503,9 +1508,9 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
       // do nothing
   }
   if (itmToUpdate !== undefined) {
-    itmToUpdate.latitude = "" + app_settings_array[0].latest_loc.coords.latitude;
-    itmToUpdate.longitude = "" + app_settings_array[0].latest_loc.coords.longitude;
-    itmToUpdate.accuracy = "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1);
+    itmToUpdate.latitude = "" + app_settings_array[0].latest_loc.latitude;
+    itmToUpdate.longitude = "" + app_settings_array[0].latest_loc.longitude;
+    itmToUpdate.accuracy = "" + app_settings_array[0].latest_loc.accuracy.toFixed(1);
     console.log("Updated latest " + app_settings_array[0].what_awating_accuracy + ", id=" + itmToUpdate.id);
   }
 
@@ -2064,9 +2069,9 @@ function insertPlHolderItm() {
     "keywords": app_settings_array[0].cur_plholder.keywords,
     "species": app_settings_array[0].cur_plholder.code + ': ' + app_settings_array[0].cur_plholder.keywords.join(" "),
     "date": ph_entry_date,
-    "latitude": "" + app_settings_array[0].latest_loc.coords.latitude,
-    "longitude": "" + app_settings_array[0].latest_loc.coords.longitude,
-    "accuracy": "" + app_settings_array[0].latest_loc.coords.accuracy.toFixed(1)
+    "latitude": "" + app_settings_array[0].latest_loc.latitude,
+    "longitude": "" + app_settings_array[0].latest_loc.longitude,
+    "accuracy": "" + app_settings_array[0].latest_loc.accuracy.toFixed(1)
   };
   site_spp_array.unshift(new_ph_item);
   bkupSpeciesList();
