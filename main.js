@@ -1363,7 +1363,7 @@ var vnSiteNotes = document.getElementById('site_notes');
 
 document.getElementById('vnSiteInfoScreen').addEventListener('shown.bs.modal', function (event) {
   app_settings_array[0].current_modal_id = "vnSiteInfoScreen";
-  console.log("In 'vnSiteInfoScreen.shown', app_settings_array", app_settings_array[0]);
+//  console.log("In 'vnSiteInfoScreen.shown', app_settings_array", app_settings_array[0]);
   bkupAppSettings();
   siteScreenComplete = false; // flag to stop the location ticker if this screen dismissed
   // start fresh
@@ -1392,7 +1392,7 @@ document.getElementById('vnSiteInfoScreen').addEventListener('hidden.bs.modal', 
   } else {
     console.log("Location ticker allowed to run for normal acquire");
   }
-  if (app_settings_array[0].current_modal_id === vnSiteInfoScreen) {
+  if (app_settings_array[0].current_modal_id === "vnSiteInfoScreen") {
     app_settings_array[0].current_modal_id = null;
     bkupAppSettings();
   }
@@ -1475,7 +1475,7 @@ document.getElementById('btn-save-site-info').addEventListener('click', function
 });
 
 vnWaitForAccuracyScreen.addEventListener('shown.bs.modal', function () {
-    app_settings_array[0].current_modal_id = vnWaitForAccuracyScreen;
+    app_settings_array[0].current_modal_id = "vnWaitForAccuracyScreen";
     bkupAppSettings();
 });
 
@@ -1547,7 +1547,7 @@ vnWaitForAccuracyScreen.addEventListener('hidden.bs.modal', function () {
   shwMainScreenTimeout = setTimeout(showMainScreen, 10);
   // ask for AuxData, if any
   enterAnyAuxData();
-  if (app_settings_array[0].current_modal_id === vnWaitForAccuracyScreen) {
+  if (app_settings_array[0].current_modal_id === "vnWaitForAccuracyScreen") {
     app_settings_array[0].current_modal_id = null;
     bkupAppSettings();
   } 
@@ -1674,9 +1674,6 @@ function showMainScreen() {
       keyboard: false
     });
     vnPhInfoModal.show();
-    // for consistency, set, although already set
-    app_settings_array[0].current_modal_id = "vnPlaceholderInfoScreen";
-    bkupAppSettings();
   }
 
 }; // end of fn showMainScreen
