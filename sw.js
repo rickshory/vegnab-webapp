@@ -1,6 +1,6 @@
 
 const APP_PREFIX = 'VegNab' 
-const APP_VERSION = 'v0.29'
+const APP_VERSION = 'v0.30'
 const CACHE_NAME = APP_PREFIX + "_" + APP_VERSION
 
 console.log('[SW] Loaded. Version:', APP_VERSION);
