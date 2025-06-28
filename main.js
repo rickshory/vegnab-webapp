@@ -295,24 +295,39 @@ var pageVisibility = document.visibilityState;
 document.addEventListener('visibilitychange', function() {
   // fires when user switches tabs, apps, goes to homescreen, etc.
   console.log("in 'visibilitychange': " + document.visibilityState);
+
   if (document.visibilityState == 'hidden') {
-    // at this point, only check if a placeholder is in the midst of being edited
-    if ((app_settings_array[0].ph_state === "new" ) 
-      || (app_settings_array[0].ph_state === "edit")) {
-      console.log("in 'visibilitychange', ph_state: " + app_settings_array[0].ph_state);
-      // save partial placeholder
-      let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
-      // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
-      let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
-      // allow empty array
-      cur_placeholder.keywords = phKeywordsArray;
-      bkupPlaceholders();
-      bkupAppSettings();
+    // app lost focus; save state in case reloaded
+    bkupAppSettings();
+    console.log("in 'visibilitychange.hidden', current_modal: " + app_settings_array[0].current_modal_id);
+    switch(app_settings_array[0].current_modal_id) {
+      case 'vnPlaceholderInfoScreen':
+        // placeholder new or edit
+        console.log("in 'visibilitychange', ph_state: " + app_settings_array[0].ph_state);
+        // save partial placeholder
+        let phKeywordsString = document.getElementById('placeholder_keywords').value.toString().trim();
+        // use what is input, except strip any empty strings, double spaces, leading/trailing spaces
+        let phKeywordsArray = phKeywordsString.split(" ").filter(st => st.length > 0);
+        // allow empty array
+        cur_placeholder.keywords = phKeywordsArray;
+        bkupPlaceholders();
+        break;
+      case 'vnWaitForAccuracyScreen':
+        // nothing yet
+        break;
+      case 'vnAuxDataEntryScreen':
+        // nothing yet
+        break;
+      case 'vnSiteInfoScreen':
+        // nothing yet
+        break;
+      default:
+        // do nothing
     }
   }
   // fires when app transitions from prerender, user returns to the app / tab.
   if (document.visibilityState == 'visible') { 
-//    console.log("visibilitychange: visible");
+    console.log("visibilitychange: visible");
     // not implemented yet
   }
 });
