@@ -1828,7 +1828,6 @@ vnPlaceholderInfoScreen.addEventListener('shown.bs.modal', function (event) {
 vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
   bkupPlaceholders();
   bkupAppSettings();
-
   if (phScreenComplete) { // any Placeholder edits will have to go past this point
     console.log("in 'vnPlaceholderInfoScreen.hidden', ph_state = " 
       + app_settings_array[0].ph_state);
@@ -1869,19 +1868,19 @@ vnPlaceholderInfoScreen.addEventListener('hidden.bs.modal', function (event) {
       app_settings_array[0].loc_deferred = false;
       app_settings_array[0].latest_loc = undefined;
       app_settings_array[0].what_awating_accuracy = "";
-      bkupAppSettings();
+//      bkupAppSettings();
     } // !phScreenComplete but ph_state != "new"
     // placeholder was being edited, but discard edits
-    // flag that work is finished
-    app_settings_array[0].ph_state = ""
-    cur_placeholder = undefined;
-    app_settings_array[0].cur_ph_code = "";
-    if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
-      app_settings_array[0].current_modal_id = null;
-      bkupAppSettings();
-    }
-    showMainScreen();
   }
+  // flag that work is finished
+  app_settings_array[0].ph_state = "";
+  cur_placeholder = undefined;
+  app_settings_array[0].cur_ph_code = "";
+  if (app_settings_array[0].current_modal_id === "vnPlaceholderInfoScreen") {
+    app_settings_array[0].current_modal_id = null;
+  }
+  bkupAppSettings();
+  showMainScreen();
 });
 
 function showPhPix() {
@@ -1986,8 +1985,6 @@ document.getElementById('btn-save-placeholder-info').addEventListener('click', f
   bkupPlaceholders();
   // done working in this screen, clear the keywords
   document.getElementById('placeholder_keywords').value = "";
-
-
   // update any species items that are based on the current placeholder
   site_spp_array.filter(itm => itm.ph_id === cur_placeholder.id)
     .map(itm => { return itm.id; }).forEach(iid => {
