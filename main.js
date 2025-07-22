@@ -2714,7 +2714,7 @@ function getEmailBodyAsCsv(siteID) {
   console.log(this_site_spp_array);
 
   // add headers
-  st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacualar","Uncertainty",'
+  st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacular","Uncertainty",'
     + '"Timestamp (UT)","Location","Accuracy (m)"';
   // get any auxiliary data headers and items
   const adColumnKeys = new Map();
@@ -2760,7 +2760,7 @@ function getEmailBodyAsCsv(siteID) {
     let arDsc = (itm.species).split(":");
     if (itm.type === "ph") { // a placeholder
       st += '\n"' + itm.code + '","' + arDsc[1].trim() + '","","","","",""'
-      // placeholders do not have "Genus","Species","Subspecies or Variety","Vernacualar","Uncertainty"
+      // placeholders do not have "Genus","Species","Subspecies or Variety","Vernacular","Uncertainty"
     } else { // a real species
       // arDsc is ["Code", " Description"]
       let arNms = arDsc[1].split(",");
