@@ -1,4 +1,4 @@
-const nrcs_spp_array = [
+﻿const nrcs_spp_array = [
   {
     nrcs_code: "ABAB",
     genus: "Abutilon",
@@ -141740,8 +141740,8 @@ const nrcs_spp_array = [
     genus: "Ceratodon",
     species: "purpureus",
     subspp_var: "",
-    common_names: ", ceratodon moss",
-    distribution: "CT,NJ,NY,",
+    common_names: ", ceratodon moss, fire moss, redshank, purple forkmoss",
+    distribution: "AB,AK,AL,AR,AS,AZ,BC,CA,CO,CT,DC,DE,FL,FM,GA,GL,GU,HI,IA,ID,IL,IN,KS,KY,LA,LB,MA,MB,MD,ME,MH,MI,MN,MO,MP,MS,MT,NB,NC,ND,NE,NF,NH,NJ,NM,NS,NT,NU,NV,NY,OH,OK,ON,OR,PA,PE,PR,PW,QC,RI,SC,SD,SK,SPM,TN,TX,UM,UT,VA,VI,VT,WA,WI,WV,WY,YT,",
   },
   {
     nrcs_code: "CEPU13",
@@ -246612,7 +246612,7 @@ const nrcs_spp_array = [
     genus: "Eriogonum",
     species: "compositum",
     subspp_var: "",
-    common_names: ", arrowleaf buckwheat",
+    common_names: ", arrowleaf buckwheat, heartleaf buckwheat",
     distribution: "CA,ID,OR,WA,",
   },
   {
@@ -305580,7 +305580,7 @@ const nrcs_spp_array = [
     genus: "Habenaria",
     species: "elegans",
     subspp_var: "",
-    common_names: ", elegant piperia",
+    common_names: ", elegant piperia, hillside rein orchid",
     distribution: "BC,CA,ID,MT,OR,WA,",
   },
   {
@@ -383917,7 +383917,7 @@ const nrcs_spp_array = [
     species: "grayi",
     subspp_var: "",
     common_names: ", Gray's biscuitroot",
-    distribution: "BC,CO,ID,NM,NV,OR,UT,WA,WY,",
+    distribution: "CO,ID,NM,UT,WY,",
   },
   {
     nrcs_code: "LOGR10",
@@ -384742,6 +384742,14 @@ const nrcs_spp_array = [
     subspp_var: "var. alpinum",
     common_names: ", alpine biscuitroot",
     distribution: "NV,UT,",
+  },
+  {
+    nrcs_code: "LOKL3",
+    genus: "Lomatium",
+    species: "klickitatense",
+    subspp_var: "",
+    common_names: ", Klickitat desertparsley, Klickitat biscuitroot",
+    distribution: "OR,WA,",
   },
   {
     nrcs_code: "LOKN",
@@ -385790,6 +385798,14 @@ const nrcs_spp_array = [
     subspp_var: "",
     common_names: ", Utah desertparsley",
     distribution: "AZ,CA,NV,UT,",
+  },
+  {
+    nrcs_code: "LOPA14",
+    genus: "Lomatium",
+    species: "papilioniferum",
+    subspp_var: "",
+    common_names: ", butterfly-bearing biscuitroot, pungent desert parsley",
+    distribution: "BC,CA,ID,NV,OR,WA,",
   },
   {
     nrcs_code: "LOPA2",
@@ -503636,7 +503652,7 @@ const nrcs_spp_array = [
     genus: "Piperia",
     species: "elegans",
     subspp_var: "",
-    common_names: ", elegant piperia",
+    common_names: ", elegant piperia, hillside rein orchid",
     distribution: "BC,CA,ID,MT,OR,WA,",
   },
   {
