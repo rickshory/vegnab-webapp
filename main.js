@@ -9,7 +9,7 @@ if ('serviceWorker' in navigator) {
   //  Use following format to run on LocalHost
 //   navigator.serviceWorker.register('sw.js').then((registration) => {
   //  Use following format to run from GitHub
-  navigator.serviceWorker.register('/vegnab-webapp/sw.js'
+    navigator.serviceWorker.register('/vegnab-webapp/sw.js'
       , {scope: '/vegnab-webapp/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
     if (!navigator.serviceWorker.controller) {
