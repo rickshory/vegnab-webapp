@@ -2715,7 +2715,7 @@ function getEmailBodyAsCsv(siteID) {
 
   // add headers
   st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacular","Uncertainty",'
-    + '"Timestamp (UT)","Location","Accuracy (m)"';
+    + '"Timestamp (UT)","Location","Latatude","Longitude","Accuracy (m)"';
   // get any auxiliary data headers and items
   const adColumnKeys = new Map();
   const adRowDataMap = new Map();
@@ -2772,8 +2772,10 @@ function getEmailBodyAsCsv(siteID) {
       st += '\n"' + arDsc[0] + '","' + arDsc[1].trim() + '","' + arSci[0] + '","' + arSci[1] + '","' 
           + stSub + '","' + stVrn + '","' + itm.uncertainty + '"';
     }
-    st += ',"' + itm.date.toISOString()
-        + '","' + itm.latitude + ', ' + itm.longitude + '","' + itm.accuracy + '"';
+    st += ',"' + itm.date.toISOString() + '"';
+    // give combined lat/lon for location, and also latatude and longitude separately
+    st += ',"' + itm.latitude + ', ' + itm.longitude + '","' 
+      + itm.latitude + '","' + itm.longitude + '","' + itm.accuracy + '"';
     // add any auxiliary data
     const itmAdValsObj = adRowDataMap.get(itm.id) || {};
     // add each aux data value, or empty string if none
@@ -2782,24 +2784,7 @@ function getEmailBodyAsCsv(siteID) {
       if (stVal === undefined || stVal === null) stVal = "";
       else stVal = String(stVal);
       st += ',"' + stVal + '"';
-    }    
-    // // lay out the values array, empty at first
-    // let aux_values_array = [];
-    // // as many columns as the header
-    // aux_columns_array.forEach(c => {
-    //   aux_values_array.push('');
-    // });
-    // aux_data_array.filter(d => d.parent_id === itm.id).forEach(ad => {
-    //   // drop the values in the correct slots
-    //   let i = aux_columns_array.findIndex(c => c.col_id === ad.spec_id);
-    //   if (i > -1) { // should always be, since we just created it
-    //     aux_values_array[i] = '' + ad.value;
-    //   };
-    // });
-    // // write the values on the end of the row, under their correct columns
-    // aux_values_array.forEach(av => {
-    //   st += ',"' + av + '"';
-    // });
+    }
   });
   // done with species items, add the info for any placeholders used
   let this_site_ph_array = placeholders_array.filter(ph_obj =>
