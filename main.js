@@ -2715,7 +2715,7 @@ function getEmailBodyAsCsv(siteID) {
 
   // add headers
   st += '\n"Code","Description","Genus","Species","Subspecies or Variety","Vernacular","Uncertainty",'
-    + '"Timestamp (UT)","Location","Latatude","Longitude","Accuracy (m)"';
+    + '"Timestamp (UT)","Location","Latitude","Longitude","Accuracy (m)"';
   // get any auxiliary data headers and items
   const adColumnKeys = new Map();
   const adRowDataMap = new Map();
@@ -2773,7 +2773,7 @@ function getEmailBodyAsCsv(siteID) {
           + stSub + '","' + stVrn + '","' + itm.uncertainty + '"';
     }
     st += ',"' + itm.date.toISOString() + '"';
-    // give combined lat/lon for location, and also latatude and longitude separately
+    // give combined lat/lon for location, and also latitude and longitude separately
     st += ',"' + itm.latitude + ', ' + itm.longitude + '","' 
       + itm.latitude + '","' + itm.longitude + '","' + itm.accuracy + '"';
     // add any auxiliary data
