@@ -332,32 +332,59 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 
-// TODO: possibly change the following, to avoid any possible race conditions of
-//  the arrays not being retrieved before the UI gets refreshed
- document.addEventListener("DOMContentLoaded", function() {
-   console.log('DOMContentLoaded');
-   // check if app state fully retrieved
-   ckIfAppStateRetrieved();
- });
- 
- function ckIfAppStateRetrieved() {
-  console.log(timeCtRetrieve + "ms, sitesRetrieved=" + sitesRetrieved + " sppRetrieved=" + sppRetrieved 
-    + " phsRetrieved=" + phsRetrieved + " foundSppRetrieved=" + foundSppRetrieved
-    + " auxSpecsRetrieved=" + auxSpecsRetrieved + " auxDataRetrieved=" + auxDataRetrieved
-    + " appSettingsRetrieved=" + appSettingsRetrieved );
-  let allStatesRetrieved = (sitesRetrieved && sppRetrieved && phsRetrieved && foundSppRetrieved 
-      && auxSpecsRetrieved && auxDataRetrieved && appSettingsRetrieved);
-  if(allStatesRetrieved) {
-    makeLocalAndNonlocalSppArrays().then(
-      function(value) {showAppStatus(value);},
-      function(error) {showListsError(error);}
-    );
+  // assure the arrays are retrieved before refreshing the UI
+  document.addEventListener("DOMContentLoaded", async function() {
+    console.log('DOMContentLoaded');
+    // wait till app state fully retrieved
+    await waitForAppState();
+
+    try {
+      const value = await makeLocalAndNonlocalSppArrays();
+      showAppStatus(value);
+    } catch(error) {
+      showListsError(error);
+    }
     showMainScreen();
-  } else {
-    timeCtRetrieve += 100;
-    window.setTimeout(ckIfAppStateRetrieved, 100); // checks every 100 milliseconds
-  }
-}
+  });
+ 
+ function waitForAppState() {
+  return new Promise(function(resolve) {
+    function check() {
+      console.log(timeCtRetrieve + "ms, sitesRetrieved=" + sitesRetrieved + " sppRetrieved=" + sppRetrieved 
+        + " phsRetrieved=" + phsRetrieved + " foundSppRetrieved=" + foundSppRetrieved
+        + " auxSpecsRetrieved=" + auxSpecsRetrieved + " auxDataRetrieved=" + auxDataRetrieved
+        + " appSettingsRetrieved=" + appSettingsRetrieved );
+      let allStatesRetrieved = (sitesRetrieved && sppRetrieved && phsRetrieved && foundSppRetrieved 
+        && auxSpecsRetrieved && auxDataRetrieved && appSettingsRetrieved);
+      if (allStatesRetrieved) {
+        resolve(); // done; continue from the 'await' point in the listener
+      } else {
+        timeCtRetrieve += 100;
+        window.setTimeout(check, 100); // check every 100 milliseconds
+      }
+    }
+    check();
+  });
+ }
+
+//  function ckIfAppStateRetrieved() {
+//   console.log(timeCtRetrieve + "ms, sitesRetrieved=" + sitesRetrieved + " sppRetrieved=" + sppRetrieved 
+//     + " phsRetrieved=" + phsRetrieved + " foundSppRetrieved=" + foundSppRetrieved
+//     + " auxSpecsRetrieved=" + auxSpecsRetrieved + " auxDataRetrieved=" + auxDataRetrieved
+//     + " appSettingsRetrieved=" + appSettingsRetrieved );
+//   let allStatesRetrieved = (sitesRetrieved && sppRetrieved && phsRetrieved && foundSppRetrieved 
+//       && auxSpecsRetrieved && auxDataRetrieved && appSettingsRetrieved);
+//   if(allStatesRetrieved) {
+//     makeLocalAndNonlocalSppArrays().then(
+//       function(value) {showAppStatus(value);},
+//       function(error) {showListsError(error);}
+//     );
+//     showMainScreen();
+//   } else {
+//     timeCtRetrieve += 100;
+//     window.setTimeout(ckIfAppStateRetrieved, 100); // checks every 100 milliseconds
+//   }
+// }
   
 
 // for testing, region is "OR" (Oregon)
