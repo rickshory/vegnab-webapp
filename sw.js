@@ -90,6 +90,7 @@ self.addEventListener('fetch', (e) => {
   console.log('Handling fetch event for', e.request.url);
 
   // temporary diagnostics, cache check
+  console.log('Checking cache');
   caches.open(CACHE_NAME).then(function(cache) {
     cache.keys().then(function(keys) {
       console.log('Cache contents:', keys.map(k => k.url));
