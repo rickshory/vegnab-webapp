@@ -89,10 +89,21 @@ self.addEventListener('install', (e) => {
 self.addEventListener('fetch', (e) => {
   console.log('Handling fetch event for', e.request.url);
 
+  // temporary diagnostics, cache check
+  caches.open(CACHE_NAME).then(function(cache) {
+    cache.keys().then(function(keys) {
+      console.log('Cache contents:', keys.map(k => k.url));
+    });
+  });
+
   if (e.request.mode === 'navigate') {
     // Always serve app shell for navigation — handles OAuth redirect too
     console.log('Handling mode==navigate', e.request.url);
-    e.respondWith(caches.match('/vegnab-webapp/'));
+    e.respondWith(
+      caches.match(e.request).then(function(cachedResponse) {
+        return cachedResponse || fetch(e.request);
+      })
+    );
     return;
   }
 
