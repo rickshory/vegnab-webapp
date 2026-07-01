@@ -1,6 +1,14 @@
 "use strict";
 
-  var swVersion = "";
+// the following is needed for the serviceworker registration and scope
+// it will become 'vegnab-webapp' for the public version
+// or 'dev-vegnab' for the development version
+const repo_name = window.location.pathname.split('/')[1];
+// if ever moved to a custom domain where the app is at the
+//  root (no subfolder in the path), [1] would be an empty string
+// may work correctly on localhost,
+//  though the value would be whatever local path served from
+var swVersion = "";
 // install Service Worker here, then it will "live" in the browser
 if ('serviceWorker' in navigator) {
   // Register a service worker hosted at the root of the
@@ -9,8 +17,8 @@ if ('serviceWorker' in navigator) {
   //  Use following format to run on LocalHost
 //   navigator.serviceWorker.register('sw.js').then((registration) => {
   //  Use following format to run from GitHub
-    navigator.serviceWorker.register('/vegnab-webapp/sw.js'
-      , {scope: '/vegnab-webapp/'}).then((registration) => {
+    navigator.serviceWorker.register('/' + repo_name + '/sw.js'
+      , {scope: '/' + repo_name + '/'}).then((registration) => {
     console.log('Service worker registration succeeded:', registration);
     if (!navigator.serviceWorker.controller) {
       console.log('[main] No controller yet — reloading to allow control...');
@@ -345,8 +353,9 @@ document.addEventListener('visibilitychange', function() {
       showListsError(error);
     }
     showMainScreen();
-  });
+ });
  
+
  function waitForAppState() {
   return new Promise(function(resolve) {
     function check() {
@@ -366,6 +375,7 @@ document.addEventListener('visibilitychange', function() {
     check();
   });
  }
+
 
 //  function ckIfAppStateRetrieved() {
 //   console.log(timeCtRetrieve + "ms, sitesRetrieved=" + sitesRetrieved + " sppRetrieved=" + sppRetrieved 

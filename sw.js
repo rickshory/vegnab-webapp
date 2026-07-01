@@ -1,6 +1,6 @@
 
 const APP_PREFIX = 'VegNab' 
-const APP_VERSION = 'v0.35'
+const APP_VERSION = 'v0.34'
 const CACHE_NAME = APP_PREFIX + "_" + APP_VERSION
 
 console.log('[SW] Loaded. Version:', APP_VERSION);
@@ -89,10 +89,23 @@ self.addEventListener('install', (e) => {
 self.addEventListener('fetch', (e) => {
   console.log('Handling fetch event for', e.request.url);
 
+  // temporary diagnostics, cache check
+  console.log('Checking cache');
+  caches.open(CACHE_NAME).then(function(cache) {
+    cache.keys().then(function(keys) {
+      console.log('Cache contents:', keys.map(k => k.url));
+    });
+  });
+
   if (e.request.mode === 'navigate') {
     // Always serve app shell for navigation — handles OAuth redirect too
     console.log('Handling mode==navigate', e.request.url);
-    e.respondWith(caches.match('/vegnab-webapp/'));
+//    e.respondWith(caches.match('/vegnab-webapp/'));
+    e.respondWith(
+      caches.match(e.request).then(function(cachedResponse) {
+        return cachedResponse || fetch(e.request);
+      })
+    );
     return;
   }
 
