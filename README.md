@@ -16,7 +16,28 @@ Best usage is to email your data to yourself, and then clear off old sites you h
 
 -----
 
-Developing VegNab as a web app.  
+To get VegNab, in a phone browser, go to the site below (VegNab is not intended for desktop use, and not everything will work there) :
+
+https://rickshory.github.io/vegnab-webapp/
+
+Reload twice, to assure cache is set.
+
+To try in a desktop browser, start in an incognito window. Make the window narrow to emulate a phone screen. Optionally, Ctrl-Shift-I to use DevTools.
+
+For VegNab to run completely offline, and retain data through reloads, it works entirely from cache. This means it can not routinely update when new versions are posted.
+
+To update, and assure you have the latest version (this will lose all data): 
+- On phone, while looking at VegNab app tab, touch the three-dots menu in the upper right corner.
+- Touch the circled "I" (information) icon in the top options bar.
+- Touch "Cookies and site data".
+- Touch the 'trash' icon to remove.
+- In browser, to assure does not re-use from old cache, close the VegNab tab (can copy the URL first).
+- Close the browser.
+- Then re-open browser and go to the app page.
+
+-----
+
+History, developing VegNab as a web app.  
 Rough timeline:
 - December 5, 2022 Lock up app if locations denied.
 - November 27, 2022 Implemented auxiliary data.
