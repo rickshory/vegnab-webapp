@@ -14,6 +14,8 @@ After initial load, VegNab works entirely offline. VegNab remembers all your wor
 
 Best usage is to email your data to yourself, and then clear off old sites you have finished.
 
+-----
+
 Developing VegNab as a web app.  
 Rough timeline:
 - December 5, 2022 Lock up app if locations denied.
