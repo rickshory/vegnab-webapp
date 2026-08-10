@@ -27,6 +27,7 @@ To try in a desktop browser, start in an incognito window. Make the window narro
 For VegNab to run completely offline, and retain data through reloads, it works entirely from cache. This means it can not routinely update when new versions are posted.
 
 To see what version you have, in VebNab on your phone: Three-bars menu > Help > Version
+
 To see the latest version available, look in the file "sw.js" in this repo.
 
 To update, and assure you have the latest version (this will lose all data): 
