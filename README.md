@@ -16,7 +16,7 @@ Best usage is to email your data to yourself, and then clear off old sites you h
 
 -----
 
-To get VegNab, in a phone browser, go to the site below (VegNab is not intended for desktop use, and not everything will work there) :
+To get VegNab, in a phone browser, go to the site below (VegNab is not intended for desktop use, and not everything will work) :
 
 https://rickshory.github.io/vegnab-webapp/
 
@@ -25,6 +25,9 @@ Reload twice, to assure cache is set.
 To try in a desktop browser, start in an incognito window. Make the window narrow to emulate a phone screen. Optionally, Ctrl-Shift-I to use DevTools.
 
 For VegNab to run completely offline, and retain data through reloads, it works entirely from cache. This means it can not routinely update when new versions are posted.
+
+To see what version you have, in VebNab on your phone: Three-bars menu > Help > Version
+To see the latest version available, look in the file "sw.js" in this repo.
 
 To update, and assure you have the latest version (this will lose all data): 
 - On phone, while looking at VegNab app tab, touch the three-dots menu in the upper right corner.
