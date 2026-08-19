@@ -38,6 +38,7 @@ To update, and assure you have the latest version (this will lose all data):
 - In browser, to assure does not re-use from old cache, close the VegNab tab (can copy the URL first).
 - Close the browser.
 - Then re-open browser and go to the app page.
+- Reload twice, to asure cache is set.
 
 -----
 
