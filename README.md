@@ -32,7 +32,7 @@ To see the latest version available, look in the file "sw.js" in this repo.
 
 To update, and assure you have the latest version (this will lose all data): 
 - On phone, while looking at VegNab app tab, touch the three-dots menu in the upper right corner.
-- Touch the circled "I" (information) icon in the top options bar.
+- Touch the circled "I" (information) icon in the top options bar, look for "Site controls".
 - Touch "Cookies and site data".
 - Touch the 'trash' icon to remove.
 - In browser, to assure does not re-use from old cache, close the VegNab tab (can copy the URL first).
