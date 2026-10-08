@@ -3232,7 +3232,7 @@ document.getElementById('forget_spp_list').addEventListener('click', function (e
     if (confirm("Forget the following species from the priority list?\n\n" + target.textContent)) {
       // delete the species
       found_spp_array = found_spp_array.filter(sp => !(sp.item_code === sp_id_fgt));
-      bkupSpeciesList();
+      bkupFoundSpp();
       alert("Species forgotten")
       shwMainScreenTimeout = setTimeout(showMainScreen, 10);
       bootstrap.Modal.getOrCreateInstance(document.getElementById('vnForgetSppScreen')).hide();
